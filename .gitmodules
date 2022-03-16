@@ -1,0 +1,4 @@
+[submodule "laravel-be"]
+	path = laravel-be
+	url = https://github.com/nguyentruong1003/api-web-documents-be
+	branch = develop
