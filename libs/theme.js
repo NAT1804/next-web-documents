@@ -36,7 +36,9 @@ const fonts = {
 };
 
 const colors = {
-  glassTeal: '#88ccca'
+  glassTeal: '#88ccca',
+  primaryOrange: '#ffa14e',
+  primaryGreen: '#00ab8b'
 };
 
 const config = {

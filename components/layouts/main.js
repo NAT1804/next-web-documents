@@ -2,8 +2,9 @@ import { Box, Container } from '@chakra-ui/react';
 import Head from 'next/head';
 
 import Header from '../header/header';
+import Footer from '../footer/Footer';
 
-const Main = ({ children, router }) => {
+const Layout = ({ children, router }) => {
   return (
     <Box as="main" pb={8}>
       <Head>
@@ -13,11 +14,13 @@ const Main = ({ children, router }) => {
 
       <Header path={router.asPath} />
 
-      <Container maxW="container.lg" pt="150">
+      <Container maxW="container.lg" pt="180">
         {children}
       </Container>
+
+      <Footer />
     </Box>
   );
 };
 
-export default Main;
+export default Layout;

@@ -1,8 +1,10 @@
 import {
   Box,
+  Button,
   Container,
   Flex,
   Heading,
+  Stack,
   useColorModeValue
 } from '@chakra-ui/react';
 
@@ -18,8 +20,8 @@ const Header = props => {
       as="nav"
       w="100%"
       bg={useColorModeValue('#ffffff40', '#20202380')}
-      style={{ backdropFilter: 'blur(10px)' }}
-      zIndex={1}
+      backdropFilter={'blur(10px)'}
+      zIndex={2}
     >
       <Container
         display="flex"
@@ -35,7 +37,35 @@ const Header = props => {
             </Heading>
           </Flex>
           <Box flex={1} align="right">
-            <ToggleButton />
+            <Stack
+              flex={{ base: 1, md: 0 }}
+              justify={'flex-end'}
+              direction={'row'}
+              spacing={6}
+            >
+              <ToggleButton />
+              <Button
+                as={'a'}
+                fontSize={'sm'}
+                fontWeight={400}
+                variant={'link'}
+                href={'#'}
+              >
+                Sign In
+              </Button>
+              <Button
+                display={{ base: 'none', md: 'inline-flex' }}
+                fontSize={'sm'}
+                fontWeight={600}
+                color={'white'}
+                bg={useColorModeValue('primaryGreen', 'primaryOrange')}
+                _hover={{
+                  bg: 'pink.300'
+                }}
+              >
+                Sign Up
+              </Button>
+            </Stack>
           </Box>
         </Flex>
         <Navbar path={path} />
