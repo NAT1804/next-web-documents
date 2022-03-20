@@ -1,11 +1,11 @@
+import React from 'react';
+import NextLink from 'next/link';
 import { CalendarIcon, ChatIcon } from '@chakra-ui/icons';
 import {
   Box,
   Flex,
   Heading,
   HStack,
-  Icon,
-  IconProps,
   Image,
   Link,
   SpaceProps,
@@ -15,7 +15,6 @@ import {
   Wrap,
   WrapItem
 } from '@chakra-ui/react';
-import React from 'react';
 
 interface IPostTags {
   tags: Array<string>;
@@ -78,50 +77,51 @@ export const PostComment: React.FC<IPostCommentProps> = props => {
   );
 };
 
-export const VPostItem = () => {
+export const VPostItem = ({ id }) => {
   return (
     <Wrap spacing="30px" marginTop="5">
       <WrapItem w="100%">
         <Box w="100%">
           <Box borderRadius="lg" overflow="hidden">
-            <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
-              <Image
-                transform="scale(1.0)"
-                src="/logo-tailieu-vnu.png"
-                alt="some text"
-                objectFit="contain"
-                width="100%"
-                transition="0.3s ease-in-out"
-                _hover={{
-                  transform: 'scale(1.05)'
-                }}
-              />
-            </Link>
+            <NextLink href={`/post/${id}`} passHref>
+              <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
+                <Image
+                  transform="scale(1.0)"
+                  src="/logo-tailieu-vnu.png"
+                  alt="some text"
+                  objectFit="contain"
+                  width="100%"
+                  transition="0.3s ease-in-out"
+                  _hover={{
+                    transform: 'scale(1.05)'
+                  }}
+                />
+              </Link>
+            </NextLink>
           </Box>
-          {/* <PostTags tags={['Engineering', 'Product']} marginTop="3" /> */}
           <Heading fontSize="xl" marginTop="2">
-            <Link
-              color={useColorModeValue('primaryGreen', 'primaryOrange')}
-              textDecoration="none"
-              _hover={{ textDecoration: 'none' }}
-            >
-              Some blog title
-            </Link>
+            <NextLink href={`/post/${id}`} passHref>
+              <Link
+                // color={useColorModeValue('primaryGreen', 'primaryOrange')}
+                textDecoration="none"
+                _hover={{ textDecoration: 'none' }}
+              >
+                Sách và hành động tuyển GEN 16 - HYPE UP: NEW LEVEL
+              </Link>
+            </NextLink>
           </Heading>
-          <Text as="p" fontSize="md" marginTop="2">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry&quot;s standard dummy
-            text ever since the 1500s, when an unknown printer took a galley of
-            type and scrambled it to make a type specimen book.
-          </Text>
-          <PostDate date={new Date()} />
+          <Flex w="100%">
+            <PostDate date={new Date()} />
+            &nbsp;&nbsp;
+            <PostComment quantity={2} />
+          </Flex>
         </Box>
       </WrapItem>
     </Wrap>
   );
 };
 
-export const PostItem = () => {
+export const PostItem = ({ id }) => {
   return (
     <>
       <Box
@@ -143,14 +143,21 @@ export const PostItem = () => {
             justifyContent="space-evenly"
           >
             <PostTags tags={['Đại học Công Nghệ']} />
-            <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
-              <Image
-                borderRadius="lg"
-                src="logo-tailieu-vnu.png"
-                alt="some good alt text"
-                objectFit="contain"
-              />
-            </Link>
+            <NextLink href={`/post/${id}`} passHref>
+              <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
+                <Image
+                  borderRadius="lg"
+                  transform="scale(1.0)"
+                  src="logo-tailieu-vnu.png"
+                  alt="some good alt text"
+                  objectFit="contain"
+                  transition="0.3s ease-in-out"
+                  _hover={{
+                    transform: 'scale(1.05)'
+                  }}
+                />
+              </Link>
+            </NextLink>
           </Box>
 
           <Box w="100%" position="absolute" height="100%">
@@ -172,16 +179,13 @@ export const PostItem = () => {
           justifyContent="center"
           marginTop={{ base: '3', sm: '0' }}
         >
-          {/* <PostTags tags={['Đại học Công Nghệ']} /> */}
           <Heading fontSize={'2xl'} marginTop="1">
-            <Link
-              color={useColorModeValue('primaryGreen', 'primaryOrange')}
-              textDecoration="none"
-              _hover={{ textDecoration: 'none' }}
-            >
-              Đề thi Điện Quang, Vật lý đại cương 2 giữa kỳ 1 năm học 2021-2022
-              - UET
-            </Link>
+            <NextLink href={`/post/${id}`} passHref>
+              <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
+                Đề thi Điện Quang, Vật lý đại cương 2 giữa kỳ 1 năm học
+                2021-2022 - UET
+              </Link>
+            </NextLink>
           </Heading>
           <Flex w="100%">
             <PostDate date={new Date()} />

@@ -8,9 +8,9 @@ import {
   useColorModeValue
 } from '@chakra-ui/react';
 
-import Logo from '../logo/logo';
-import Navbar from '../navbar/navbar';
-import ToggleButton from '../toggle-button/toggle-button';
+import Logo from '../logo/Logo';
+import Navbar from '../navbar/Navbar';
+import ToggleButton from '../toggle-button/ToggleButton';
 
 const Header = props => {
   const { path } = props;
@@ -36,7 +36,7 @@ const Header = props => {
               <Logo />
             </Heading>
           </Flex>
-          <Box flex={1} align="right">
+          <Box flex={1} alignSelf="right">
             <Stack
               flex={{ base: 1, md: 0 }}
               justify={'flex-end'}

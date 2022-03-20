@@ -1,7 +1,7 @@
 import { Box, Container } from '@chakra-ui/react';
 import Head from 'next/head';
 
-import Header from '../header/header';
+import Header from '../header/Header';
 import Footer from '../footer/Footer';
 
 const Layout = ({ children, router }) => {

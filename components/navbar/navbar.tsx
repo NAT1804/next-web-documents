@@ -22,19 +22,13 @@ import {
   ChevronRightIcon
 } from '@chakra-ui/icons';
 
-export default function WithSubnavigation() {
+export default function Navbar({ path }) {
   const { isOpen, onToggle } = useDisclosure();
 
   return (
-    <Box
-      // bg={useColorModeValue('#ffffff40', '#20202380')}
-      // backdropFilter={'blur(10px)'}
-      zIndex="2"
-    >
+    <Box zIndex="2">
       <Flex
         zIndex="2"
-        // bg={useColorModeValue('#ffffff40', '#20202380')}
-        // color={useColorModeValue('gray.600', 'white')}
         minH={'60px'}
         py={{ base: 2 }}
         // px={{ base: 4 }}
@@ -79,7 +73,7 @@ const DesktopNav = () => {
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
 
   return (
-    <Stack direction={'row'} spacing={4} fontSize="2xl">
+    <Stack direction={'row'} spacing={4}>
       {NAV_ITEMS.map(navItem => (
         <Box key={navItem.label}>
           <Popover trigger={'hover'} placement={'bottom-start'}>
@@ -87,7 +81,7 @@ const DesktopNav = () => {
               <Link
                 p={2}
                 href={navItem.href ?? '#'}
-                fontSize={'sm'}
+                fontSize={'lg'}
                 fontWeight={500}
                 color={linkColor}
                 _hover={{
@@ -136,7 +130,9 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
         <Box>
           <Text
             transition={'all .3s ease'}
-            _groupHover={{ color: 'pink.400' }}
+            _groupHover={{
+              color: useColorModeValue('primaryOrange', 'primaryGreen')
+            }}
             fontWeight={500}
           >
             {label}
@@ -152,7 +148,12 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
           align={'center'}
           flex={1}
         >
-          <Icon color={'pink.400'} w={5} h={5} as={ChevronRightIcon} />
+          <Icon
+            color={useColorModeValue('primaryOrange', 'primaryGreen')}
+            w={5}
+            h={5}
+            as={ChevronRightIcon}
+          />
         </Flex>
       </Stack>
     </Link>
