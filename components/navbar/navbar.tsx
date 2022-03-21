@@ -12,7 +12,6 @@ import {
   PopoverTrigger,
   PopoverContent,
   useColorModeValue,
-  useBreakpointValue,
   useDisclosure
 } from '@chakra-ui/react';
 import {
@@ -22,7 +21,7 @@ import {
   ChevronRightIcon
 } from '@chakra-ui/icons';
 
-export default function Navbar({ path }) {
+const Navbar = ({ path }) => {
   const { isOpen, onToggle } = useDisclosure();
 
   return (
@@ -65,7 +64,9 @@ export default function Navbar({ path }) {
       </Collapse>
     </Box>
   );
-}
+};
+
+export default Navbar;
 
 const DesktopNav = () => {
   const linkColor = useColorModeValue('gray.600', 'gray.200');
