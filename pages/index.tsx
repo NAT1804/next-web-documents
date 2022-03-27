@@ -27,6 +27,8 @@ export default function Home() {
         <Heading as="h1">Tài liệu mới nhất</Heading>
         <VPostItem id={1} />
         <VPostItem id={2} />
+        <VPostItem id={3} />
+        <VPostItem id={4} />
       </GridItem>
     </Grid>
   );

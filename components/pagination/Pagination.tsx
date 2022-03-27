@@ -75,17 +75,17 @@ const Pagination = () => {
         </Box>
       </Flex>
       <Flex>
-        <Tooltip label="Trang cuối cùng">
-          <IconButton
-            icon={<ArrowRightIcon h={3} w={3} />}
-            aria-label={'Trang cuối cùng'}
-            mx={2}
-          />
-        </Tooltip>
         <Tooltip label="Trang sau">
           <IconButton
             icon={<ChevronRightIcon h={6} w={6} />}
             aria-label={'Trang sau'}
+            mx={2}
+          />
+        </Tooltip>
+        <Tooltip label="Trang cuối cùng">
+          <IconButton
+            icon={<ArrowRightIcon h={3} w={3} />}
+            aria-label={'Trang cuối cùng'}
             mx={2}
           />
         </Tooltip>

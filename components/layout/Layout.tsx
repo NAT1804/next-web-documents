@@ -3,6 +3,7 @@ import Head from 'next/head';
 
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
+import ScrollToTop from '../scroll-to-top/ScrollToTop';
 
 const Layout = ({ children, router }) => {
   return (
@@ -11,14 +12,12 @@ const Layout = ({ children, router }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Web Document</title>
       </Head>
-
       <Header path={router.asPath} />
-
       <Container maxW="container.lg" pt="180">
         {children}
       </Container>
-
       <Footer />
+      <ScrollToTop />
     </Box>
   );
 };

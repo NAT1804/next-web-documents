@@ -1,3 +1,4 @@
+import NextLink from 'next/link';
 import {
   Box,
   Button,
@@ -44,27 +45,31 @@ const Header = props => {
               spacing={6}
             >
               <ToggleButton />
-              <Button
-                as={'a'}
-                fontSize={'sm'}
-                fontWeight={400}
-                variant={'link'}
-                href={'#'}
-              >
-                Sign In
-              </Button>
-              <Button
-                display={{ base: 'none', md: 'inline-flex' }}
-                fontSize={'sm'}
-                fontWeight={600}
-                color={'white'}
-                bg={useColorModeValue('primaryGreen', 'primaryOrange')}
-                _hover={{
-                  bg: 'pink.300'
-                }}
-              >
-                Sign Up
-              </Button>
+              <NextLink href="/login" passHref>
+                <Button
+                  as={'a'}
+                  fontSize={'sm'}
+                  fontWeight={400}
+                  variant={'link'}
+                  href="/login"
+                >
+                  Sign In
+                </Button>
+              </NextLink>
+              <NextLink href="/register" passHref>
+                <Button
+                  display={{ base: 'none', md: 'inline-flex' }}
+                  fontSize={'sm'}
+                  fontWeight={600}
+                  color={'white'}
+                  bg={useColorModeValue('primaryGreen', 'primaryOrange')}
+                  _hover={{
+                    bg: 'cyan.300'
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </NextLink>
             </Stack>
           </Box>
         </Flex>

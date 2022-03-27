@@ -42,15 +42,7 @@ interface IPostDateProps {
 export const PostDate: React.FC<IPostDateProps> = props => {
   return (
     <HStack marginTop="2" spacing="2" display="flex" alignItems="center">
-      {/* <Image
-        borderRadius="full"
-        boxSize="40px"
-        src="https://100k-faces.glitch.me/random-image"
-        alt={`Avatar of ${props.name}`}
-      />
-      <Text fontWeight="medium">{props.name}</Text> */}
       <CalendarIcon />
-      {/* <Text>—</Text> */}
       <Text>{props.date.toLocaleDateString()}</Text>
     </HStack>
   );
@@ -63,15 +55,7 @@ interface IPostCommentProps {
 export const PostComment: React.FC<IPostCommentProps> = props => {
   return (
     <HStack marginTop="2" spacing="2" display="flex" alignItems="center">
-      {/* <Image
-        borderRadius="full"
-        boxSize="40px"
-        src="https://100k-faces.glitch.me/random-image"
-        alt={`Avatar of ${props.name}`}
-      />
-      <Text fontWeight="medium">{props.name}</Text> */}
       <ChatIcon />
-      {/* <Text>—</Text> */}
       <Text>{props.quantity}</Text>
     </HStack>
   );
@@ -79,45 +63,43 @@ export const PostComment: React.FC<IPostCommentProps> = props => {
 
 export const VPostItem = ({ id }) => {
   return (
-    <Wrap spacing="30px" marginTop="5">
-      <WrapItem w="100%">
-        <Box w="100%">
-          <Box borderRadius="lg" overflow="hidden">
-            <NextLink href={`/post/${id}`} passHref>
-              <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
-                <Image
-                  transform="scale(1.0)"
-                  src="/logo-tailieu-vnu.png"
-                  alt="some text"
-                  objectFit="contain"
-                  width="100%"
-                  transition="0.3s ease-in-out"
-                  _hover={{
-                    transform: 'scale(1.05)'
-                  }}
-                />
-              </Link>
-            </NextLink>
-          </Box>
-          <Heading fontSize="xl" marginTop="2">
-            <NextLink href={`/post/${id}`} passHref>
-              <Link
-                // color={useColorModeValue('primaryGreen', 'primaryOrange')}
-                textDecoration="none"
-                _hover={{ textDecoration: 'none' }}
-              >
-                Sách và hành động tuyển GEN 16 - HYPE UP: NEW LEVEL
-              </Link>
-            </NextLink>
-          </Heading>
-          <Flex w="100%">
-            <PostDate date={new Date()} />
-            &nbsp;&nbsp;
-            <PostComment quantity={2} />
-          </Flex>
-        </Box>
-      </WrapItem>
-    </Wrap>
+    <Box w="100%" my={'4'}>
+      <Flex
+        flexDir={'row'}
+        justify={'center'}
+        align={'center'}
+        borderRadius="lg"
+        overflow="hidden"
+      >
+        <NextLink href={`/post/${id}`} passHref>
+          <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
+            <Image
+              transform="scale(1.0)"
+              src="/logo-tailieu-vnu.png"
+              alt="some text"
+              objectFit="contain"
+              width="100%"
+              transition="0.3s ease-in-out"
+              _hover={{
+                transform: 'scale(1.05)'
+              }}
+            />
+          </Link>
+        </NextLink>
+        <Heading fontSize="xl" marginTop="2">
+          <NextLink href={`/post/${id}`} passHref>
+            <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
+              Sách và hành động tuyển GEN 16 - HYPE UP: NEW LEVEL
+            </Link>
+          </NextLink>
+        </Heading>
+      </Flex>
+      <Flex w="100%">
+        <PostDate date={new Date()} />
+        &nbsp;&nbsp;
+        <PostComment quantity={2} />
+      </Flex>
+    </Box>
   );
 };
 
