@@ -9,3 +9,4 @@ export { default as Pagination } from './pagination/Pagination';
 export { default as PreviewPdf } from './preview-pdf/PreviewPdf';
 export { default as ToggleButton } from './toggle-button/ToggleButton';
 export { default as Section } from './section/Section';
+export { default as PostDetail } from './post/PostDetail';

@@ -1,6 +1,6 @@
-import { Box, Button, useColorModeValue } from '@chakra-ui/react';
-import NextLink from 'next/link';
 import { useEffect, useState } from 'react';
+import { Box, Button, useColorModeValue } from '@chakra-ui/react';
+// import NextLink from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { FaArrowUp } from 'react-icons/fa';
@@ -19,6 +19,13 @@ const ScrollToTop = () => {
     return () => window.removeEventListener('scroll', updatePosition);
   }, []);
 
+  const goToTop = () => {
+    document.documentElement.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
   return (
     <>
       <AnimatePresence>
@@ -30,20 +37,18 @@ const ScrollToTop = () => {
             w={'50'}
             h={'50'}
             bgColor={colorButtonScroll}
-            scrollBehavior="smooth"
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1, transition: { duration: 0.6 } }}
             exit={{ y: 100, opacity: 0, transition: { duration: 0.6 } }}
             whileHover={{
               scale: 1.2,
               transition: { duration: 0.2 },
-              backgroundColor: 'cyan'
+              // backgroundColor: 'cyan'
             }}
             whileTap={{ scale: 1 }}
+            onClick={goToTop}
           >
-            <NextLink scroll href={'#'} passHref>
               <FaArrowUp />
-            </NextLink>
           </MotionButton>
         )}
       </AnimatePresence>

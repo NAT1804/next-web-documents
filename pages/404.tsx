@@ -8,7 +8,7 @@ import {
   Text
 } from '@chakra-ui/react';
 
-const NotFound = () => {
+const NotFoundPage = () => {
   return (
     <Container as="h1">
       <Heading>Not found</Heading>
@@ -23,4 +23,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default NotFoundPage;

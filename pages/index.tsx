@@ -8,7 +8,7 @@ import {
   Section
 } from '../components';
 
-export default function Home() {
+export default function HomePage() {
   return (
     <Grid templateColumns="repeat(3, 1fr)" gap={4}>
       <GridItem colSpan={{ base: 3, md: 2 }}>

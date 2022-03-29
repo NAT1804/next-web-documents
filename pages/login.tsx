@@ -23,7 +23,7 @@ import { MdEmail } from 'react-icons/md';
 const CFaLock = chakra(FaLock);
 const CMdEmail = chakra(MdEmail);
 
-const Login = () => {
+const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => setShowPassword(prevState => !prevState);
   return (
@@ -92,4 +92,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

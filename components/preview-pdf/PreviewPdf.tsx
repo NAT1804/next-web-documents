@@ -1,7 +1,15 @@
-import { Box, Button, Container, Flex } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  IconButton,
+  useColorModeValue
+} from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
 
 const pageVariant = {
@@ -22,6 +30,7 @@ const PreviewPdf = ({ height, path }) => {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const pagesRef = useRef([]);
+  const bgColorSpace = useColorModeValue('white.400', 'black.400');
 
   const controls = useAnimation();
 
@@ -42,26 +51,30 @@ const PreviewPdf = ({ height, path }) => {
 
   const onScroll = e => {
     const currentScrollY = e.target.scrollTop;
-    console.log(Math.floor(currentScrollY / (height / 2)) + 1);
-    setPageNumber(Math.floor(currentScrollY / height) + 1);
+    console.log(Math.round(currentScrollY / (height / 2)) + 1);
+    setPageNumber(Math.round(currentScrollY / height) + 1);
   };
 
   return (
-    <Container maxW="md" centerContent>
+    <Container maxW="lg" centerContent>
       <Flex align="center" justify="space-between" gap={4}>
-        <Button m={2} onClick={changePageBack} isDisabled={pageNumber === 1}>
-          Back
-        </Button>
+        <IconButton
+          icon={<ChevronLeftIcon h={6} w={6} />}
+          aria-label={'Trang sau'}
+          m={2}
+          onClick={changePageBack}
+          isDisabled={pageNumber === 1}
+        />
         <Box>
-          {pageNumber} of {numPages}
+          {pageNumber} / {numPages}
         </Box>
-        <Button
+        <IconButton
+          icon={<ChevronRightIcon h={6} w={6} />}
+          aria-label={'Trang sau'}
           m={2}
           onClick={changePageNext}
           isDisabled={pageNumber === numPages}
-        >
-          Next
-        </Button>
+        />
       </Flex>
       <motion.div
         variants={pageVariant}
@@ -77,12 +90,25 @@ const PreviewPdf = ({ height, path }) => {
       >
         <Document file={path} onLoadSuccess={onDocumentLoadSuccess}>
           {Array.from(new Array(numPages), (_, index) => (
-            <Page
-              key={index}
-              inputRef={el => (pagesRef.current[index] = el)}
-              pageNumber={index + 1}
-              height={height}
-            />
+            <>
+              <Page
+                key={index}
+                inputRef={el => (pagesRef.current[index] = el)}
+                pageNumber={index + 1}
+                height={height}
+                width={500}
+              />
+              <Box
+                key={`k-${index}`}
+                w="100%"
+                h={6}
+                bgColor={bgColorSpace}
+                textAlign="right"
+                mx={-4}
+              >
+                Trang {index + 1}
+              </Box>
+            </>
           ))}
         </Document>
       </motion.div>

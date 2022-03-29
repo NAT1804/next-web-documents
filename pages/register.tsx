@@ -23,7 +23,7 @@ const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 const CMdEmail = chakra(MdEmail);
 
-const Register = () => {
+const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => setShowPassword(prevState => !prevState);
   return (
@@ -115,4 +115,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterPage;
