@@ -20,6 +20,7 @@ const Header = props => {
       position="fixed"
       as="nav"
       w="100%"
+      h="180px"
       bg={useColorModeValue('#ffffff40', '#20202380')}
       backdropFilter={'blur(10px)'}
       zIndex={2}

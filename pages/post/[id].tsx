@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, GridItem, Heading } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Heading } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
 import { VPostItem, PostDetail } from '../../components';
@@ -10,7 +10,7 @@ const PostDetailPage = () => {
   return (
     <Grid templateColumns="repeat(3, 1fr)" gap={4}>
       <GridItem colSpan={{ base: 3, md: 2 }}>
-        <PostDetail id={id}/>
+        <PostDetail id={id} file="/pdf/Document.pdf" />
       </GridItem>
       <GridItem colSpan={{ base: 3, md: 1 }}>
         <Heading as="h1">Tài liệu mới nhất</Heading>

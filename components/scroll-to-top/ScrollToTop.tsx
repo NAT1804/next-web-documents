@@ -22,9 +22,9 @@ const ScrollToTop = () => {
   const goToTop = () => {
     document.documentElement.scrollTo({
       top: 0,
-      behavior: "smooth"
+      behavior: 'smooth'
     });
-  }
+  };
 
   return (
     <>
@@ -42,13 +42,12 @@ const ScrollToTop = () => {
             exit={{ y: 100, opacity: 0, transition: { duration: 0.6 } }}
             whileHover={{
               scale: 1.2,
-              transition: { duration: 0.2 },
-              // backgroundColor: 'cyan'
+              transition: { duration: 0.2 }
             }}
             whileTap={{ scale: 1 }}
             onClick={goToTop}
           >
-              <FaArrowUp />
+            <FaArrowUp />
           </MotionButton>
         )}
       </AnimatePresence>

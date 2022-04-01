@@ -1,16 +1,10 @@
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  IconButton,
-  useColorModeValue
-} from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
-import { motion, useAnimation } from 'framer-motion';
-import { Document, Page, pdfjs } from 'react-pdf';
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { Container, Flex, useColorModeValue } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+import React, { useRef, useState } from 'react';
+import { Document, Page, Outline, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
+
+import ControlPanelPdf from './ControlPanelPdf';
 
 const pageVariant = {
   hidden: {
@@ -26,94 +20,68 @@ const pageVariant = {
   }
 };
 
-const PreviewPdf = ({ height, path }) => {
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-  const pagesRef = useRef([]);
-  const bgColorSpace = useColorModeValue('white.400', 'black.400');
+const Pdf = ({ file }) => {
+  const [scale, setScale] = useState<number>(1.0);
+  const [rotate, setRotate] = useState<number>(0);
+  const [numPages, setNumPages] = useState<number>(null); // tong so trang
+  const [pageNumber, setPageNumber] = useState<number>(1); // so thu tu cua trang
 
-  const controls = useAnimation();
+  const outlineRef = useRef(null);
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
+  function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
-    setPageNumber(1);
+  }
+
+  const onOutlineItemClick = ({ dest, pageIndex, pageNumber }) => {
+    setPageNumber(pageNumber);
   };
 
-  const changePage = offset => {
-    setPageNumber(prevPageNumber => prevPageNumber + offset);
-    offset > 0
-      ? pagesRef.current[pageNumber].scrollIntoView()
-      : pagesRef.current[pageNumber - 2].scrollIntoView();
-  };
-
-  const changePageBack = () => changePage(-1);
-  const changePageNext = () => changePage(1);
-
-  const onScroll = e => {
-    const currentScrollY = e.target.scrollTop;
-    console.log(Math.round(currentScrollY / (height / 2)) + 1);
-    setPageNumber(Math.round(currentScrollY / height) + 1);
+  const onToggleOutLine = () => {
+    console.log('toggle outline');
+    outlineRef.current.classList.toggle('show');
   };
 
   return (
-    <Container maxW="lg" centerContent>
-      <Flex align="center" justify="space-between" gap={4}>
-        <IconButton
-          icon={<ChevronLeftIcon h={6} w={6} />}
-          aria-label={'Trang sau'}
-          m={2}
-          onClick={changePageBack}
-          isDisabled={pageNumber === 1}
-        />
-        <Box>
-          {pageNumber} / {numPages}
-        </Box>
-        <IconButton
-          icon={<ChevronRightIcon h={6} w={6} />}
-          aria-label={'Trang sau'}
-          m={2}
-          onClick={changePageNext}
-          isDisabled={pageNumber === numPages}
-        />
-      </Flex>
-      <motion.div
-        variants={pageVariant}
-        initial="hidden"
-        animate="visible"
-        onScroll={onScroll}
-        style={{
-          height: `${height}px`,
-          overflowY: 'scroll',
-          overflowX: 'hidden'
-        }}
-        className="custom-scrollbar"
+    <Flex
+      w={'100%'}
+      flexDir={'column'}
+      alignItems={'center'}
+      justify={'space-between'}
+      position={'relative'}
+    >
+      <ControlPanelPdf
+        scale={scale}
+        setScale={setScale}
+        setRotate={setRotate}
+        onToggleOutLine={onToggleOutLine}
+        numPages={numPages}
+        pageNumber={pageNumber}
+        setPageNumber={setPageNumber}
+        file={file}
+      />
+      <Document
+        className="document-pdf"
+        loading="Please wait!!"
+        file={file}
+        onLoadSuccess={onDocumentLoadSuccess}
       >
-        <Document file={path} onLoadSuccess={onDocumentLoadSuccess}>
-          {Array.from(new Array(numPages), (_, index) => (
-            <>
-              <Page
-                key={index}
-                inputRef={el => (pagesRef.current[index] = el)}
-                pageNumber={index + 1}
-                height={height}
-                width={500}
-              />
-              <Box
-                key={`k-${index}`}
-                w="100%"
-                h={6}
-                bgColor={bgColorSpace}
-                textAlign="right"
-                mx={-4}
-              >
-                Trang {index + 1}
-              </Box>
-            </>
-          ))}
-        </Document>
-      </motion.div>
-    </Container>
+        <Outline
+          inputRef={outlineRef}
+          className={`outline-pdf`}
+          onItemClick={onOutlineItemClick}
+        />
+        <motion.div variants={pageVariant} initial="hidden" animate="visible">
+          <Page
+            className="page-pdf"
+            pageNumber={pageNumber}
+            scale={scale}
+            renderMode="canvas"
+            rotate={rotate}
+          />
+        </motion.div>
+      </Document>
+    </Flex>
   );
 };
 
-export default PreviewPdf;
+export default Pdf;

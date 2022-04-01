@@ -1,4 +1,4 @@
-import { Grid, GridItem, Heading } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Heading } from '@chakra-ui/react';
 
 import {
   PostItem,
@@ -23,7 +23,12 @@ export default function HomePage() {
           </Section>
         </PostContainer>
       </GridItem>
-      <GridItem colSpan={{ base: 3, md: 1 }}>
+      <GridItem
+        display={'block'}
+        colSpan={{ base: 3, md: 1 }}
+        position="sticky"
+        top={180}
+      >
         <Heading as="h1">Tài liệu mới nhất</Heading>
         <VPostItem id={1} />
         <VPostItem id={2} />
