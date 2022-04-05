@@ -14,18 +14,45 @@ import {
   InputRightElement,
   Link,
   Stack,
+  Text,
   useColorModeValue
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { FaLock } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 
+import { useAppDispatch, useAppSelector } from 'app/hook';
+import {
+  authLoginSelector,
+  authLoginAction,
+  selectUserLogin
+} from 'features/login';
+import { unwrapResult } from '@reduxjs/toolkit';
+
 const CFaLock = chakra(FaLock);
 const CMdEmail = chakra(MdEmail);
 
 const LoginPage = () => {
+  const dispatch = useAppDispatch();
+  const { type, token, data, message, pending, error } =
+    useAppSelector(selectUserLogin);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => setShowPassword(prevState => !prevState);
+
+  const handleLogin = async (e: any) => {
+    e.preventDefault();
+    try {
+      await dispatch(authLoginAction({ email, password }));
+      // const originPromiseResult = unwrapResult(resultAction);
+
+      // console.log(originPromiseResult);
+    } catch (rejectedValueOrSerializedError) {
+      console.error(rejectedValueOrSerializedError);
+    }
+  };
+
   return (
     <Flex flexDir={'column'} justify="center" align="center" my={'2'}>
       <Stack
@@ -35,6 +62,9 @@ const LoginPage = () => {
         alignItems="center"
       >
         <Avatar bgColor={useColorModeValue('primaryGreen', 'primaryOrange')} />
+        {pending && <Text>Loading...</Text>}
+        {data && <Text>{data.name}</Text>}
+        {error && <Text>Something went wrong!!!</Text>}
         <form>
           <Stack spacing={4} p="1rem" boxShadow="md">
             <FormControl>
@@ -44,7 +74,12 @@ const LoginPage = () => {
                     color={useColorModeValue('primaryGreen', 'primaryOrange')}
                   />
                 </InputLeftElement>
-                <Input type={'email'} placeholder="Email address" />
+                <Input
+                  type={'email'}
+                  placeholder="Email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                />
               </InputGroup>
             </FormControl>
             <FormControl>
@@ -57,6 +92,8 @@ const LoginPage = () => {
                 <Input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                 />
                 <InputRightElement>
                   <Button onClick={handleShowPassword}>
@@ -76,6 +113,7 @@ const LoginPage = () => {
               borderRadius="0"
               variant={'solid'}
               bgColor={useColorModeValue('primaryGreen', 'primaryOrange')}
+              onClick={handleLogin}
             >
               Login
             </Button>
