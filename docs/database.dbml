@@ -1,0 +1,66 @@
+Table users {
+  id int [pk]
+  email varchar
+  name varchar
+  password password
+  role_id int [not null]
+  created_at datetime
+  modified_at datetime
+  note: "table 'users' contains user information"
+}
+
+Table roles {
+  id int [pk]
+  name varchar
+}
+
+Ref: users.role_id - roles.id
+
+Table posts {
+  id int [pk]
+  title varchar
+  post_type_id int [not null]
+  description varchar
+  content longtext
+  link_pdf varchar
+  created_at datetime [default: `now()`]
+  modified_at datetime
+  user_id int [not null]
+}
+
+Table post_type {
+  id int [pk]
+  name varchar
+}
+
+Ref: post_type.id > posts.post_type_id
+
+Table comments {
+  id int [pk]
+  description text
+  user_id int [not null]
+  post_id int [not null]
+  created_at datetime [default: `now()`]
+  modified_at datetime
+}
+
+Ref: users.id < comments.user_id
+
+Table post_like {
+  id int [pk]
+  post_id int [not null]
+  user_id int [not null]
+}
+
+Table post_report {
+  id int [pk]
+  post_id int [not null]
+  user_id int [not null]
+  resolve boolean
+}
+
+Ref: post_like.post_id > posts.id
+Ref: post_like.user_id > users.id
+Ref: posts.user_id > users.id
+Ref: post_report.post_id > posts.id
+Ref: post_report.user_id > users.id
