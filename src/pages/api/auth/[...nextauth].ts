@@ -35,23 +35,22 @@ export default NextAuth({
           }
           return null;
         } catch (error) {
-          throw new Error('There was an error on uer authentication');
+          throw new Error('There was an error on user authentication');
         }
       }
     })
     // ...add more providers here
   ],
-  // pages: {
-  //   signIn: '/auth/credentials-signin'
-  // },
+  // secret: process.env.JWT_SECRET,
+  pages: {
+    signIn: '/login'
+  },
   callbacks: {
     async jwt({ token, user, account }) {
-      console.log('user in jwt', user);
       if (user) {
         token.accessToken = user.token;
         token.user = user.data;
       }
-
       return token;
     },
     async session({ session, token }) {
@@ -59,21 +58,20 @@ export default NextAuth({
         session.accessToken = token.accessToken;
         session.user = token.user;
       }
-
       return session;
     }
+    // async redirect({ url, baseUrl }) {
+    //   if (url.startsWith(baseUrl)) return url;
+    //   // Allows relative callback URLs
+    //   else if (url.startsWith('/')) return new URL(url, baseUrl).toString();
+    //   return baseUrl;
+    // }
   },
-  // secret: process.env.NEXTAUTH_SECRET,
   jwt: {
     secret: process.env.NEXTAUTH_SECRET
   },
   session: {
     strategy: 'jwt'
-  }
-  // theme: {
-  //   colorScheme: 'auto', // "auto" | "dark" | "light"
-  //   brandColor: '', // Hex color code #33FF5D
-  //   logo: '/logo.png' // Absolute URL to image
-  // },
-  // debug: process.env.NODE_ENV === 'development'
+  },
+  debug: process.env.NODE_ENV === 'development'
 });

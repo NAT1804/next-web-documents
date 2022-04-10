@@ -17,7 +17,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 
 const Header = props => {
   const { path } = props;
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const bgColorButton = useColorModeValue('primaryGreen', 'primaryOrange');
   return (
@@ -54,35 +54,41 @@ const Header = props => {
               {session ? (
                 <>
                   <Text
-                    display={{ base: 'none', md: 'block' }}
-                    textAlign={'center'}
+                    display={{ base: 'none', sm: 'block' }}
+                    alignSelf="center"
                   >
-                    {session.user.name}
+                    {session?.user?.name}
                   </Text>
                   <Button
                     as={'a'}
                     fontSize={'sm'}
                     fontWeight={400}
                     variant={'link'}
-                    onClick={() => signOut()}
+                    onClick={e => {
+                      e.preventDefault();
+                      signOut({ callbackUrl: `${window.location.origin}` });
+                    }}
                   >
                     Log out
                   </Button>
                 </>
               ) : (
                 <>
-                  {/* <NextLink href="/login" passHref> */}
-                  <Button
-                    as={'a'}
-                    fontSize={'sm'}
-                    fontWeight={400}
-                    variant={'link'}
-                    // href="/login"
-                    onClick={() => signIn()}
-                  >
-                    Sign In
-                  </Button>
-                  {/* </NextLink> */}
+                  <NextLink href="/login" passHref>
+                    <Button
+                      as={'a'}
+                      fontSize={'sm'}
+                      fontWeight={400}
+                      variant={'link'}
+                      // href="/login"
+                      onClick={e => {
+                        e.preventDefault();
+                        signIn();
+                      }}
+                    >
+                      Sign In
+                    </Button>
+                  </NextLink>
                   {/* <NextLink href="/register" passHref> */}
                   <Button
                     display={{ base: 'none', md: 'inline-flex' }}

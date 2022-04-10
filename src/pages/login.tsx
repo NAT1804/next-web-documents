@@ -1,10 +1,15 @@
 import NextLink from 'next/link';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Avatar,
   Box,
   Button,
   chakra,
+  CloseButton,
   Flex,
   FormControl,
   FormHelperText,
@@ -20,34 +25,31 @@ import {
 import React, { useState } from 'react';
 import { FaLock } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
-
-import { useAppDispatch, useAppSelector } from 'app/hook';
-import {
-  authLoginSelector,
-  authLoginAction,
-  selectUserLogin
-} from 'features/login';
-// import { unwrapResult } from '@reduxjs/toolkit';
+import { getCsrfToken, signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const CFaLock = chakra(FaLock);
 const CMdEmail = chakra(MdEmail);
 
-const LoginPage = () => {
-  const dispatch = useAppDispatch();
-  const { type, token, data, message, pending, error } =
-    useAppSelector(selectUserLogin);
+const LoginPage = ({ csrfToken }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => setShowPassword(prevState => !prevState);
-
+  const [error, setError] = useState(null);
+  const router = useRouter();
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    try {
-      await dispatch(authLoginAction({ email, password }));
-    } catch (rejectedValueOrSerializedError) {
-      console.error(rejectedValueOrSerializedError);
+    const res = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+      callbackUrl: `${window.location.origin}`
+    });
+    if (res?.error) {
+      setError(res.error);
     }
+    if (res.url) router.push(res.url);
   };
 
   return (
@@ -59,11 +61,24 @@ const LoginPage = () => {
         alignItems="center"
       >
         <Avatar bgColor={useColorModeValue('primaryGreen', 'primaryOrange')} />
-        {pending && <Text>Loading...</Text>}
-        {data && <Text>{data.name}</Text>}
-        {error && <Text>Something went wrong!!!</Text>}
+        {error && (
+          <Alert status="error">
+            <AlertIcon />
+            <Box flex="1">
+              <AlertTitle>Error!</AlertTitle>
+              <AlertDescription display="block">{error}</AlertDescription>
+            </Box>
+            <CloseButton
+              position="absolute"
+              right="8px"
+              top="8px"
+              onClick={() => setError(null)}
+            />
+          </Alert>
+        )}
         <form>
           <Stack spacing={4} p="1rem" boxShadow="md">
+            <Input type={'hidden'} name="csrfToken" defaultValue={csrfToken} />
             <FormControl>
               <InputGroup>
                 <InputLeftElement pointerEvents={'none'}>
@@ -128,3 +143,9 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+LoginPage.getInitialProps = async context => {
+  return {
+    csrfToken: await getCsrfToken(context)
+  };
+};
