@@ -6,15 +6,20 @@ import {
   Flex,
   Heading,
   Stack,
+  Text,
   useColorModeValue
 } from '@chakra-ui/react';
 
 import Logo from '../logo/Logo';
 import Navbar from '../navbar/Navbar';
 import ToggleButton from '../toggle-button/ToggleButton';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 const Header = props => {
   const { path } = props;
+  const { data: session } = useSession();
+
+  const bgColorButton = useColorModeValue('primaryGreen', 'primaryOrange');
   return (
     <Box
       position="fixed"
@@ -46,31 +51,55 @@ const Header = props => {
               spacing={6}
             >
               <ToggleButton />
-              <NextLink href="/login" passHref>
-                <Button
-                  as={'a'}
-                  fontSize={'sm'}
-                  fontWeight={400}
-                  variant={'link'}
-                  href="/login"
-                >
-                  Sign In
-                </Button>
-              </NextLink>
-              <NextLink href="/register" passHref>
-                <Button
-                  display={{ base: 'none', md: 'inline-flex' }}
-                  fontSize={'sm'}
-                  fontWeight={600}
-                  color={'white'}
-                  bg={useColorModeValue('primaryGreen', 'primaryOrange')}
-                  _hover={{
-                    bg: 'cyan.300'
-                  }}
-                >
-                  Sign Up
-                </Button>
-              </NextLink>
+              {session ? (
+                <>
+                  <Text
+                    display={{ base: 'none', md: 'block' }}
+                    textAlign={'center'}
+                  >
+                    {session.user.name}
+                  </Text>
+                  <Button
+                    as={'a'}
+                    fontSize={'sm'}
+                    fontWeight={400}
+                    variant={'link'}
+                    onClick={() => signOut()}
+                  >
+                    Log out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {/* <NextLink href="/login" passHref> */}
+                  <Button
+                    as={'a'}
+                    fontSize={'sm'}
+                    fontWeight={400}
+                    variant={'link'}
+                    // href="/login"
+                    onClick={() => signIn()}
+                  >
+                    Sign In
+                  </Button>
+                  {/* </NextLink> */}
+                  {/* <NextLink href="/register" passHref> */}
+                  <Button
+                    display={{ base: 'none', md: 'inline-flex' }}
+                    fontSize={'sm'}
+                    fontWeight={600}
+                    color={'white'}
+                    bg={bgColorButton}
+                    _hover={{
+                      bg: 'cyan.300'
+                    }}
+                    onClick={() => {}}
+                  >
+                    Sign Up
+                  </Button>
+                  {/* </NextLink> */}
+                </>
+              )}
             </Stack>
           </Box>
         </Flex>

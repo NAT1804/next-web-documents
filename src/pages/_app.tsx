@@ -7,18 +7,21 @@ import { store } from '../app/store';
 import '../styles/globals.css';
 import theme from '../theme';
 import { Layout } from '../components';
+import { SessionProvider } from 'next-auth/react';
 
 function MyApp({ Component, pageProps, router }: AppProps) {
   return (
-    <Provider store={store}>
-      <ChakraProvider theme={theme}>
-        <Layout router={router}>
-          <AnimatePresence exitBeforeEnter initial={true}>
-            <Component {...pageProps} />
-          </AnimatePresence>
-        </Layout>
-      </ChakraProvider>
-    </Provider>
+    <SessionProvider session={pageProps.session}>
+      <Provider store={store}>
+        <ChakraProvider theme={theme}>
+          <Layout router={router}>
+            <AnimatePresence exitBeforeEnter initial={true}>
+              <Component {...pageProps} />
+            </AnimatePresence>
+          </Layout>
+        </ChakraProvider>
+      </Provider>
+    </SessionProvider>
   );
 }
 

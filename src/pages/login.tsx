@@ -27,7 +27,7 @@ import {
   authLoginAction,
   selectUserLogin
 } from 'features/login';
-import { unwrapResult } from '@reduxjs/toolkit';
+// import { unwrapResult } from '@reduxjs/toolkit';
 
 const CFaLock = chakra(FaLock);
 const CMdEmail = chakra(MdEmail);
@@ -45,9 +45,6 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       await dispatch(authLoginAction({ email, password }));
-      // const originPromiseResult = unwrapResult(resultAction);
-
-      // console.log(originPromiseResult);
     } catch (rejectedValueOrSerializedError) {
       console.error(rejectedValueOrSerializedError);
     }

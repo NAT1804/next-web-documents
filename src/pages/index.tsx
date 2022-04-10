@@ -1,4 +1,6 @@
 import { Box, Grid, GridItem, Heading } from '@chakra-ui/react';
+import { getSession } from 'next-auth/react';
+// import { useSession } from 'next-auth/react';
 
 import {
   PostItem,
@@ -8,7 +10,9 @@ import {
   Section
 } from '../components';
 
-export default function HomePage() {
+export default function HomePage({ session }) {
+  // const [session, loading] = useSession();
+  console.log('session', session);
   return (
     <Grid templateColumns="repeat(3, 1fr)" gap={4}>
       <GridItem colSpan={{ base: 3, md: 2 }}>
@@ -37,4 +41,12 @@ export default function HomePage() {
       </GridItem>
     </Grid>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  return {
+    props: {
+      session: await getSession(ctx)
+    }
+  };
 }
