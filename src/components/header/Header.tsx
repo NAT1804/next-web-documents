@@ -9,11 +9,11 @@ import {
   Text,
   useColorModeValue
 } from '@chakra-ui/react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 import Logo from '../logo/Logo';
 import Navbar from '../navbar/Navbar';
 import ToggleButton from '../toggle-button/ToggleButton';
-import { useSession, signIn, signOut } from 'next-auth/react';
 
 const Header = props => {
   const { path } = props;
@@ -80,7 +80,7 @@ const Header = props => {
                       fontSize={'sm'}
                       fontWeight={400}
                       variant={'link'}
-                      // href="/login"
+                      href="/login"
                       onClick={e => {
                         e.preventDefault();
                         signIn();
@@ -89,21 +89,20 @@ const Header = props => {
                       Sign In
                     </Button>
                   </NextLink>
-                  {/* <NextLink href="/register" passHref> */}
-                  <Button
-                    display={{ base: 'none', md: 'inline-flex' }}
-                    fontSize={'sm'}
-                    fontWeight={600}
-                    color={'white'}
-                    bg={bgColorButton}
-                    _hover={{
-                      bg: 'cyan.300'
-                    }}
-                    onClick={() => {}}
-                  >
-                    Sign Up
-                  </Button>
-                  {/* </NextLink> */}
+                  <NextLink href="/register" passHref>
+                    <Button
+                      display={{ base: 'none', md: 'inline-flex' }}
+                      fontSize={'sm'}
+                      fontWeight={600}
+                      color={'white'}
+                      bg={bgColorButton}
+                      _hover={{
+                        bg: 'cyan.300'
+                      }}
+                    >
+                      Sign Up
+                    </Button>
+                  </NextLink>
                 </>
               )}
             </Stack>

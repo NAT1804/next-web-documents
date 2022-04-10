@@ -11,9 +11,7 @@ import {
 } from '../components';
 
 export default function HomePage() {
-  const { data: session, status } = useSession();
-
-  console.log(session, status);
+  // const { data: session, status } = useSession();
   return (
     <Grid templateColumns="repeat(3, 1fr)" gap={4}>
       <GridItem colSpan={{ base: 3, md: 2 }}>

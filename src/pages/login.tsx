@@ -12,6 +12,7 @@ import {
   CloseButton,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormHelperText,
   Input,
   InputGroup,
@@ -19,7 +20,6 @@ import {
   InputRightElement,
   Link,
   Stack,
-  Text,
   useColorModeValue
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
@@ -27,23 +27,28 @@ import { FaLock } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import { getCsrfToken, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
 
 const CFaLock = chakra(FaLock);
 const CMdEmail = chakra(MdEmail);
 
 const LoginPage = ({ csrfToken }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => setShowPassword(prevState => !prevState);
   const [error, setError] = useState(null);
   const router = useRouter();
-  const handleLogin = async (e: any) => {
-    e.preventDefault();
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting }
+  } = useForm();
+
+  const onSubmit = async (values: any) => {
     const res = await signIn('credentials', {
       redirect: false,
-      email,
-      password,
+      email: values.email,
+      password: values.password,
       callbackUrl: `${window.location.origin}`
     });
     if (res?.error) {
@@ -76,10 +81,10 @@ const LoginPage = ({ csrfToken }) => {
             />
           </Alert>
         )}
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={4} p="1rem" boxShadow="md">
             <Input type={'hidden'} name="csrfToken" defaultValue={csrfToken} />
-            <FormControl>
+            <FormControl isInvalid={errors.email}>
               <InputGroup>
                 <InputLeftElement pointerEvents={'none'}>
                   <CMdEmail
@@ -89,12 +94,20 @@ const LoginPage = ({ csrfToken }) => {
                 <Input
                   type={'email'}
                   placeholder="Email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  {...register('email', {
+                    required: 'This is required',
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: 'Invalid email address'
+                    }
+                  })}
                 />
               </InputGroup>
+              <FormErrorMessage>
+                {errors.email && errors.email.message}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl>
+            <FormControl isInvalid={errors.password}>
               <InputGroup>
                 <InputLeftElement pointerEvents={'none'}>
                   <CFaLock
@@ -104,8 +117,9 @@ const LoginPage = ({ csrfToken }) => {
                 <Input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  {...register('password', {
+                    required: 'This is required'
+                  })}
                 />
                 <InputRightElement>
                   <Button onClick={handleShowPassword}>
@@ -113,6 +127,9 @@ const LoginPage = ({ csrfToken }) => {
                   </Button>
                 </InputRightElement>
               </InputGroup>
+              <FormErrorMessage>
+                {errors.password && errors.password.message}
+              </FormErrorMessage>
               <FormHelperText textAlign={'right'}>
                 <NextLink href={'/forgot-password'} passHref>
                   <Link>Forgot Password?</Link>
@@ -124,8 +141,9 @@ const LoginPage = ({ csrfToken }) => {
               width={'full'}
               borderRadius="0"
               variant={'solid'}
+              color={useColorModeValue('white', 'black')}
               bgColor={useColorModeValue('primaryGreen', 'primaryOrange')}
-              onClick={handleLogin}
+              isLoading={isSubmitting}
             >
               Login
             </Button>
