@@ -19,6 +19,7 @@ import {
   ChevronDownIcon,
   ChevronRightIcon
 } from '@chakra-ui/icons';
+import Section from 'components/section/Section';
 
 const Navbar = ({ path }) => {
   const { isOpen, onToggle } = useDisclosure();
@@ -74,8 +75,8 @@ const DesktopNav = () => {
 
   return (
     <Stack direction={'row'} spacing={4}>
-      {NAV_ITEMS.map(navItem => (
-        <Box key={navItem.label}>
+      {NAV_ITEMS.map((navItem, i) => (
+        <Section key={navItem.label} delay={(i + 1) * 0.2}>
           <Popover trigger={'hover'} placement={'bottom-start'}>
             <PopoverTrigger>
               <Link
@@ -110,7 +111,7 @@ const DesktopNav = () => {
               </PopoverContent>
             )}
           </Popover>
-        </Box>
+        </Section>
       ))}
     </Stack>
   );

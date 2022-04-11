@@ -17,13 +17,23 @@ export default function HomePage() {
       <GridItem colSpan={{ base: 3, md: 2 }}>
         <PostContainer>
           <Section delay={0.1}>
-            <Heading as="h1">Tài liệu tổng hợp</Heading>
-            <PostItem id={1} />
-            <PostItem id={2} />
-            <PostItem id={3} />
-            <PostItem id={4} />
-            <Pagination />
+            <Heading as="h2" fontSize={'30'}>
+              Tài liệu tổng hợp
+            </Heading>
           </Section>
+          <Section delay={0.2}>
+            <PostItem id={1} />
+          </Section>
+          <Section delay={0.3}>
+            <PostItem id={2} />
+          </Section>
+          <Section delay={0.4}>
+            <PostItem id={3} />
+          </Section>
+          <Section delay={0.5}>
+            <PostItem id={4} />
+          </Section>
+          <Pagination />
         </PostContainer>
       </GridItem>
       <GridItem
@@ -32,7 +42,9 @@ export default function HomePage() {
         position="sticky"
         top={180}
       >
-        <Heading as="h1">Tài liệu mới nhất</Heading>
+        <Heading as="h1" fontSize={'30'}>
+          Tài liệu mới nhất
+        </Heading>
         <VPostItem id={1} />
         <VPostItem id={2} />
         <VPostItem id={3} />

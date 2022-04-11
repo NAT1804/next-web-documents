@@ -13,7 +13,9 @@ const PostDetailPage = () => {
         <PostDetail id={id} file="/pdf/Document.pdf" />
       </GridItem>
       <GridItem colSpan={{ base: 3, md: 1 }}>
-        <Heading as="h1">Tài liệu mới nhất</Heading>
+        <Heading as="h1" fontSize={'30'}>
+          Tài liệu mới nhất
+        </Heading>
         <VPostItem id={1} />
         <VPostItem id={2} />
         <VPostItem id={3} />
