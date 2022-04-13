@@ -10,7 +10,7 @@ import { Box, chakra, shouldForwardProp } from '@chakra-ui/react';
 
 const StyledDiv = motion(Box);
 
-const Section = ({ children, delay = 0 }) => {
+const Section = ({ children, delay = 0, x = 0, y = 0 }) => {
   const transition = {
     duration: 1,
     delay
@@ -18,8 +18,9 @@ const Section = ({ children, delay = 0 }) => {
 
   return (
     <StyledDiv
-      initial={{ y: 0, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      initial={{ x, y, opacity: 0 }}
+      animate={{ x: 0, y: 0, opacity: 1 }}
+      exit={{ x, y, opacity: 0 }}
       transition={transition}
       mb={6}
     >

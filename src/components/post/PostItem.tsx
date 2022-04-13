@@ -15,6 +15,7 @@ import {
   Wrap,
   WrapItem
 } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 
 interface IPostTags {
   tags: Array<string>;

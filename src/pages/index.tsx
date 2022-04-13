@@ -1,6 +1,6 @@
 import { Box, Grid, GridItem, Heading } from '@chakra-ui/react';
+import ListVPost from 'components/post/ListVPost';
 import { useSession } from 'next-auth/react';
-// import { getSession } from 'next-auth/react';
 
 import {
   PostItem,
@@ -9,6 +9,8 @@ import {
   PostContainer,
   Section
 } from '../components';
+
+const listPostItem = [1, 2, 3, 4, 5];
 
 export default function HomePage() {
   // const { data: session, status } = useSession();
@@ -21,18 +23,11 @@ export default function HomePage() {
               Tài liệu tổng hợp
             </Heading>
           </Section>
-          <Section delay={0.2}>
-            <PostItem id={1} />
-          </Section>
-          <Section delay={0.3}>
-            <PostItem id={2} />
-          </Section>
-          <Section delay={0.4}>
-            <PostItem id={3} />
-          </Section>
-          <Section delay={0.5}>
-            <PostItem id={4} />
-          </Section>
+          {listPostItem.map((post, i) => (
+            <Section key={i} delay={(i + 1) * 0.1 + 0.1} x={(i + 1) * -100}>
+              <PostItem id={post} />
+            </Section>
+          ))}
           <Pagination />
         </PostContainer>
       </GridItem>
@@ -42,13 +37,7 @@ export default function HomePage() {
         position="sticky"
         top={180}
       >
-        <Heading as="h1" fontSize={'30'}>
-          Tài liệu mới nhất
-        </Heading>
-        <VPostItem id={1} />
-        <VPostItem id={2} />
-        <VPostItem id={3} />
-        <VPostItem id={4} />
+        <ListVPost />
       </GridItem>
     </Grid>
   );
