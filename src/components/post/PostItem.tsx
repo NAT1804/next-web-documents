@@ -104,7 +104,7 @@ export const VPostItem = ({ id }) => {
   );
 };
 
-export const PostItem = ({ id }) => {
+export const PostItem = ({ post }) => {
   return (
     <>
       <Box
@@ -126,7 +126,7 @@ export const PostItem = ({ id }) => {
             justifyContent="space-evenly"
           >
             <PostTags tags={['Đại học Công Nghệ']} />
-            <NextLink href={`/post/${id}`} passHref>
+            <NextLink href={`/post/${post.id}`} passHref>
               <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
                 <Image
                   borderRadius="lg"
@@ -163,10 +163,9 @@ export const PostItem = ({ id }) => {
           marginTop={{ base: '3', sm: '0' }}
         >
           <Heading fontSize={'2xl'} marginTop="1">
-            <NextLink href={`/post/${id}`} passHref>
+            <NextLink href={`/post/${post.id}`} passHref>
               <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
-                Đề thi Điện Quang, Vật lý đại cương 2 giữa kỳ 1 năm học
-                2021-2022 - UET
+                {post.title}
               </Link>
             </NextLink>
           </Heading>
@@ -181,10 +180,7 @@ export const PostItem = ({ id }) => {
             color={useColorModeValue('gray.700', 'gray.200')}
             fontSize="lg"
           >
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry&apos;s standard dummy
-            text ever since the 1500s, when an unknown printer took a galley of
-            type and scrambled it to make a type specimen book.
+            {post.description}
           </Text>
         </Box>
       </Box>

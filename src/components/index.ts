@@ -10,3 +10,5 @@ export { default as PreviewPdf } from './preview-pdf/PreviewPdf';
 export { default as ToggleButton } from './toggle-button/ToggleButton';
 export { default as Section } from './section/Section';
 export { default as PostDetail } from './post/PostDetail';
+export { default as ListVPost } from './post/ListVPost';
+export { default as BreadcrumbElement } from './breadcrumb/Breadcrumb';

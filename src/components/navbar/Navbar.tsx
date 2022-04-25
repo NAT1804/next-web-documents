@@ -53,7 +53,7 @@ const Navbar = ({ path }) => {
           />
         </Flex>
         <Flex justify={{ base: 'center', md: 'start' }}>
-          <Flex display={{ base: 'none', md: 'flex' }} ml={5}>
+          <Flex display={{ base: 'none', md: 'flex' }}>
             <DesktopNav />
           </Flex>
         </Flex>

@@ -19,7 +19,7 @@ import {
   ChevronRightIcon
 } from '@chakra-ui/icons';
 
-const Pagination = () => {
+const Pagination = ({ links, meta }) => {
   return (
     <Flex justify="space-between" align="center" m={4}>
       <Flex>

@@ -52,10 +52,7 @@ const RegisterPage = () => {
   const [error, setError] = useState(null);
 
   const onSubmit = async (values: any) => {
-    const res = await api.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
-      values
-    );
+    const res = await api.post(`/api/auth/register`, values);
 
     login(res.data, values.password);
   };

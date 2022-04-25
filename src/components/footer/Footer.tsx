@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -8,6 +8,8 @@ import {
   Text,
   useColorModeValue
 } from '@chakra-ui/react';
+import { useInView } from 'react-intersection-observer';
+import { useAnimation, motion } from 'framer-motion';
 
 import Logo from '../logo/Logo';
 
@@ -19,12 +21,41 @@ const ListHeader = ({ children }: { children: ReactNode }) => {
   );
 };
 
+const MotionBox = motion(Box);
+
+const footerVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 2
+    }
+  }
+};
+
 const Footer = () => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView();
+
+  useEffect(() => {
+    if (inView) {
+      controls.start('visible');
+    }
+  }, [controls, inView]);
+
   return (
-    <Box
+    <MotionBox
+      ref={ref}
       bg={useColorModeValue('gray.50', 'gray.900')}
       color={useColorModeValue('gray.700', 'gray.200')}
       pt={8}
+      variants={footerVariants}
+      animate={controls}
+      initials="hidden"
     >
       <Container as={Stack} maxW={'5xl'} py={10}>
         <SimpleGrid
@@ -80,7 +111,7 @@ const Footer = () => {
           </Stack>
         </SimpleGrid>
       </Container>
-    </Box>
+    </MotionBox>
   );
 };
 
