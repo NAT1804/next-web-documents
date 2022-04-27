@@ -1,12 +1,28 @@
-import { Heading } from '@chakra-ui/react';
+import { Heading, Spinner } from '@chakra-ui/react';
 import React from 'react';
 
 import Section from 'components/section/Section';
 import { VPostItem } from './PostItem';
-
-const listVPostItem = [1, 2, 3, 4, 5];
+import { usePosts } from 'hooks';
 
 const ListVPost = () => {
+  const { posts, isLoading, isError } = usePosts();
+
+  if (isLoading)
+    return (
+      <>
+        <Spinner size="xl" />
+      </>
+    );
+
+  if (isError) {
+    return (
+      <>
+        <div>Has Error</div>
+      </>
+    );
+  }
+
   return (
     <>
       <Section delay={0.1}>
@@ -14,9 +30,9 @@ const ListVPost = () => {
           Tài liệu mới nhất
         </Heading>
       </Section>
-      {listVPostItem.map((vpost, i) => (
+      {posts.data.reverse().map((vpost, i) => (
         <Section key={i} delay={0.2} x={(i + 1) * 100}>
-          <VPostItem id={vpost} />
+          <VPostItem post={vpost} />
         </Section>
       ))}
     </>

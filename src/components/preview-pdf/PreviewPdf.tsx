@@ -49,7 +49,7 @@ const Pdf = ({ file }) => {
       justify={'space-between'}
       position={'relative'}
     >
-      <ControlPanelPdf
+      {/* <ControlPanelPdf
         scale={scale}
         setScale={setScale}
         setRotate={setRotate}
@@ -58,8 +58,16 @@ const Pdf = ({ file }) => {
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}
         file={file}
-      />
-      <Document
+      /> */}
+      <iframe
+        src={file}
+        width="100%"
+        height="600"
+        scrolling="yes"
+        frameBorder="1"
+        allow="autoplay"
+      ></iframe>
+      {/* <Document
         className="document-pdf"
         loading="Please wait!!"
         file={file}
@@ -79,7 +87,7 @@ const Pdf = ({ file }) => {
             rotate={rotate}
           />
         </motion.div>
-      </Document>
+      </Document> */}
     </Flex>
   );
 };

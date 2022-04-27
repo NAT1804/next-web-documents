@@ -13,7 +13,7 @@ const Layout = ({ children, router }) => {
         <title>Web Document</title>
       </Head>
       <Header path={router.asPath} />
-      <Container maxW="container.lg" pt="180">
+      <Container maxW="container.lg" pt="190">
         {children}
       </Container>
       <Footer />

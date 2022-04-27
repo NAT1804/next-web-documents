@@ -1,3 +1,4 @@
+import NextLink from 'next/link';
 import {
   Box,
   Flex,
@@ -11,7 +12,8 @@ import {
   PopoverTrigger,
   PopoverContent,
   useColorModeValue,
-  useDisclosure
+  useDisclosure,
+  Spinner
 } from '@chakra-ui/react';
 import {
   HamburgerIcon,
@@ -19,10 +21,137 @@ import {
   ChevronDownIcon,
   ChevronRightIcon
 } from '@chakra-ui/icons';
+
 import Section from 'components/section/Section';
+import { usePostType } from '../../hooks';
+
+interface NavItem {
+  id?: number;
+  label: string;
+  subLabel?: string;
+  children?: Array<NavItem>;
+  href?: string;
+}
+
+// const navItems: Array<NavItem> = [
+//   {
+//     label: 'Tài liệu chung',
+//     children: [
+//       {
+//         label: 'Giáo trình chung',
+//         subLabel: 'Tổng hợp giáo trình của VNU',
+//         href: '#'
+//       },
+//       {
+//         label: 'Tiếng Anh VSTEP',
+//         subLabel: 'Tổng hợp đề thi VSTEP',
+//         href: '#'
+//       },
+//       {
+//         label: 'Đề cương chung',
+//         subLabel: 'Tổng hợp đề cương chung VNU',
+//         href: '#'
+//       }
+//     ]
+//   },
+//   {
+//     label: 'Các trường',
+//     children: [
+//       {
+//         label: 'Đại Học KHTN',
+//         subLabel: 'Tổng hợp đề thi, giáo trình KHTN',
+//         href: '#'
+//       },
+//       {
+//         label: 'Đại học KHXHNV',
+//         subLabel: 'Tổng hợp đề thi, giáo trình KHXHNV',
+//         href: '#'
+//       },
+//       {
+//         label: 'Đại học Ngoại Ngữ',
+//         subLabel: 'Tổng hợp đề thi, giáo trình NN',
+//         href: '#'
+//       },
+//       {
+//         label: 'Đại học Kinh Tế',
+//         subLabel: 'Tổng hợp đề thi, giáo trình KT',
+//         href: '#'
+//       },
+//       {
+//         label: 'Đại học Công Nghệ',
+//         subLabel: 'Tổng hợp đề thi, giáo trình CN',
+//         href: '#'
+//       },
+//       {
+//         label: 'Đại học Giáo dục',
+//         subLabel: 'Tổng hợp đề thi, giáo trình GD',
+//         href: '#'
+//       },
+//       {
+//         label: 'Đại học Y dược',
+//         subLabel: 'Tổng hợp đề thi, giáo trình YD',
+//         href: '#'
+//       },
+//       {
+//         label: 'Khoa Luật',
+//         subLabel: 'Tổng hợp đề thi, giáo trình KL',
+//         href: '#'
+//       },
+//       {
+//         label: 'Khoa Quốc tế',
+//         subLabel: 'Tổng hợp đề thi, giáo trình KQT',
+//         href: '#'
+//       },
+//       {
+//         label: 'Khoa QTKD',
+//         subLabel: 'Tổng hợp đề thi, giáo trình QTGD',
+//         href: '#'
+//       }
+//     ]
+//   },
+//   {
+//     label: 'Đề thi đại học',
+//     children: [
+//       {
+//         label: 'Đề thi đánh giá năng lực',
+//         href: '#'
+//       }
+//     ]
+//   },
+//   {
+//     label: 'Đề thi chuyên THPT',
+//     href: '#'
+//   }
+// ];
 
 const Navbar = ({ path }) => {
   const { isOpen, onToggle } = useDisclosure();
+
+  const { postType, isLoading, isError } = usePostType();
+  const borderColor = useColorModeValue('gray.200', 'gray.900');
+
+  if (isLoading) {
+    return (
+      <>
+        <Spinner size={'xl'} />
+      </>
+    );
+  }
+
+  if (isError) {
+    return <>Has Error</>;
+  }
+
+  const navItems: Array<NavItem> = postType.data.map(type => ({
+    id: type.id,
+    label: type.name,
+    href: `/posts/type/${type.slug}`,
+    children: type.children.map(child => ({
+      id: child.id,
+      label: child.name,
+      href: `/posts/type/${child.slug}`
+    }))
+  }));
 
   return (
     <Box zIndex="2">
@@ -33,7 +162,7 @@ const Navbar = ({ path }) => {
         // px={{ base: 4 }}
         borderBottom={1}
         borderStyle={'solid'}
-        borderColor={useColorModeValue('gray.200', 'gray.900')}
+        borderColor={borderColor}
         align={'center'}
         justify={'flex-start'}
       >
@@ -54,13 +183,13 @@ const Navbar = ({ path }) => {
         </Flex>
         <Flex justify={{ base: 'center', md: 'start' }}>
           <Flex display={{ base: 'none', md: 'flex' }}>
-            <DesktopNav />
+            <DesktopNav navItems={navItems} />
           </Flex>
         </Flex>
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav />
+        <MobileNav navItems={navItems} />
       </Collapse>
     </Box>
   );
@@ -68,33 +197,35 @@ const Navbar = ({ path }) => {
 
 export default Navbar;
 
-const DesktopNav = () => {
+const DesktopNav = ({ navItems }) => {
   const linkColor = useColorModeValue('gray.600', 'gray.200');
   const linkHoverColor = useColorModeValue('gray.800', 'white');
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
 
   return (
     <Stack direction={'row'} spacing={4}>
-      {NAV_ITEMS.map((navItem, i) => (
+      {navItems.map((navItem, i) => (
         <Section key={navItem.label} delay={(i + 1) * 0.2}>
           <Popover trigger={'hover'} placement={'bottom-start'}>
-            <PopoverTrigger>
-              <Link
-                p={2}
-                href={navItem.href ?? '#'}
-                fontSize={'lg'}
-                fontWeight={500}
-                color={linkColor}
-                _hover={{
-                  textDecoration: 'none',
-                  color: linkHoverColor
-                }}
-              >
-                {navItem.label}
-              </Link>
-            </PopoverTrigger>
+            <NextLink href={navItem.href ?? '#'} passHref>
+              <PopoverTrigger>
+                <Link
+                  p={2}
+                  // href={navItem.href ?? '#'}
+                  fontSize={'lg'}
+                  fontWeight={500}
+                  color={linkColor}
+                  _hover={{
+                    textDecoration: 'none',
+                    color: linkHoverColor
+                  }}
+                >
+                  {navItem.label}
+                </Link>
+              </PopoverTrigger>
+            </NextLink>
 
-            {navItem.children && (
+            {navItem.children.length > 0 ? (
               <PopoverContent
                 border={0}
                 boxShadow={'xl'}
@@ -109,7 +240,7 @@ const DesktopNav = () => {
                   ))}
                 </Stack>
               </PopoverContent>
-            )}
+            ) : undefined}
           </Popover>
         </Section>
       ))}
@@ -119,56 +250,58 @@ const DesktopNav = () => {
 
 const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
   return (
-    <Link
-      href={href}
-      role={'group'}
-      display={'block'}
-      p={2}
-      rounded={'md'}
-      _hover={{ bg: useColorModeValue('pink.50', 'gray.900') }}
-    >
-      <Stack direction={'row'} align={'center'}>
-        <Box>
-          <Text
+    <NextLink href={href} passHref>
+      <Link
+        href={href}
+        role={'group'}
+        display={'block'}
+        p={2}
+        rounded={'md'}
+        _hover={{ bg: useColorModeValue('pink.50', 'gray.900') }}
+      >
+        <Stack direction={'row'} align={'center'}>
+          <Box>
+            <Text
+              transition={'all .3s ease'}
+              _groupHover={{
+                color: useColorModeValue('primaryOrange', 'primaryGreen')
+              }}
+              fontWeight={500}
+            >
+              {label}
+            </Text>
+            <Text fontSize={'sm'}>{subLabel}</Text>
+          </Box>
+          <Flex
             transition={'all .3s ease'}
-            _groupHover={{
-              color: useColorModeValue('primaryOrange', 'primaryGreen')
-            }}
-            fontWeight={500}
+            transform={'translateX(-10px)'}
+            opacity={0}
+            _groupHover={{ opacity: '100%', transform: 'translateX(0)' }}
+            justify={'flex-end'}
+            align={'center'}
+            flex={1}
           >
-            {label}
-          </Text>
-          <Text fontSize={'sm'}>{subLabel}</Text>
-        </Box>
-        <Flex
-          transition={'all .3s ease'}
-          transform={'translateX(-10px)'}
-          opacity={0}
-          _groupHover={{ opacity: '100%', transform: 'translateX(0)' }}
-          justify={'flex-end'}
-          align={'center'}
-          flex={1}
-        >
-          <Icon
-            color={useColorModeValue('primaryOrange', 'primaryGreen')}
-            w={5}
-            h={5}
-            as={ChevronRightIcon}
-          />
-        </Flex>
-      </Stack>
-    </Link>
+            <Icon
+              color={useColorModeValue('primaryOrange', 'primaryGreen')}
+              w={5}
+              h={5}
+              as={ChevronRightIcon}
+            />
+          </Flex>
+        </Stack>
+      </Link>
+    </NextLink>
   );
 };
 
-const MobileNav = () => {
+const MobileNav = ({ navItems }) => {
   return (
     <Stack
       bg={useColorModeValue('white', 'gray.800')}
       p={4}
       display={{ md: 'none' }}
     >
-      {NAV_ITEMS.map(navItem => (
+      {navItems.map(navItem => (
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
     </Stack>
@@ -180,32 +313,34 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
 
   return (
     <Stack spacing={4} onClick={children && onToggle}>
-      <Flex
-        py={2}
-        as={Link}
-        href={href ?? '#'}
-        justify={'space-between'}
-        align={'center'}
-        _hover={{
-          textDecoration: 'none'
-        }}
-      >
-        <Text
-          fontWeight={600}
-          color={useColorModeValue('gray.600', 'gray.200')}
+      <NextLink href={href ?? '#'} passHref>
+        <Flex
+          py={2}
+          as={Link}
+          href={href ?? '#'}
+          justify={'space-between'}
+          align={'center'}
+          _hover={{
+            textDecoration: 'none'
+          }}
         >
-          {label}
-        </Text>
-        {children && (
-          <Icon
-            as={ChevronDownIcon}
-            transition={'all .25s ease-in-out'}
-            transform={isOpen ? 'rotate(180deg)' : ''}
-            w={6}
-            h={6}
-          />
-        )}
-      </Flex>
+          <Text
+            fontWeight={600}
+            color={useColorModeValue('gray.600', 'gray.200')}
+          >
+            {label}
+          </Text>
+          {children && (
+            <Icon
+              as={ChevronDownIcon}
+              transition={'all .25s ease-in-out'}
+              transform={isOpen ? 'rotate(180deg)' : ''}
+              w={6}
+              h={6}
+            />
+          )}
+        </Flex>
+      </NextLink>
 
       <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
         <Stack
@@ -218,110 +353,14 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
         >
           {children &&
             children.map(child => (
-              <Link key={child.label} py={2} href={child.href}>
-                {child.label}
-              </Link>
+              <NextLink key={child.label} href={child.href} passHref>
+                <Link py={2} href={child.href}>
+                  {child.label}
+                </Link>
+              </NextLink>
             ))}
         </Stack>
       </Collapse>
     </Stack>
   );
 };
-
-interface NavItem {
-  label: string;
-  subLabel?: string;
-  children?: Array<NavItem>;
-  href?: string;
-}
-
-const NAV_ITEMS: Array<NavItem> = [
-  {
-    label: 'Tài liệu chung',
-    children: [
-      {
-        label: 'Giáo trình chung',
-        subLabel: 'Tổng hợp giáo trình của VNU',
-        href: '#'
-      },
-      {
-        label: 'Tiếng Anh VSTEP',
-        subLabel: 'Tổng hợp đề thi VSTEP',
-        href: '#'
-      },
-      {
-        label: 'Đề cương chung',
-        subLabel: 'Tổng hợp đề cương chung VNU',
-        href: '#'
-      }
-    ]
-  },
-  {
-    label: 'Các trường',
-    children: [
-      {
-        label: 'Đại Học KHTN',
-        subLabel: 'Tổng hợp đề thi, giáo trình KHTN',
-        href: '#'
-      },
-      {
-        label: 'Đại học KHXHNV',
-        subLabel: 'Tổng hợp đề thi, giáo trình KHXHNV',
-        href: '#'
-      },
-      {
-        label: 'Đại học Ngoại Ngữ',
-        subLabel: 'Tổng hợp đề thi, giáo trình NN',
-        href: '#'
-      },
-      {
-        label: 'Đại học Kinh Tế',
-        subLabel: 'Tổng hợp đề thi, giáo trình KT',
-        href: '#'
-      },
-      {
-        label: 'Đại học Công Nghệ',
-        subLabel: 'Tổng hợp đề thi, giáo trình CN',
-        href: '#'
-      },
-      {
-        label: 'Đại học Giáo dục',
-        subLabel: 'Tổng hợp đề thi, giáo trình GD',
-        href: '#'
-      },
-      {
-        label: 'Đại học Y dược',
-        subLabel: 'Tổng hợp đề thi, giáo trình YD',
-        href: '#'
-      },
-      {
-        label: 'Khoa Luật',
-        subLabel: 'Tổng hợp đề thi, giáo trình KL',
-        href: '#'
-      },
-      {
-        label: 'Khoa Quốc tế',
-        subLabel: 'Tổng hợp đề thi, giáo trình KQT',
-        href: '#'
-      },
-      {
-        label: 'Khoa QTKD',
-        subLabel: 'Tổng hợp đề thi, giáo trình QTGD',
-        href: '#'
-      }
-    ]
-  },
-  {
-    label: 'Đề thi đại học',
-    children: [
-      {
-        label: 'Đề thi đánh giá năng lực',
-        href: '#'
-      }
-    ]
-  },
-  {
-    label: 'Đề thi chuyên THPT',
-    href: '#'
-  }
-];

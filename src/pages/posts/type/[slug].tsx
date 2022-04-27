@@ -1,46 +1,41 @@
+import React, { useEffect } from 'react';
 import { Box, Grid, GridItem, Heading, Spinner } from '@chakra-ui/react';
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import useSWR from 'swr';
+import { useRouter } from 'next/router';
 
 import {
-  PostItem,
-  VPostItem,
-  Pagination,
+  PostDetail,
+  BreadcrumbElement,
+  ListVPost,
   PostContainer,
   Section,
-  BreadcrumbElement,
-  ListVPost
-} from '../components';
-import { usePosts } from '../hooks';
+  Pagination,
+  PostItem
+} from '../../../components';
+import { usePostsByType } from 'hooks';
 
-export default function HomePage() {
-  const { posts, isLoading, isError } = usePosts();
+const PostDetailPageByType = () => {
+  const param = useRouter();
+  const { slug } = param.query;
 
+  const { posts, isLoading, isError } = usePostsByType(slug);
+
+  if (isError) return <div>Failed to load</div>;
   if (isLoading)
     return (
       <>
-        <Spinner size="xl" />
+        <Spinner size={'xl'} />
       </>
     );
-
-  if (isError) {
-    return (
-      <>
-        <div>Failed to load</div>
-      </>
-    );
-  }
 
   return (
     <>
-      {/* <BreadcrumbElement /> */}
+      <BreadcrumbElement />
       <Grid templateColumns="repeat(3, 1fr)" gap={4}>
         <GridItem colSpan={{ base: 3, md: 2 }}>
           <PostContainer>
             <Section delay={0.1}>
               <Heading as="h2" fontSize={'30'}>
-                Tài liệu tổng hợp
+                {slug}
               </Heading>
             </Section>
             {posts.data.map((post, i) => (
@@ -62,4 +57,6 @@ export default function HomePage() {
       </Grid>
     </>
   );
-}
+};
+
+export default PostDetailPageByType;

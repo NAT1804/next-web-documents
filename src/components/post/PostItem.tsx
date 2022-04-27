@@ -44,7 +44,7 @@ export const PostDate: React.FC<IPostDateProps> = props => {
   return (
     <HStack marginTop="2" spacing="2" display="flex" alignItems="center">
       <CalendarIcon />
-      <Text>{props.date.toLocaleDateString()}</Text>
+      <Text>{props.date.toDateString()}</Text>
     </HStack>
   );
 };
@@ -62,7 +62,7 @@ export const PostComment: React.FC<IPostCommentProps> = props => {
   );
 };
 
-export const VPostItem = ({ id }) => {
+export const VPostItem = ({ post }) => {
   return (
     <Box w="100%" my={'4'}>
       <Flex
@@ -72,7 +72,7 @@ export const VPostItem = ({ id }) => {
         borderRadius="lg"
         overflow="hidden"
       >
-        <NextLink href={`/post/${id}`} passHref>
+        <NextLink href={`/posts/${post.id}`} passHref>
           <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
             <Image
               transform="scale(1.0)"
@@ -88,17 +88,17 @@ export const VPostItem = ({ id }) => {
           </Link>
         </NextLink>
         <Heading fontSize="xl" marginTop="2">
-          <NextLink href={`/post/${id}`} passHref>
+          <NextLink href={`/posts/${post.id}`} passHref>
             <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
-              Sách và hành động tuyển GEN 16 - HYPE UP: NEW LEVEL
+              {post.title}
             </Link>
           </NextLink>
         </Heading>
       </Flex>
       <Flex w="100%">
-        <PostDate date={new Date()} />
+        <PostDate date={new Date(post.created_at)} />
         &nbsp;&nbsp;
-        <PostComment quantity={2} />
+        <PostComment quantity={post.comment.length} />
       </Flex>
     </Box>
   );
@@ -125,8 +125,8 @@ export const PostItem = ({ post }) => {
             flexDirection="column"
             justifyContent="space-evenly"
           >
-            <PostTags tags={['Đại học Công Nghệ']} />
-            <NextLink href={`/post/${post.id}`} passHref>
+            <PostTags tags={[`${post.post_type_id}`]} />
+            <NextLink href={`/posts/${post.id}`} passHref>
               <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
                 <Image
                   borderRadius="lg"
@@ -163,16 +163,16 @@ export const PostItem = ({ post }) => {
           marginTop={{ base: '3', sm: '0' }}
         >
           <Heading fontSize={'2xl'} marginTop="1">
-            <NextLink href={`/post/${post.id}`} passHref>
+            <NextLink href={`/posts/${post.id}`} passHref>
               <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
                 {post.title}
               </Link>
             </NextLink>
           </Heading>
           <Flex w="100%">
-            <PostDate date={new Date()} />
+            <PostDate date={new Date(post.created_at)} />
             &nbsp;&nbsp;
-            <PostComment quantity={2} />
+            <PostComment quantity={post.comment.length} />
           </Flex>
           <Text
             as="p"
