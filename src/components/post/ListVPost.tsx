@@ -6,7 +6,7 @@ import { VPostItem } from './PostItem';
 import { usePosts } from 'hooks';
 
 const ListVPost = () => {
-  const { posts, isLoading, isError } = usePosts();
+  const { posts, isLoading, isError } = usePosts(1);
 
   if (isLoading)
     return (

@@ -48,6 +48,7 @@ const Pdf = ({ file }) => {
       alignItems={'center'}
       justify={'space-between'}
       position={'relative'}
+      my={5}
     >
       {/* <ControlPanelPdf
         scale={scale}

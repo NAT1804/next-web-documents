@@ -19,7 +19,11 @@ import {
   ChevronRightIcon
 } from '@chakra-ui/icons';
 
-const Pagination = ({ links, meta }) => {
+const Pagination = ({ links, meta, setPage }) => {
+  const onChangePage = page => {
+    setPage(page);
+  };
+
   return (
     <Flex justify="space-between" align="center" m={4}>
       <Flex>
@@ -28,6 +32,7 @@ const Pagination = ({ links, meta }) => {
             icon={<ArrowLeftIcon h={3} w={3} />}
             aria-label={'Trang đầu tiên'}
             mx={2}
+            onClick={() => onChangePage(1)}
           />
         </Tooltip>
         <Tooltip label="Trang trước">
@@ -35,6 +40,7 @@ const Pagination = ({ links, meta }) => {
             icon={<ChevronLeftIcon h={6} w={6} />}
             aria-label={'Trang trước'}
             mx={2}
+            onClick={() => onChangePage(meta.current_page - 1)}
           />
         </Tooltip>
       </Flex>
@@ -42,13 +48,11 @@ const Pagination = ({ links, meta }) => {
         <Text flexShrink="0" mr={8}>
           Page{' '}
           <Text fontWeight="bold" as="span">
-            {/* {pageIndex + 1} */}
-            {1}
+            {meta.current_page}
           </Text>{' '}
           of{' '}
           <Text fontWeight="bold" as="span">
-            {/* {pageOptions.length} */}
-            {5}
+            {meta.last_page}
           </Text>
         </Text>
         <Box display={{ base: 'none', md: 'flex' }} alignItems="center">
@@ -58,13 +62,9 @@ const Pagination = ({ links, meta }) => {
             mr={8}
             w={28}
             min={1}
-            value={1}
-            // max={pageOptions.length}
-            // onChange={(value) => {
-            //   const page = value ? value - 1 : 0;
-            //   gotoPage(page);
-            // }}
-            // defaultValue={pageIndex + 1}
+            value={meta.current_page}
+            max={meta.last_page}
+            onChange={page => onChangePage(page)}
           >
             <NumberInputField />
             <NumberInputStepper>
@@ -80,6 +80,7 @@ const Pagination = ({ links, meta }) => {
             icon={<ChevronRightIcon h={6} w={6} />}
             aria-label={'Trang sau'}
             mx={2}
+            onClick={() => onChangePage(meta.current_page + 1)}
           />
         </Tooltip>
         <Tooltip label="Trang cuối cùng">
@@ -87,6 +88,7 @@ const Pagination = ({ links, meta }) => {
             icon={<ArrowRightIcon h={3} w={3} />}
             aria-label={'Trang cuối cùng'}
             mx={2}
+            onClick={() => onChangePage(meta.last_page)}
           />
         </Tooltip>
       </Flex>

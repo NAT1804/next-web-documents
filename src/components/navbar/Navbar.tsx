@@ -204,17 +204,18 @@ const DesktopNav = ({ navItems }) => {
 
   return (
     <Stack direction={'row'} spacing={4}>
-      {navItems.map((navItem, i) => (
-        <Section key={navItem.label} delay={(i + 1) * 0.2}>
-          <Popover trigger={'hover'} placement={'bottom-start'}>
-            <NextLink href={navItem.href ?? '#'} passHref>
-              <PopoverTrigger>
+      {navItems.map((navItem, i) => {
+        console.log('nav item', navItem.label);
+        return (
+          <Section key={navItem.label} delay={(i + 1) * 0.2}>
+            <Popover trigger="hover" placement={'bottom'}>
+              <NextLink href={navItem.href ?? '#'} passHref>
                 <Link
                   p={2}
-                  // href={navItem.href ?? '#'}
                   fontSize={'lg'}
                   fontWeight={500}
                   color={linkColor}
+                  href={navItem.href ?? '#'}
                   _hover={{
                     textDecoration: 'none',
                     color: linkHoverColor
@@ -222,28 +223,41 @@ const DesktopNav = ({ navItems }) => {
                 >
                   {navItem.label}
                 </Link>
-              </PopoverTrigger>
-            </NextLink>
+              </NextLink>
 
-            {navItem.children.length > 0 ? (
-              <PopoverContent
-                border={0}
-                boxShadow={'xl'}
-                bg={popoverContentBgColor}
-                p={4}
-                rounded={'xl'}
-                minW={'sm'}
-              >
-                <Stack>
-                  {navItem.children.map(child => (
-                    <DesktopSubNav key={child.label} {...child} />
-                  ))}
-                </Stack>
-              </PopoverContent>
-            ) : undefined}
-          </Popover>
-        </Section>
-      ))}
+              {navItem.children.length > 0 ? (
+                <>
+                  <PopoverTrigger>
+                    <Icon
+                      as={ChevronDownIcon}
+                      _hover={{
+                        transition: 'all .25s ease-in-out',
+                        transform: 'rotate(180deg)'
+                      }}
+                      w={6}
+                      h={6}
+                    />
+                  </PopoverTrigger>
+                  <PopoverContent
+                    border={0}
+                    boxShadow={'xl'}
+                    bg={popoverContentBgColor}
+                    p={4}
+                    rounded={'xl'}
+                    minW={'sm'}
+                  >
+                    <Stack>
+                      {navItem.children.map(child => (
+                        <DesktopSubNav key={child.label} {...child} />
+                      ))}
+                    </Stack>
+                  </PopoverContent>
+                </>
+              ) : undefined}
+            </Popover>
+          </Section>
+        );
+      })}
     </Stack>
   );
 };
@@ -252,7 +266,6 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
   return (
     <NextLink href={href} passHref>
       <Link
-        href={href}
         role={'group'}
         display={'block'}
         p={2}
@@ -312,35 +325,35 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
   const { isOpen, onToggle } = useDisclosure();
 
   return (
-    <Stack spacing={4} onClick={children && onToggle}>
-      <NextLink href={href ?? '#'} passHref>
-        <Flex
-          py={2}
-          as={Link}
-          href={href ?? '#'}
-          justify={'space-between'}
-          align={'center'}
-          _hover={{
-            textDecoration: 'none'
-          }}
-        >
+    <Stack spacing={4}>
+      <Flex
+        py={2}
+        as={Link}
+        justify={'space-between'}
+        align={'center'}
+        _hover={{
+          textDecoration: 'none'
+        }}
+      >
+        <NextLink href={href ?? '#'} passHref>
           <Text
             fontWeight={600}
             color={useColorModeValue('gray.600', 'gray.200')}
           >
             {label}
           </Text>
-          {children && (
-            <Icon
-              as={ChevronDownIcon}
-              transition={'all .25s ease-in-out'}
-              transform={isOpen ? 'rotate(180deg)' : ''}
-              w={6}
-              h={6}
-            />
-          )}
-        </Flex>
-      </NextLink>
+        </NextLink>
+        {children.length ? (
+          <Icon
+            as={ChevronDownIcon}
+            transition={'all .25s ease-in-out'}
+            transform={isOpen ? 'rotate(180deg)' : ''}
+            w={6}
+            h={6}
+            onClick={children && onToggle}
+          />
+        ) : undefined}
+      </Flex>
 
       <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
         <Stack

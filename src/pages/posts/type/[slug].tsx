@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, GridItem, Heading, Spinner } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
@@ -12,12 +12,15 @@ import {
   PostItem
 } from '../../../components';
 import { usePostsByType } from 'hooks';
+import { IBreadcrumb } from 'types';
 
 const PostDetailPageByType = () => {
   const param = useRouter();
   const { slug } = param.query;
 
-  const { posts, isLoading, isError } = usePostsByType(slug);
+  const breadcrumb: IBreadcrumb[] = [];
+  const [page, setPage] = useState(1);
+  const { posts, isLoading, isError } = usePostsByType(slug, page);
 
   if (isError) return <div>Failed to load</div>;
   if (isLoading)
@@ -27,9 +30,20 @@ const PostDetailPageByType = () => {
       </>
     );
 
+  if (!isError && !isLoading) {
+    breadcrumb.push({
+      name: 'Home',
+      href: `/`
+    });
+    breadcrumb.push({
+      name: `${slug}`,
+      href: `/posts/type/${slug}`
+    });
+  }
+
   return (
     <>
-      <BreadcrumbElement />
+      <BreadcrumbElement breadcrumb={breadcrumb} />
       <Grid templateColumns="repeat(3, 1fr)" gap={4}>
         <GridItem colSpan={{ base: 3, md: 2 }}>
           <PostContainer>
@@ -43,7 +57,11 @@ const PostDetailPageByType = () => {
                 <PostItem post={post} />
               </Section>
             ))}
-            <Pagination links={posts.links} meta={posts.meta} />
+            <Pagination
+              links={posts.links}
+              meta={posts.meta}
+              setPage={setPage}
+            />
           </PostContainer>
         </GridItem>
         <GridItem

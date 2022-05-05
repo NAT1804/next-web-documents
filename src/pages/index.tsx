@@ -5,17 +5,16 @@ import useSWR from 'swr';
 
 import {
   PostItem,
-  VPostItem,
   Pagination,
   PostContainer,
   Section,
-  BreadcrumbElement,
   ListVPost
 } from '../components';
 import { usePosts } from '../hooks';
 
 export default function HomePage() {
-  const { posts, isLoading, isError } = usePosts();
+  const [page, setPage] = useState(1);
+  const { posts, isLoading, isError } = usePosts(page);
 
   if (isLoading)
     return (
@@ -34,7 +33,6 @@ export default function HomePage() {
 
   return (
     <>
-      {/* <BreadcrumbElement /> */}
       <Grid templateColumns="repeat(3, 1fr)" gap={4}>
         <GridItem colSpan={{ base: 3, md: 2 }}>
           <PostContainer>
@@ -48,7 +46,11 @@ export default function HomePage() {
                 <PostItem post={post} />
               </Section>
             ))}
-            <Pagination links={posts.links} meta={posts.meta} />
+            <Pagination
+              links={posts.links}
+              meta={posts.meta}
+              setPage={setPage}
+            />
           </PostContainer>
         </GridItem>
         <GridItem

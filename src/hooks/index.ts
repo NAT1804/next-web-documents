@@ -2,8 +2,8 @@ import useSWR from 'swr';
 
 import { fetcher } from 'api';
 
-export function usePosts() {
-  const { data, error } = useSWR(`api/posts`, fetcher);
+export function usePosts(page) {
+  const { data, error } = useSWR(`api/posts?page=${page}`, fetcher);
   return {
     posts: data,
     isLoading: !error && !data,
@@ -20,8 +20,11 @@ export function usePostById(idPost) {
   };
 }
 
-export function usePostsByType(idType) {
-  const { data, error } = useSWR(`api/posts?type=${idType}`, fetcher);
+export function usePostsByType(idType, page) {
+  const { data, error } = useSWR(
+    `api/posts?type=${idType}&page=${page}`,
+    fetcher
+  );
   return {
     posts: data,
     isLoading: !error && !data,

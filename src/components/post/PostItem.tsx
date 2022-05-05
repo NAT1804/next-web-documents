@@ -131,8 +131,8 @@ export const PostItem = ({ post }) => {
                 <Image
                   borderRadius="lg"
                   transform="scale(1.0)"
-                  src="logo-tailieu-vnu.png"
-                  alt="some good alt text"
+                  src="/logo-tailieu-vnu.png"
+                  alt="logo tailieu vnu"
                   objectFit="contain"
                   transition="0.3s ease-in-out"
                   _hover={{
