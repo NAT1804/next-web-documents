@@ -205,7 +205,6 @@ const DesktopNav = ({ navItems }) => {
   return (
     <Stack direction={'row'} spacing={4}>
       {navItems.map((navItem, i) => {
-        console.log('nav item', navItem.label);
         return (
           <Section key={navItem.label} delay={(i + 1) * 0.2}>
             <Popover trigger="hover" placement={'bottom'}>

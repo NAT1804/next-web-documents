@@ -1,21 +1,41 @@
 import React from 'react';
 import NextLink from 'next/link';
-import { CalendarIcon, ChatIcon } from '@chakra-ui/icons';
+import { CalendarIcon, ChatIcon, InfoIcon } from '@chakra-ui/icons';
 import {
   Box,
+  Button,
   Flex,
+  FormControl,
+  FormErrorMessage,
   Heading,
   HStack,
   Image,
+  Input,
+  InputGroup,
+  InputLeftElement,
   Link,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   SpaceProps,
   Tag,
   Text,
   useColorModeValue,
+  useDisclosure,
   Wrap,
   WrapItem
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+
+import api from 'api';
+import { signIn, useSession } from 'next-auth/react';
+import { MdReport, MdReportGmailerrorred } from 'react-icons/md';
+import { useForm } from 'react-hook-form';
 
 interface IPostTags {
   tags: Array<string>;
@@ -55,10 +75,257 @@ interface IPostCommentProps {
 
 export const PostComment: React.FC<IPostCommentProps> = props => {
   return (
-    <HStack marginTop="2" spacing="2" display="flex" alignItems="center">
+    <HStack
+      marginTop="2"
+      spacing="2"
+      display="flex"
+      alignItems="center"
+      cursor={'pointer'}
+    >
       <ChatIcon />
       <Text>{props.quantity}</Text>
     </HStack>
+  );
+};
+
+export const PostHeart = props => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: session } = useSession();
+  const handleLikePost = async () => {
+    const response = await api.post(`api/posts/${props.id}/like`);
+
+    if (response.data) {
+      console.log(response.data);
+    } else {
+      console.log('false');
+    }
+  };
+
+  return (
+    <HStack
+      marginTop="2"
+      spacing="2"
+      display="flex"
+      alignItems="center"
+      cursor={'pointer'}
+    >
+      {session ? (
+        props.likes.map(like => like.name).includes(session.user.name) ? (
+          <AiFillHeart size={18} color="red" onClick={handleLikePost} />
+        ) : (
+          <AiOutlineHeart size={18} onClick={handleLikePost} />
+        )
+      ) : (
+        <>
+          <AiOutlineHeart size={18} onClick={onOpen} />
+          <ModalLoginRequest
+            onClose={onClose}
+            isOpen={isOpen}
+            title="Yêu cầu đăng nhập"
+            body="Bạn cần đăng nhập để có thể thả tim bài viết này!"
+          />
+        </>
+      )}
+      <Text>{props.likes.length}</Text>
+    </HStack>
+  );
+};
+
+const ModalLoginRequest = ({ onClose, isOpen, title, body }) => {
+  return (
+    <Modal
+      isCentered
+      onClose={onClose}
+      isOpen={isOpen}
+      motionPreset="slideInBottom"
+    >
+      {/* <ModalOverlay /> */}
+      <ModalOverlay
+        bg="blackAlpha.300"
+        backdropFilter="blur(10px) hue-rotate(90deg)"
+      />
+      <ModalContent>
+        <ModalHeader>{title}</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Text>{body}</Text>
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={onClose}>
+            Close
+          </Button>
+          <NextLink href="/login" passHref>
+            <Button
+              onClick={e => {
+                e.preventDefault();
+                signIn();
+              }}
+              variant="ghost"
+            >
+              Sign In
+            </Button>
+          </NextLink>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
+
+const ModalReport = ({ id, onClose, isOpen, title }) => {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting }
+  } = useForm();
+
+  const handleReportPost = async (values: any) => {
+    const response = await api.post(`api/posts/${id}/report`, {
+      description: values.description
+    });
+
+    if (response.data) {
+      onClose();
+    } else {
+      console.log('Error');
+    }
+  };
+
+  return (
+    <Modal
+      isCentered
+      onClose={onClose}
+      isOpen={isOpen}
+      motionPreset="slideInBottom"
+    >
+      <ModalOverlay
+        bg="none"
+        backdropFilter="auto"
+        backdropInvert="80%"
+        backdropBlur="2px"
+      />
+      <form onSubmit={handleSubmit(handleReportPost)}>
+        <ModalContent>
+          <ModalHeader>{title}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl isInvalid={errors.description}>
+              <InputGroup>
+                <InputLeftElement pointerEvents={'none'}>
+                  <InfoIcon
+                    color={useColorModeValue('primaryGreen', 'primaryOrange')}
+                  />
+                </InputLeftElement>
+                <Input
+                  type={'text'}
+                  placeholder="Description"
+                  {...register('description', {
+                    required: 'This is required',
+                    maxLength: {
+                      value: 1000,
+                      message:
+                        'Description must not be greater than 1000 characters'
+                    }
+                  })}
+                />
+              </InputGroup>
+              <FormErrorMessage>
+                {errors.description && errors.description.message}
+              </FormErrorMessage>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button
+              type="submit"
+              variant="ghost"
+              isLoading={isSubmitting}
+              color={useColorModeValue('white', 'black')}
+              bgColor={useColorModeValue('primaryGreen', 'primaryOrange')}
+            >
+              Send
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </form>
+    </Modal>
+  );
+};
+
+export const PostReport = props => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: session } = useSession();
+
+  console.log(props.reports, session);
+
+  return (
+    <HStack
+      marginTop="2"
+      spacing="2"
+      display="flex"
+      alignItems="center"
+      cursor={'pointer'}
+    >
+      {session ? (
+        props.reports
+          .map(report => report.user_id)
+          .includes(session.user.id) ? (
+          <>
+            <MdReport size={18} color="red" onClick={onOpen} />
+            <ModalReport
+              onClose={onClose}
+              isOpen={isOpen}
+              id={`${props.id}`}
+              title="Báo cáo bài viết"
+            />
+          </>
+        ) : (
+          <>
+            <MdReportGmailerrorred size={18} onClick={onOpen} />
+            <ModalReport
+              onClose={onClose}
+              isOpen={isOpen}
+              id={`${props.id}`}
+              title="Báo cáo bài viết"
+            />
+          </>
+        )
+      ) : (
+        <>
+          <MdReportGmailerrorred
+            size={18}
+            onClick={() => {
+              onOpen();
+            }}
+          />
+          <ModalLoginRequest
+            onClose={onClose}
+            isOpen={isOpen}
+            title="Yêu cầu đăng nhập"
+            body="Bạn cần đăng nhập để có thể báo cáo bài viết này!"
+          />
+        </>
+      )}
+
+      <Text>{props.reports.length}</Text>
+    </HStack>
+  );
+};
+
+export const PostInteractive = props => {
+  return (
+    <Flex w="100%" my={3}>
+      {props.children}
+      &nbsp;&nbsp;
+      <PostDate date={props.date} />
+      &nbsp;&nbsp;
+      <PostComment quantity={props.quantity} />
+      &nbsp;&nbsp;
+      <PostHeart id={props.id} likes={props.likes} />
+      &nbsp;&nbsp;
+      <PostReport id={props.id} reports={props.reports} />
+    </Flex>
   );
 };
 
@@ -95,11 +362,13 @@ export const VPostItem = ({ post }) => {
           </NextLink>
         </Heading>
       </Flex>
-      <Flex w="100%">
-        <PostDate date={new Date(post.created_at)} />
-        &nbsp;&nbsp;
-        <PostComment quantity={post.comment.length} />
-      </Flex>
+      <PostInteractive
+        date={new Date(post.created_at)}
+        quantity={post.comment.length}
+        id={post.id}
+        likes={post.likes}
+        reports={post.reports}
+      />
     </Box>
   );
 };
@@ -169,11 +438,13 @@ export const PostItem = ({ post }) => {
               </Link>
             </NextLink>
           </Heading>
-          <Flex w="100%">
-            <PostDate date={new Date(post.created_at)} />
-            &nbsp;&nbsp;
-            <PostComment quantity={post.comment.length} />
-          </Flex>
+          <PostInteractive
+            date={new Date(post.created_at)}
+            quantity={post.comment.length}
+            id={post.id}
+            likes={post.likes}
+            reports={post.reports}
+          />
           <Text
             as="p"
             marginTop="2"

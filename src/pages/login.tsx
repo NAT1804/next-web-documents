@@ -37,6 +37,7 @@ const LoginPage = ({ csrfToken }) => {
   const handleShowPassword = () => setShowPassword(prevState => !prevState);
   const [error, setError] = useState(null);
   const router = useRouter();
+  const { callbackUrl } = router.query;
 
   const {
     handleSubmit,
@@ -49,7 +50,7 @@ const LoginPage = ({ csrfToken }) => {
       redirect: false,
       email: values.email,
       password: values.password,
-      callbackUrl: `${window.location.origin}`
+      callbackUrl: `${callbackUrl}`
     });
     if (res?.error) {
       setError(res.error);
