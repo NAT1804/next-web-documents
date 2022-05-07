@@ -11,6 +11,18 @@ export function usePosts(page) {
   };
 }
 
+export function usePostsByTitle(title, page: number) {
+  const { data, error } = useSWR(
+    `api/posts?title=${title}&page=${page}`,
+    fetcher
+  );
+  return {
+    posts: data,
+    isLoading: !error && !data,
+    isError: error
+  };
+}
+
 export function usePostById(idPost) {
   const { data, error } = useSWR(`api/posts/${idPost}`, fetcher);
   return {

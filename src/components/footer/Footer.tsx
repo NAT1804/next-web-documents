@@ -57,7 +57,7 @@ const Footer = () => {
       animate={controls}
       initials="hidden"
     >
-      <Container as={Stack} maxW={'5xl'} py={10}>
+      <Container as={Stack} maxW="container.xl" py={10}>
         <SimpleGrid
           templateColumns={{ sm: '1fr 1fr', md: '2fr 1fr 1fr 1fr 1fr' }}
           spacing={8}

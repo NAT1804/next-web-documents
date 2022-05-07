@@ -1,21 +1,24 @@
-import { Box, Grid, GridItem, Heading, Spinner } from '@chakra-ui/react';
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import useSWR from 'swr';
-
-import Searchbar from 'components/search-bar/Searchbar';
+import { Grid, GridItem, Heading, Spinner } from '@chakra-ui/react';
 import {
-  PostItem,
+  BreadcrumbElement,
+  ListVPost,
   Pagination,
   PostContainer,
-  Section,
-  ListVPost
-} from '../components';
-import { usePosts } from '../hooks';
+  PostItem,
+  Section
+} from 'components';
+import { usePostsByTitle } from 'hooks';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { IBreadcrumb } from 'types';
 
-export default function HomePage() {
+const SearchPage = () => {
+  const router = useRouter();
+  const { key } = router.query;
+  console.log('key', key);
   const [page, setPage] = useState(1);
-  const { posts, isLoading, isError } = usePosts(page);
+  const { posts, isLoading, isError } = usePostsByTitle(key, page);
+  const breadcrumb: IBreadcrumb[] = [];
 
   if (isLoading)
     return (
@@ -32,11 +35,26 @@ export default function HomePage() {
     );
   }
 
+  if (!isError && !isLoading) {
+    breadcrumb.push({
+      name: 'Home',
+      href: '/'
+    });
+    breadcrumb.push({
+      name: 'Search'
+    });
+    breadcrumb.push({
+      name: key as string
+    });
+  }
+
   return (
     <>
+      <BreadcrumbElement breadcrumb={breadcrumb} />
       <Grid templateColumns="repeat(3, 1fr)" gap={10}>
         <GridItem colSpan={{ base: 3, md: 2 }}>
           <PostContainer>
+            <Heading my={2}>Search Results for &quot;{key}&quot;</Heading>
             {posts.data.map((post, i) => (
               <Section key={i} delay={(i + 1) * 0.1 + 0.1} x={(i + 1) * -100}>
                 <PostItem post={post} />
@@ -60,4 +78,6 @@ export default function HomePage() {
       </Grid>
     </>
   );
-}
+};
+
+export default SearchPage;

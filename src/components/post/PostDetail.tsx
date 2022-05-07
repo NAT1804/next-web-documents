@@ -4,6 +4,7 @@ import { PlusSquareIcon } from '@chakra-ui/icons';
 
 import PreviewPdf from '../preview-pdf/PreviewPdf';
 import { PostInteractive } from './PostItem';
+import Respond from '../respond/Respond';
 
 export const PostType = props => {
   return (
@@ -37,6 +38,7 @@ const PostDetail = ({ detail }) => {
         ? data.files.map((file, i) => <PreviewPdf key={i} file={file.link} />)
         : undefined}
       <Box mt={4} dangerouslySetInnerHTML={{ __html: data.content }}></Box>
+      <Respond comment={data.comment} />
     </Box>
   );
 };

@@ -36,6 +36,7 @@ import api from 'api';
 import { signIn, useSession } from 'next-auth/react';
 import { MdReport, MdReportGmailerrorred } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
+import { CustomUser } from 'types';
 
 interface IPostTags {
   tags: Array<string>;
@@ -131,7 +132,7 @@ export const PostHeart = props => {
   );
 };
 
-const ModalLoginRequest = ({ onClose, isOpen, title, body }) => {
+export const ModalLoginRequest = ({ onClose, isOpen, title, body }) => {
   return (
     <Modal
       isCentered
@@ -171,7 +172,7 @@ const ModalLoginRequest = ({ onClose, isOpen, title, body }) => {
   );
 };
 
-const ModalReport = ({ id, onClose, isOpen, title }) => {
+export const ModalReport = ({ id, onClose, isOpen, title }) => {
   const {
     handleSubmit,
     register,
@@ -257,7 +258,7 @@ export const PostReport = props => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: session } = useSession();
 
-  console.log(props.reports, session);
+  const customUser = session?.user as CustomUser;
 
   return (
     <HStack
@@ -268,9 +269,7 @@ export const PostReport = props => {
       cursor={'pointer'}
     >
       {session ? (
-        props.reports
-          .map(report => report.user_id)
-          .includes(session.user.id) ? (
+        props.reports.map(report => report.user_id).includes(customUser.id) ? (
           <>
             <MdReport size={18} color="red" onClick={onOpen} />
             <ModalReport
@@ -315,8 +314,8 @@ export const PostReport = props => {
 
 export const PostInteractive = props => {
   return (
-    <Flex w="100%" my={3}>
-      {props.children}
+    <Flex w="100%" my={3} flexWrap="wrap">
+      <Box flexBasis={{ base: '100%', md: 'auto' }}>{props.children}</Box>
       &nbsp;&nbsp;
       <PostDate date={props.date} />
       &nbsp;&nbsp;

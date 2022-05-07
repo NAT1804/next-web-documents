@@ -4,8 +4,20 @@ import Head from 'next/head';
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
 import ScrollToTop from '../scroll-to-top/ScrollToTop';
+import Searchbar from 'components/search-bar/Searchbar';
 
 const Layout = ({ children, router }) => {
+  const checkPathName = () => {
+    if (
+      router.pathname.includes('login') ||
+      router.pathname.includes('register')
+    ) {
+      return undefined;
+    } else {
+      return <Searchbar />;
+    }
+  };
+
   return (
     <Box as="main" pb={8}>
       <Head>
@@ -13,7 +25,8 @@ const Layout = ({ children, router }) => {
         <title>Web Document</title>
       </Head>
       <Header path={router.asPath} />
-      <Container maxW="container.lg" pt="190">
+      <Container maxW="container.xl" pt={{ base: 160, md: 190 }}>
+        {checkPathName()}
         {children}
       </Container>
       <Footer />

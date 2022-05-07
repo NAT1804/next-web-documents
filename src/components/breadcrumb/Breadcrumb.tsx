@@ -19,16 +19,20 @@ const BreadcrumbElement = ({ breadcrumb }) => {
       {breadcrumb.map((item, index) => {
         if (index === breadcrumb.length - 1) {
           return (
-            <BreadcrumbItem isCurrentPage>
+            <BreadcrumbItem key={index} isCurrentPage>
               <BreadcrumbLink>{item.name}</BreadcrumbLink>
             </BreadcrumbItem>
           );
         }
         return (
           <BreadcrumbItem key={index}>
-            <NextLink href={item.href} passHref>
-              <BreadcrumbLink fontWeight={'bold'}>{item.name}</BreadcrumbLink>
-            </NextLink>
+            {item.href ? (
+              <NextLink href={item.href} passHref>
+                <BreadcrumbLink fontWeight={'bold'}>{item.name}</BreadcrumbLink>
+              </NextLink>
+            ) : (
+              <BreadcrumbLink>{item.name}</BreadcrumbLink>
+            )}
           </BreadcrumbItem>
         );
       })}

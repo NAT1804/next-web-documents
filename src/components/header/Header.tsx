@@ -14,10 +14,12 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import Logo from '../logo/Logo';
 import Navbar from '../navbar/Navbar';
 import ToggleButton from '../toggle-button/ToggleButton';
+import { useRouter } from 'next/router';
 
 const Header = props => {
   const { path } = props;
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   const bgColorButton = useColorModeValue('primaryGreen', 'primaryOrange');
   return (
@@ -34,7 +36,7 @@ const Header = props => {
         display="flex"
         flexDir="column"
         p={2}
-        maxW="container.lg"
+        maxW="container.xl"
         flexWrap="wrap"
       >
         <Flex align="center" justify="space-between">
@@ -66,7 +68,7 @@ const Header = props => {
                     variant={'link'}
                     onClick={e => {
                       e.preventDefault();
-                      signOut({ callbackUrl: `${window.location.origin}` });
+                      signOut({ callbackUrl: `${window.location.href}` });
                     }}
                   >
                     Log out
