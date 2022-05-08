@@ -36,24 +36,6 @@ const BreadcrumbElement = ({ breadcrumb }) => {
           </BreadcrumbItem>
         );
       })}
-
-      {/* {post ? (
-        <>
-          <BreadcrumbItem>
-            <NextLink href={`/posts/type/${post.data.type_slug}`} passHref>
-              <BreadcrumbLink>{post.data.post_type_id}</BreadcrumbLink>
-            </NextLink>
-            <BreadcrumbSeparator
-              color="tomato"
-              fontSize="10px"
-              fontWeight="bold"
-            />
-          </BreadcrumbItem>
-          <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink>{post.data.title}</BreadcrumbLink>
-          </BreadcrumbItem>
-        </>
-      ) : undefined} */}
     </Breadcrumb>
   );
 };

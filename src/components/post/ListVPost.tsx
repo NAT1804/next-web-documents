@@ -1,4 +1,4 @@
-import { Heading, Spinner } from '@chakra-ui/react';
+import { Heading, Spinner, Text, useColorModeValue } from '@chakra-ui/react';
 import React from 'react';
 
 import Section from 'components/section/Section';
@@ -7,6 +7,7 @@ import { usePosts } from 'hooks';
 
 const ListVPost = () => {
   const { posts, isLoading, isError } = usePosts(1);
+  const bgColor = useColorModeValue('primaryGreen', 'primaryOrange');
 
   if (isLoading)
     return (

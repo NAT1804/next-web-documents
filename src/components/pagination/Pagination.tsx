@@ -21,7 +21,9 @@ import {
 
 const Pagination = ({ links, meta, setPage }) => {
   const onChangePage = page => {
-    setPage(page);
+    if (page >= 1 && page <= meta.last_page) {
+      setPage(page);
+    }
   };
 
   return (

@@ -13,3 +13,4 @@ export { default as PostDetail } from './post/PostDetail';
 export { default as ListVPost } from './post/ListVPost';
 export { default as BreadcrumbElement } from './breadcrumb/Breadcrumb';
 export { default as Respond } from './respond/Respond';
+export { default as ToastMessage } from './toast/Toast';

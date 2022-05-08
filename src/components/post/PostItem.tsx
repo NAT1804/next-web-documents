@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { CalendarIcon, ChatIcon, InfoIcon } from '@chakra-ui/icons';
 import {
@@ -31,12 +31,14 @@ import {
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
-
-import api from 'api';
 import { signIn, useSession } from 'next-auth/react';
 import { MdReport, MdReportGmailerrorred } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
-import { CustomUser } from 'types';
+
+import ToastMessage from '../toast/Toast';
+import api from 'api';
+import { CustomUser, MESSAGE_FAIL, MESSAGE_SUCCESS } from 'types';
+import { useRouter } from 'next/router';
 
 interface IPostTags {
   tags: Array<string>;
@@ -71,10 +73,12 @@ export const PostDate: React.FC<IPostDateProps> = props => {
 };
 
 interface IPostCommentProps {
+  id: Number;
   quantity: Number;
 }
 
 export const PostComment: React.FC<IPostCommentProps> = props => {
+  const router = useRouter();
   return (
     <HStack
       marginTop="2"
@@ -82,6 +86,7 @@ export const PostComment: React.FC<IPostCommentProps> = props => {
       display="flex"
       alignItems="center"
       cursor={'pointer'}
+      onClick={() => router.push(`/posts/${props.id}#respond`)}
     >
       <ChatIcon />
       <Text>{props.quantity}</Text>
@@ -92,13 +97,40 @@ export const PostComment: React.FC<IPostCommentProps> = props => {
 export const PostHeart = props => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: session } = useSession();
-  const handleLikePost = async () => {
-    const response = await api.post(`api/posts/${props.id}/like`);
 
-    if (response.data) {
-      console.log(response.data);
+  const [iconLike, setIconLike] = useState<string>(() => {
+    if (session) {
+      return props.likes.map(like => like.name).includes(session.user.name)
+        ? 'Like'
+        : 'Unlike';
     } else {
-      console.log('false');
+      return 'Unlike';
+    }
+  });
+  const [likeCount, setlikeCount] = useState(props.likes.length);
+
+  const notify = useCallback((type, message) => {
+    ToastMessage({ type, message });
+  }, []);
+
+  const handleLikePost = async () => {
+    if (session) {
+      const response = await api.post(`api/posts/${props.id}/like`);
+
+      if (response.data) {
+        setIconLike(response.data.message);
+        if (response.data.message === 'Like') {
+          setlikeCount(prev => prev + 1);
+          notify('success', 'Like post successfully!');
+        } else {
+          setlikeCount(prev => prev - 1);
+          notify('success', 'Unlike post successfully!');
+        }
+      } else {
+        notify('error', 'Like post failed!');
+      }
+    } else {
+      onOpen();
     }
   };
 
@@ -109,25 +141,20 @@ export const PostHeart = props => {
       display="flex"
       alignItems="center"
       cursor={'pointer'}
+      onClick={handleLikePost}
     >
-      {session ? (
-        props.likes.map(like => like.name).includes(session.user.name) ? (
-          <AiFillHeart size={18} color="red" onClick={handleLikePost} />
-        ) : (
-          <AiOutlineHeart size={18} onClick={handleLikePost} />
-        )
+      {iconLike === 'Like' ? (
+        <AiFillHeart size={18} color="red" />
       ) : (
-        <>
-          <AiOutlineHeart size={18} onClick={onOpen} />
-          <ModalLoginRequest
-            onClose={onClose}
-            isOpen={isOpen}
-            title="Yêu cầu đăng nhập"
-            body="Bạn cần đăng nhập để có thể thả tim bài viết này!"
-          />
-        </>
+        <AiOutlineHeart size={18} />
       )}
-      <Text>{props.likes.length}</Text>
+      <Text>{likeCount}</Text>
+      <ModalLoginRequest
+        onClose={onClose}
+        isOpen={isOpen}
+        title="Yêu cầu đăng nhập"
+        body="Bạn cần đăng nhập để có thể thả tim bài viết này!"
+      />
     </HStack>
   );
 };
@@ -140,7 +167,6 @@ export const ModalLoginRequest = ({ onClose, isOpen, title, body }) => {
       isOpen={isOpen}
       motionPreset="slideInBottom"
     >
-      {/* <ModalOverlay /> */}
       <ModalOverlay
         bg="blackAlpha.300"
         backdropFilter="blur(10px) hue-rotate(90deg)"
@@ -172,12 +198,23 @@ export const ModalLoginRequest = ({ onClose, isOpen, title, body }) => {
   );
 };
 
-export const ModalReport = ({ id, onClose, isOpen, title }) => {
+export const ModalReport = ({
+  id,
+  onClose,
+  isOpen,
+  title,
+  setIconReport,
+  setReportCount
+}) => {
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting }
   } = useForm();
+
+  const notify = useCallback((type, message) => {
+    ToastMessage({ type, message });
+  }, []);
 
   const handleReportPost = async (values: any) => {
     const response = await api.post(`api/posts/${id}/report`, {
@@ -185,9 +222,13 @@ export const ModalReport = ({ id, onClose, isOpen, title }) => {
     });
 
     if (response.data) {
+      setIconReport(MESSAGE_SUCCESS);
+      setReportCount(prev => prev + 1);
+      notify('success', 'Báo cáo bài viết thành công');
       onClose();
     } else {
-      console.log('Error');
+      setIconReport(MESSAGE_FAIL);
+      notify('error', 'Báo cáo bài viết thất bại');
     }
   };
 
@@ -260,6 +301,17 @@ export const PostReport = props => {
 
   const customUser = session?.user as CustomUser;
 
+  const [iconReport, setIconReport] = useState<string>(() => {
+    if (session) {
+      return props.reports.map(report => report.user_id).includes(customUser.id)
+        ? MESSAGE_SUCCESS
+        : MESSAGE_FAIL;
+    } else {
+      return MESSAGE_FAIL;
+    }
+  });
+  const [reportCount, setReportCount] = useState(props.reports.length);
+
   return (
     <HStack
       marginTop="2"
@@ -268,7 +320,12 @@ export const PostReport = props => {
       alignItems="center"
       cursor={'pointer'}
     >
-      {session ? (
+      {iconReport === MESSAGE_SUCCESS ? (
+        <MdReport size={18} color="red" onClick={onOpen} />
+      ) : (
+        <MdReportGmailerrorred size={18} onClick={onOpen} />
+      )}
+      {/* {session ? (
         props.reports.map(report => report.user_id).includes(customUser.id) ? (
           <>
             <MdReport size={18} color="red" onClick={onOpen} />
@@ -305,9 +362,26 @@ export const PostReport = props => {
             body="Bạn cần đăng nhập để có thể báo cáo bài viết này!"
           />
         </>
-      )}
+      )} */}
 
-      <Text>{props.reports.length}</Text>
+      <Text>{reportCount}</Text>
+      {session ? (
+        <ModalReport
+          onClose={onClose}
+          isOpen={isOpen}
+          id={`${props.id}`}
+          title="Báo cáo bài viết"
+          setIconReport={setIconReport}
+          setReportCount={setReportCount}
+        />
+      ) : (
+        <ModalLoginRequest
+          onClose={onClose}
+          isOpen={isOpen}
+          title="Yêu cầu đăng nhập"
+          body="Bạn cần đăng nhập để có thể báo cáo bài viết này!"
+        />
+      )}
     </HStack>
   );
 };
@@ -319,7 +393,7 @@ export const PostInteractive = props => {
       &nbsp;&nbsp;
       <PostDate date={props.date} />
       &nbsp;&nbsp;
-      <PostComment quantity={props.quantity} />
+      <PostComment id={props.id} quantity={props.quantity} />
       &nbsp;&nbsp;
       <PostHeart id={props.id} likes={props.likes} />
       &nbsp;&nbsp;
@@ -338,22 +412,36 @@ export const VPostItem = ({ post }) => {
         borderRadius="lg"
         overflow="hidden"
       >
-        <NextLink href={`/posts/${post.id}`} passHref>
-          <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
-            <Image
-              transform="scale(1.0)"
-              src="/logo-tailieu-vnu.png"
-              alt="some text"
-              objectFit="contain"
-              width="100%"
-              transition="0.3s ease-in-out"
-              _hover={{
-                transform: 'scale(1.05)'
-              }}
-            />
-          </Link>
-        </NextLink>
-        <Heading fontSize="xl" marginTop="2">
+        <Box display={{ base: 'none', sm: 'flex' }} w={{ base: '40%' }}>
+          <NextLink href={`/posts/${post.id}`} passHref>
+            <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
+              <Image
+                transform="scale(1.0)"
+                src="/logo-tailieu-vnu.png"
+                alt="logo"
+                objectFit="contain"
+                width="100%"
+                transition="0.3s ease-in-out"
+                _hover={{
+                  transform: 'scale(1.05)'
+                }}
+              />
+            </Link>
+          </NextLink>
+        </Box>
+        <Heading
+          flex={1}
+          fontSize="xl"
+          marginTop="2"
+          style={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            lineClamp: 2,
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical'
+          }}
+        >
           <NextLink href={`/posts/${post.id}`} passHref>
             <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
               {post.title}
@@ -382,11 +470,17 @@ export const PostItem = ({ post }) => {
         justifyContent="space-between"
         marginBottom={4}
       >
-        <Box display="flex" flex="1" position="relative" alignItems="center">
+        <Box
+          display="flex"
+          // flex="1"
+          position="relative"
+          alignItems="center"
+          justifyContent={'flex-start'}
+        >
           <Box
             zIndex={1}
-            width={{ base: '100%', sm: '85%' }}
-            height={{ base: '100%', sm: '85%' }}
+            width={{ base: '100%', sm: '70%' }}
+            height={{ base: '100%', sm: '70%' }}
             marginLeft={{ base: '0', sm: '5%' }}
             marginTop="5%"
             display="flex"
@@ -411,7 +505,11 @@ export const PostItem = ({ post }) => {
             </NextLink>
           </Box>
 
-          <Box w="100%" position="absolute" height="100%">
+          <Box
+            width={{ base: '100%' }}
+            height={{ base: '100%' }}
+            position="absolute"
+          >
             <Box
               bgGradient={useColorModeValue(
                 'radial(orange.600 1px, transparent 1px)',

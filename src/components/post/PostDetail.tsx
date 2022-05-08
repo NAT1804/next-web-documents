@@ -18,8 +18,6 @@ export const PostType = props => {
 const PostDetail = ({ detail }) => {
   const { data } = detail;
 
-  console.log('data', data);
-
   return (
     <Box w="100%">
       <Heading as="h1" fontSize={'30'} my={2}>

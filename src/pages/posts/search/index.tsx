@@ -1,4 +1,4 @@
-import { Grid, GridItem, Heading, Spinner } from '@chakra-ui/react';
+import { Grid, GridItem, Heading, Spinner, Text } from '@chakra-ui/react';
 import {
   BreadcrumbElement,
   ListVPost,
@@ -60,11 +60,17 @@ const SearchPage = () => {
                 <PostItem post={post} />
               </Section>
             ))}
-            <Pagination
-              links={posts.links}
-              meta={posts.meta}
-              setPage={setPage}
-            />
+            {posts.data.length ? (
+              <Pagination
+                links={posts.links}
+                meta={posts.meta}
+                setPage={setPage}
+              />
+            ) : (
+              <Text fontWeight={'semibold'} fontSize={30}>
+                Không có bài viết nào!
+              </Text>
+            )}
           </PostContainer>
         </GridItem>
         <GridItem

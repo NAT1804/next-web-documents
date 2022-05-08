@@ -21,6 +21,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 
 import { ModalLoginRequest } from 'components/post/PostItem';
+import api from 'api';
 
 const Respond = ({ comment }) => {
   const { data: session } = useSession();
@@ -32,6 +33,7 @@ const Respond = ({ comment }) => {
   } = useForm();
 
   const onSubmit = async (values: any) => {
+    // const res = await api.post( 1q2wcdsvxba z vbvbvbc)
     // const res = await signIn('credentials', {
     //   redirect: false,
     //   email: values.email,
@@ -54,7 +56,13 @@ const Respond = ({ comment }) => {
 
   return (
     <>
-      <Grid templateColumns={'repeat(5, 1fr)'} gap={6} py={5} my={5}>
+      <Grid
+        id="respond"
+        templateColumns={'repeat(5, 1fr)'}
+        gap={6}
+        py={5}
+        my={5}
+      >
         <GridItem m="0 auto" display={{ base: 'none', md: 'flex' }}>
           {session ? (
             <Avatar

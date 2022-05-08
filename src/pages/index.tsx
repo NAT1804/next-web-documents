@@ -1,9 +1,7 @@
 import { Box, Grid, GridItem, Heading, Spinner } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import useSWR from 'swr';
+import { useState } from 'react';
 
-import Searchbar from 'components/search-bar/Searchbar';
 import {
   PostItem,
   Pagination,
