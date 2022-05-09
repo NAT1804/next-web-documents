@@ -1,5 +1,4 @@
-import { Box, Grid, GridItem, Heading, Spinner } from '@chakra-ui/react';
-import { useSession } from 'next-auth/react';
+import { Grid, GridItem, Heading, Spinner } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import {
