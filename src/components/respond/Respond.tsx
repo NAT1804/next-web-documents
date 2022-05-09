@@ -8,6 +8,9 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  List,
+  ListIcon,
+  ListItem,
   Stack,
   Text,
   Textarea,
@@ -17,42 +20,41 @@ import {
   WrapItem
 } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { ModalLoginRequest } from 'components/post/PostItem';
 import api from 'api';
+import ToastMessage from 'components/toast/Toast';
+import { MdCheckCircle } from 'react-icons/md';
 
-const Respond = ({ comment }) => {
+const Respond = ({ id, comment }) => {
   const { data: session } = useSession();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const bgColorAvatar = useColorModeValue('primaryGreen', 'primaryOrange');
+  const colorAvatar = useColorModeValue('white', 'black');
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
+    reset
   } = useForm();
 
+  const notify = useCallback((type, message) => {
+    ToastMessage({ type, message });
+  }, []);
+
   const onSubmit = async (values: any) => {
-    // const res = await api.post( 1q2wcdsvxba z vbvbvbc)
-    // const res = await signIn('credentials', {
-    //   redirect: false,
-    //   email: values.email,
-    //   password: values.password,
-    //   callbackUrl: `${callbackUrl}`
-    // });
-    // if (res?.error) {
-    //   setError(res.error);
-    // }
-    // if (res.url) router.push(res.url);
-    if (!session) {
-      onOpen();
+    const response = await api.post(`api/posts/${id}/comment`, {
+      comment: values.description
+    });
+    if (response.data) {
+      notify('success', 'Thêm bình luận thành công!');
+      reset();
     } else {
-      console.log('v', values);
+      notify('error', 'Thêm bình luận thất bại!');
     }
   };
-
-  const bgColorAvatar = useColorModeValue('primaryGreen', 'primaryOrange');
-  const colorAvatar = useColorModeValue('white', 'black');
 
   return (
     <>
@@ -90,18 +92,33 @@ const Respond = ({ comment }) => {
                   {errors.description && errors.description.message}
                 </FormErrorMessage>
               </FormControl>
-              <Button
-                type="submit"
-                width={{ base: 'full', md: '50%', lg: '30%' }}
-                alignSelf={'flex-end'}
-                borderRadius="0"
-                variant={'solid'}
-                color={useColorModeValue('white', 'black')}
-                bgColor={useColorModeValue('primaryGreen', 'primaryOrange')}
-                isLoading={isSubmitting}
-              >
-                Send
-              </Button>
+              {session ? (
+                <Button
+                  type="submit"
+                  width={{ base: 'full', md: '50%', lg: '30%' }}
+                  alignSelf={'flex-end'}
+                  borderRadius="0"
+                  variant={'solid'}
+                  color={colorAvatar}
+                  bgColor={bgColorAvatar}
+                  isLoading={isSubmitting}
+                >
+                  Send
+                </Button>
+              ) : (
+                <Button
+                  width={{ base: 'full', md: '50%', lg: '30%' }}
+                  alignSelf={'flex-end'}
+                  borderRadius="0"
+                  variant={'solid'}
+                  color={colorAvatar}
+                  bgColor={bgColorAvatar}
+                  isLoading={isSubmitting}
+                  onClick={onOpen}
+                >
+                  Send
+                </Button>
+              )}
               <ModalLoginRequest
                 onClose={onClose}
                 isOpen={isOpen}
@@ -118,6 +135,60 @@ const Respond = ({ comment }) => {
       <Text size="30" borderBottom={'solid 1px black'}>
         {comment.length} COMMENTS
       </Text>
+      <List spacing={3}>
+        <ListItem>
+          <ListIcon as={MdCheckCircle} color="green.500" />
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit
+          <List spacing={3} ml={5}>
+            <ListItem>
+              <ListIcon as={MdCheckCircle} color="green.500" />
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit
+            </ListItem>
+            <ListItem>
+              <ListIcon as={MdCheckCircle} color="green.500" />
+              Assumenda, quia temporibus eveniet a libero incidunt suscipit
+              <List spacing={3} ml={5}>
+                <ListItem>
+                  <ListIcon as={MdCheckCircle} color="green.500" />
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit
+                </ListItem>
+                <ListItem>
+                  <ListIcon as={MdCheckCircle} color="green.500" />
+                  Assumenda, quia temporibus eveniet a libero incidunt suscipit
+                </ListItem>
+                <ListItem>
+                  <ListIcon as={MdCheckCircle} color="green.500" />
+                  Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+                </ListItem>
+                <ListItem>
+                  <ListIcon as={MdCheckCircle} color="green.500" />
+                  Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+                </ListItem>
+              </List>
+            </ListItem>
+            <ListItem>
+              <ListIcon as={MdCheckCircle} color="green.500" />
+              Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+            </ListItem>
+            <ListItem>
+              <ListIcon as={MdCheckCircle} color="green.500" />
+              Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+            </ListItem>
+          </List>
+        </ListItem>
+        <ListItem>
+          <ListIcon as={MdCheckCircle} color="green.500" />
+          Assumenda, quia temporibus eveniet a libero incidunt suscipit
+        </ListItem>
+        <ListItem>
+          <ListIcon as={MdCheckCircle} color="green.500" />
+          Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+        </ListItem>
+        <ListItem>
+          <ListIcon as={MdCheckCircle} color="green.500" />
+          Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+        </ListItem>
+      </List>
     </>
   );
 };

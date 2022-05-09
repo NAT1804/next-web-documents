@@ -325,44 +325,6 @@ export const PostReport = props => {
       ) : (
         <MdReportGmailerrorred size={18} onClick={onOpen} />
       )}
-      {/* {session ? (
-        props.reports.map(report => report.user_id).includes(customUser.id) ? (
-          <>
-            <MdReport size={18} color="red" onClick={onOpen} />
-            <ModalReport
-              onClose={onClose}
-              isOpen={isOpen}
-              id={`${props.id}`}
-              title="Báo cáo bài viết"
-            />
-          </>
-        ) : (
-          <>
-            <MdReportGmailerrorred size={18} onClick={onOpen} />
-            <ModalReport
-              onClose={onClose}
-              isOpen={isOpen}
-              id={`${props.id}`}
-              title="Báo cáo bài viết"
-            />
-          </>
-        )
-      ) : (
-        <>
-          <MdReportGmailerrorred
-            size={18}
-            onClick={() => {
-              onOpen();
-            }}
-          />
-          <ModalLoginRequest
-            onClose={onClose}
-            isOpen={isOpen}
-            title="Yêu cầu đăng nhập"
-            body="Bạn cần đăng nhập để có thể báo cáo bài viết này!"
-          />
-        </>
-      )} */}
 
       <Text>{reportCount}</Text>
       {session ? (

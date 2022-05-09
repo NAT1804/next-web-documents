@@ -15,7 +15,6 @@ import { IBreadcrumb } from 'types';
 const SearchPage = () => {
   const router = useRouter();
   const { key } = router.query;
-  console.log('key', key);
   const [page, setPage] = useState(1);
   const { posts, isLoading, isError } = usePostsByTitle(key, page);
   const breadcrumb: IBreadcrumb[] = [];
