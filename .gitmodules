@@ -1,3 +1,6 @@
 [submodule "backend"]
 	path = backend
-	url = https://github.com/nguyentruong1003/api-web-documents-be
+	url = https://github.com/nguyentruong1003/api-web-documents-be/tree/develop
+[submodule "official_document"]
+	path = /docs/official_document
+	url = https://1drv.ms/w/s!AgqVxgJI6Na-uWGe9JUfzvdyD-vg?e=lTd2eS
