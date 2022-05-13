@@ -1,10 +1,13 @@
 import {
   Avatar,
+  Box,
   Button,
+  Flex,
   FormControl,
   FormErrorMessage,
   Grid,
   GridItem,
+  HStack,
   Input,
   InputGroup,
   InputLeftElement,
@@ -22,13 +25,67 @@ import {
 import { useSession } from 'next-auth/react';
 import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
+import Moment from 'react-moment';
 
 import { ModalLoginRequest } from 'components/post/PostItem';
 import api from 'api';
 import ToastMessage from 'components/toast/Toast';
 import { MdCheckCircle } from 'react-icons/md';
+import { useUserById } from 'hooks';
 
-const Respond = ({ id, comment }) => {
+const CommentComponent = ({
+  id,
+  comment,
+  reply,
+  created_at,
+  likes,
+  post_id,
+  user_id
+}) => {
+  const hasChildren = reply && reply.length;
+  const bgColorAvatar = useColorModeValue('primaryGreen', 'primaryOrange');
+  const colorAvatar = useColorModeValue('white', 'black');
+  const { user, isLoading, isError } = useUserById(user_id);
+
+  if (isLoading) {
+    console.log('Is Loading');
+  }
+
+  if (isError) {
+    console.log('Has Error');
+  }
+
+  return (
+    <ListItem key={id}>
+      <Flex align="center" justify="space-between">
+        <Flex align="center">
+          <Avatar
+            name={user?.data?.name}
+            color={colorAvatar}
+            bgColor={bgColorAvatar}
+            size={'sm'}
+            src="https://bit.ly/broken-link"
+            mr={2}
+          />
+          <Box fontWeight={'semibold'}>{user?.data?.name}</Box>
+        </Flex>
+        <Moment fromNow>{created_at}</Moment>
+      </Flex>
+      <Box ml={10} my={2}>
+        {comment}
+      </Box>
+      {hasChildren ? (
+        <List spacing={3} ml={5}>
+          {reply.map(item => (
+            <CommentComponent key={item.comment} {...item} />
+          ))}
+        </List>
+      ) : undefined}
+    </ListItem>
+  );
+};
+
+const Respond = ({ id, comments, setComments }) => {
   const { data: session } = useSession();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const bgColorAvatar = useColorModeValue('primaryGreen', 'primaryOrange');
@@ -49,6 +106,7 @@ const Respond = ({ id, comment }) => {
       comment: values.description
     });
     if (response.data) {
+      setComments(comments);
       notify('success', 'Thêm bình luận thành công!');
       reset();
     } else {
@@ -131,63 +189,13 @@ const Respond = ({ id, comment }) => {
         </GridItem>
       </Grid>
 
-      {/* Comment */}
       <Text size="30" borderBottom={'solid 1px black'}>
-        {comment.length} COMMENTS
+        {comments.length} COMMENTS
       </Text>
-      <List spacing={3}>
-        <ListItem>
-          <ListIcon as={MdCheckCircle} color="green.500" />
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit
-          <List spacing={3} ml={5}>
-            <ListItem>
-              <ListIcon as={MdCheckCircle} color="green.500" />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit
-            </ListItem>
-            <ListItem>
-              <ListIcon as={MdCheckCircle} color="green.500" />
-              Assumenda, quia temporibus eveniet a libero incidunt suscipit
-              <List spacing={3} ml={5}>
-                <ListItem>
-                  <ListIcon as={MdCheckCircle} color="green.500" />
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit
-                </ListItem>
-                <ListItem>
-                  <ListIcon as={MdCheckCircle} color="green.500" />
-                  Assumenda, quia temporibus eveniet a libero incidunt suscipit
-                </ListItem>
-                <ListItem>
-                  <ListIcon as={MdCheckCircle} color="green.500" />
-                  Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-                </ListItem>
-                <ListItem>
-                  <ListIcon as={MdCheckCircle} color="green.500" />
-                  Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-                </ListItem>
-              </List>
-            </ListItem>
-            <ListItem>
-              <ListIcon as={MdCheckCircle} color="green.500" />
-              Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-            </ListItem>
-            <ListItem>
-              <ListIcon as={MdCheckCircle} color="green.500" />
-              Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-            </ListItem>
-          </List>
-        </ListItem>
-        <ListItem>
-          <ListIcon as={MdCheckCircle} color="green.500" />
-          Assumenda, quia temporibus eveniet a libero incidunt suscipit
-        </ListItem>
-        <ListItem>
-          <ListIcon as={MdCheckCircle} color="green.500" />
-          Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-        </ListItem>
-        <ListItem>
-          <ListIcon as={MdCheckCircle} color="green.500" />
-          Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-        </ListItem>
+      <List spacing={3} mt={3}>
+        {comments.map((item, index) => (
+          <CommentComponent key={index} {...item} />
+        ))}
       </List>
     </>
   );

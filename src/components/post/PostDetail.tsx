@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Heading, HStack, Text } from '@chakra-ui/react';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 
@@ -17,6 +17,7 @@ export const PostType = props => {
 
 const PostDetail = ({ detail }) => {
   const { data } = detail;
+  const [comments, setComments] = useState(data.comment);
 
   return (
     <Box w="100%">
@@ -36,7 +37,7 @@ const PostDetail = ({ detail }) => {
         ? data.files.map((file, i) => <PreviewPdf key={i} file={file.link} />)
         : undefined}
       <Box mt={4} dangerouslySetInnerHTML={{ __html: data.content }}></Box>
-      <Respond id={data.id} comment={data.comment} />
+      <Respond id={data.id} comments={comments} setComments={setComments} />
     </Box>
   );
 };

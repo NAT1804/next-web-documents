@@ -61,3 +61,12 @@ export function usePostType() {
     isError: error
   };
 }
+
+export function useUserById(userId) {
+  const { data, error } = useSWR(`api/users/${userId}`, fetcher);
+  return {
+    user: data,
+    isLoading: !error && !data,
+    isError: error
+  };
+}
