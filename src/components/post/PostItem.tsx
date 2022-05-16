@@ -451,7 +451,7 @@ export const PostDelete = ({ id }) => {
 
 export const PostInteractive = props => {
   const { data: session } = useSession();
-  const customUser = session.user as CustomUser;
+  const customUser = session ? (session.user as CustomUser) : undefined;
 
   return (
     <Flex w="100%" my={3} flexWrap="wrap">
