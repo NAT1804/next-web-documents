@@ -30,14 +30,14 @@ import {
   WrapItem
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import { AiFillCloseCircle, AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { signIn, useSession } from 'next-auth/react';
 import { MdReport, MdReportGmailerrorred } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 
 import ToastMessage from '../toast/Toast';
 import api from 'api';
-import { CustomUser, MESSAGE_FAIL, MESSAGE_SUCCESS } from 'types';
+import { ADMIN, CustomUser, MESSAGE_FAIL, MESSAGE_SUCCESS } from 'types';
 import { useRouter } from 'next/router';
 
 interface IPostTags {
@@ -348,7 +348,24 @@ export const PostReport = props => {
   );
 };
 
+export const PostDelete = () => {
+  return (
+    <HStack
+      marginTop="2"
+      spacing="2"
+      display="flex"
+      alignItems="center"
+      cursor={'pointer'}
+    >
+      <AiFillCloseCircle color="red" fontSize={20} />
+    </HStack>
+  );
+};
+
 export const PostInteractive = props => {
+  const { data: session } = useSession();
+  const customUser = session.user as CustomUser;
+
   return (
     <Flex w="100%" my={3} flexWrap="wrap">
       <Box flexBasis={{ base: '100%', md: 'auto' }}>{props.children}</Box>
@@ -360,6 +377,10 @@ export const PostInteractive = props => {
       <PostHeart id={props.id} likes={props.likes} />
       &nbsp;&nbsp;
       <PostReport id={props.id} reports={props.reports} />
+      &nbsp;&nbsp;
+      {session && customUser.permissions[0] === ADMIN ? (
+        <PostDelete />
+      ) : undefined}
     </Flex>
   );
 };

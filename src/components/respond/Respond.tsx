@@ -14,6 +14,13 @@ import {
   List,
   ListIcon,
   ListItem,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Stack,
   Text,
   Textarea,
@@ -23,7 +30,7 @@ import {
   WrapItem
 } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Moment from 'react-moment';
 
@@ -31,7 +38,8 @@ import { ModalLoginRequest } from 'components/post/PostItem';
 import api from 'api';
 import ToastMessage from 'components/toast/Toast';
 import { MdCheckCircle } from 'react-icons/md';
-import { useUserById } from 'hooks';
+import { usePostById, useUserById } from 'hooks';
+import { ADMIN, CustomUser } from 'types';
 
 const CommentComponent = ({
   id,
@@ -42,10 +50,19 @@ const CommentComponent = ({
   post_id,
   user_id
 }) => {
+  console.log('Id', id);
+  console.log('Post Id', post_id);
   const hasChildren = reply && reply.length;
-  const bgColorAvatar = useColorModeValue('primaryGreen', 'primaryOrange');
-  const colorAvatar = useColorModeValue('white', 'black');
+  const bgColor = useColorModeValue('primaryGreen', 'primaryOrange');
+  const bgColorReverse = useColorModeValue('primaryOrange', 'primaryGreen');
+  const color = useColorModeValue('white', 'black');
   const { user, isLoading, isError } = useUserById(user_id);
+  const { data: session } = useSession();
+  const [showReply, setShowReply] = useState(false);
+  const [repComment, setRepComment] = useState('');
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const customUser = session?.user as CustomUser;
 
   if (isLoading) {
     console.log('Is Loading');
@@ -55,14 +72,39 @@ const CommentComponent = ({
     console.log('Has Error');
   }
 
+  const handleShowReply = () => {
+    setShowReply(prev => !prev);
+  };
+
+  const notify = useCallback((type, message) => {
+    ToastMessage({ type, message });
+  }, []);
+
+  const onSubmitReply = async e => {
+    e.preventDefault();
+    const response = await api.post(`api/posts/${post_id}/comment`, {
+      comment: repComment,
+      parent_id: id
+    });
+    if (response.data) {
+      // setComments(comments);
+      notify('success', 'Thêm bình luận phản hồi thành công!');
+      handleShowReply();
+      // reset();
+    } else {
+      notify('error', 'Thêm bình luận phản hồi thất bại!');
+      handleShowReply();
+    }
+  };
+
   return (
     <ListItem key={id}>
       <Flex align="center" justify="space-between">
         <Flex align="center">
           <Avatar
             name={user?.data?.name}
-            color={colorAvatar}
-            bgColor={bgColorAvatar}
+            color={color}
+            bgColor={bgColor}
             size={'sm'}
             src="https://bit.ly/broken-link"
             mr={2}
@@ -72,7 +114,56 @@ const CommentComponent = ({
         <Moment fromNow>{created_at}</Moment>
       </Flex>
       <Box ml={10} my={2}>
-        {comment}
+        <Box my={2} fontSize={18}>
+          <Input variant="unstyled" value={comment} readOnly />
+        </Box>
+        {showReply && (
+          <Box my={2} fontSize={18}>
+            <form>
+              <Input
+                variant="outline"
+                onChange={e => setRepComment(e.target.value)}
+              />
+              <Button mt={2} mr={2} onClick={handleShowReply}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                mt={2}
+                bgColor={bgColor}
+                onClick={onSubmitReply}
+                disabled={!Boolean(repComment)}
+              >
+                Save
+              </Button>
+            </form>
+          </Box>
+        )}
+        <Flex>
+          {!showReply && (
+            <Button bgColor={bgColor} mr={2} onClick={handleShowReply}>
+              Reply
+            </Button>
+          )}
+          {session && customUser.permissions[0] === ADMIN ? (
+            <>
+              <Button bgColor={bgColorReverse} mr={2}>
+                Edit
+              </Button>
+              <Button bgColor={'#f33f3f'} onClick={onOpen}>
+                Delete
+              </Button>
+              <ModalDeletePost
+                onClose={onClose}
+                isOpen={isOpen}
+                title="Xoá bình luận"
+                body="Bạn muốn xoá bình luận này?"
+                post_id={post_id}
+                comment_id={id}
+              />
+            </>
+          ) : undefined}
+        </Flex>
       </Box>
       {hasChildren ? (
         <List spacing={3} ml={5}>
@@ -85,7 +176,63 @@ const CommentComponent = ({
   );
 };
 
-const Respond = ({ id, comments, setComments }) => {
+export const ModalDeletePost = ({
+  onClose,
+  isOpen,
+  title,
+  body,
+  post_id,
+  comment_id
+}) => {
+  const notify = useCallback((type, message) => {
+    ToastMessage({ type, message });
+  }, []);
+
+  const handleDeletePost = async e => {
+    e.preventDefault();
+    const response = await api.delete(
+      `api/posts/${post_id}/comment/${comment_id}`
+    );
+
+    if (response.data) {
+      notify('success', 'Xoá bình luận thành công');
+      onClose();
+    } else {
+      notify('error', 'Xoá bình luận thất bại');
+    }
+  };
+
+  return (
+    <Modal
+      isCentered
+      onClose={onClose}
+      isOpen={isOpen}
+      motionPreset="slideInBottom"
+    >
+      <ModalOverlay
+        bg="blackAlpha.300"
+        backdropFilter="blur(10px) hue-rotate(90deg)"
+      />
+      <ModalContent>
+        <ModalHeader>{title}</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Text>{body}</Text>
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={onClose}>
+            Close
+          </Button>
+          <Button onClick={handleDeletePost} variant="ghost">
+            Delete
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
+
+const Respond = ({ id, comments, setComments, setDetail }) => {
   const { data: session } = useSession();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const bgColorAvatar = useColorModeValue('primaryGreen', 'primaryOrange');
@@ -106,12 +253,23 @@ const Respond = ({ id, comments, setComments }) => {
       comment: values.description
     });
     if (response.data) {
-      setComments(comments);
       notify('success', 'Thêm bình luận thành công!');
       reset();
+      const res = await api.get(`api/posts/${id}`);
+      if (res.data) {
+        setDetail(res.data);
+      }
     } else {
       notify('error', 'Thêm bình luận thất bại!');
     }
+  };
+
+  const reverseArr = input => {
+    let ret = new Array();
+    for (let i = input.length - 1; i >= 0; i--) {
+      ret.push(input[i]);
+    }
+    return ret;
   };
 
   return (
@@ -193,7 +351,7 @@ const Respond = ({ id, comments, setComments }) => {
         {comments.length} COMMENTS
       </Text>
       <List spacing={3} mt={3}>
-        {comments.map((item, index) => (
+        {reverseArr(comments).map((item, index) => (
           <CommentComponent key={index} {...item} />
         ))}
       </List>
