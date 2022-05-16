@@ -48,7 +48,7 @@ interface IPostTags {
 
 const PostTags: React.FC<IPostTags> = props => {
   return (
-    <HStack spacing={2} marginTop={props.marginTop}>
+    <HStack spacing="1" marginTop={props.marginTop}>
       {props.tags.map(tag => {
         return (
           <Tag p={2} size={'md'} variant="solid" colorScheme="red" key={tag}>
@@ -66,7 +66,7 @@ interface IPostDateProps {
 
 export const PostDate: React.FC<IPostDateProps> = props => {
   return (
-    <HStack marginTop="2" spacing="2" display="flex" alignItems="center">
+    <HStack marginTop="2" mr={4} spacing="1" display="flex" alignItems="center">
       <CalendarIcon />
       <Text>{props.date.toDateString()}</Text>
     </HStack>
@@ -89,7 +89,8 @@ export const PostComment: React.FC<IPostCommentProps> = props => {
     >
       <HStack
         marginTop="2"
-        spacing="2"
+        marginRight={4}
+        spacing="1"
         display="flex"
         alignItems="center"
         cursor={'pointer'}
@@ -151,7 +152,8 @@ export const PostHeart = props => {
     >
       <HStack
         marginTop="2"
-        spacing="2"
+        marginRight="4"
+        spacing="1"
         display="flex"
         alignItems="center"
         cursor={'pointer'}
@@ -336,7 +338,8 @@ export const PostReport = props => {
     >
       <HStack
         marginTop="2"
-        spacing="2"
+        marginRight="4"
+        spacing="1"
         display="flex"
         alignItems="center"
         cursor={'pointer'}
@@ -455,16 +458,18 @@ export const PostInteractive = props => {
 
   return (
     <Flex w="100%" my={3} flexWrap="wrap">
-      <Box flexBasis={{ base: '100%', md: 'auto' }}>{props.children}</Box>
-      &nbsp;&nbsp;
+      <Box flexBasis={{ base: '100%', md: 'auto' }} mr={4}>
+        {props.children}
+      </Box>
+      {/* &nbsp;&nbsp; */}
       <PostDate date={props.date} />
-      &nbsp;&nbsp;
+      {/* &nbsp;&nbsp; */}
       <PostComment id={props.id} quantity={props.quantity} />
-      &nbsp;&nbsp;
+      {/* &nbsp;&nbsp; */}
       <PostHeart id={props.id} likes={props.likes} />
-      &nbsp;&nbsp;
+      {/* &nbsp;&nbsp; */}
       <PostReport id={props.id} reports={props.reports} />
-      &nbsp;&nbsp;
+      {/* &nbsp;&nbsp; */}
       {session && customUser.permissions[0] === ADMIN ? (
         <PostDelete id={props.id} />
       ) : undefined}

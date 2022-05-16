@@ -25,6 +25,7 @@ import {
   Stack,
   Text,
   Textarea,
+  Tooltip,
   useColorModeValue,
   useDisclosure,
   Wrap,
@@ -41,6 +42,7 @@ import ToastMessage from 'components/toast/Toast';
 import { MdCheckCircle } from 'react-icons/md';
 import { usePostById, useUserById } from 'hooks';
 import { ADMIN, CustomUser } from 'types';
+import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
 
 const CommentComponent = ({
   id,
@@ -69,6 +71,17 @@ const CommentComponent = ({
   const notify = useCallback((type, message) => {
     ToastMessage({ type, message });
   }, []);
+
+  const [iconLike, setIconLike] = useState<string>(() => {
+    if (session) {
+      return likes.map(like => like.name).includes(session.user.name)
+        ? 'Like'
+        : 'Unlike';
+    } else {
+      return 'Unlike';
+    }
+  });
+  const [likeCount, setlikeCount] = useState(likes.length);
 
   if (isLoading) {
     return (
@@ -123,6 +136,29 @@ const CommentComponent = ({
     }
   };
 
+  const handleLikeComment = async () => {
+    if (session) {
+      const response = await api.post(
+        `api/posts/${post_id}/comment/${id}/like`
+      );
+
+      if (response.data) {
+        setIconLike(response.data.message);
+        if (response.data.message === 'Like') {
+          setlikeCount(prev => prev + 1);
+          notify('success', 'Like comment successfully!');
+        } else {
+          setlikeCount(prev => prev - 1);
+          notify('success', 'Unlike comment successfully!');
+        }
+      } else {
+        notify('error', 'Like comment failed!');
+      }
+    } else {
+      onOpen();
+    }
+  };
+
   return (
     <ListItem key={id}>
       <Flex align="center" justify="space-between">
@@ -139,85 +175,123 @@ const CommentComponent = ({
         </Flex>
         <Moment fromNow>{created_at}</Moment>
       </Flex>
-      <Box ml={15} my={2}>
-        <Box my={2} fontSize={18}>
-          {editMode ? (
-            <>
-              <form onSubmit={onSubmitEditComment}>
+      {session ? (
+        <Box ml={15} my={2}>
+          <Box my={2} fontSize={18}>
+            {editMode ? (
+              <>
+                <form onSubmit={onSubmitEditComment}>
+                  <Input
+                    variant="outline"
+                    value={commentValue}
+                    onChange={e => setCommentValue(e.target.value)}
+                    fontSize={20}
+                  />
+                  <Button mt={2} mr={2} onClick={() => setEditMode(false)}>
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    mt={2}
+                    bgColor={bgColor}
+                    disabled={!Boolean(commentValue)}
+                  >
+                    Save
+                  </Button>
+                </form>
+              </>
+            ) : (
+              <Input
+                variant="unstyled"
+                value={comment}
+                readOnly
+                fontSize={20}
+              />
+            )}
+          </Box>
+          {showReply && (
+            <Box my={2} fontSize={18}>
+              <form onSubmit={onSubmitReply}>
                 <Input
                   variant="outline"
-                  value={commentValue}
-                  onChange={e => setCommentValue(e.target.value)}
+                  fontSize={20}
+                  onChange={e => setRepComment(e.target.value)}
                 />
-                <Button mt={2} mr={2} onClick={() => setEditMode(false)}>
+                <Button mt={2} mr={2} onClick={handleShowReply}>
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   mt={2}
                   bgColor={bgColor}
-                  disabled={!Boolean(commentValue)}
+                  disabled={!Boolean(repComment)}
                 >
                   Save
                 </Button>
               </form>
-            </>
-          ) : (
-            <Input variant="unstyled" value={comment} readOnly />
+            </Box>
           )}
+          <Flex alignItems={'center'}>
+            <Tooltip
+              hasArrow
+              label="Like post"
+              // bg={useColorModeValue('primaryGreen', 'primaryOrange')}
+              // color={useColorModeValue('white', 'black')}
+            >
+              <HStack
+                marginRight="4"
+                spacing="1"
+                display="flex"
+                alignItems="center"
+                cursor={'pointer'}
+                onClick={handleLikeComment}
+              >
+                {iconLike === 'Like' ? (
+                  <AiFillLike fontSize={30} color="blue" />
+                ) : (
+                  <AiOutlineLike fontSize={30} />
+                )}
+                <Text fontSize={20}>{likeCount}</Text>
+              </HStack>
+            </Tooltip>
+            {/* <Button mr={2}>
+              <AiOutlineLike fontSize={30} />
+            </Button> */}
+            {!showReply && (
+              <Button bgColor={bgColor} mr={2} onClick={handleShowReply}>
+                Reply
+              </Button>
+            )}
+            {session && customUser.permissions[0] === ADMIN ? (
+              <>
+                <Button
+                  bgColor={bgColorReverse}
+                  mr={2}
+                  onClick={() => setEditMode(true)}
+                >
+                  Edit
+                </Button>
+                <Button bgColor={'#f33f3f'} onClick={onOpen}>
+                  Delete
+                </Button>
+                <ModalDeleteComment
+                  onClose={onClose}
+                  isOpen={isOpen}
+                  title="Xoá bình luận"
+                  body="Bạn muốn xoá bình luận này?"
+                  post_id={post_id}
+                  comment_id={id}
+                  setDetail={setDetail}
+                />
+              </>
+            ) : undefined}
+          </Flex>
         </Box>
-        {showReply && (
-          <Box my={2} fontSize={18}>
-            <form onSubmit={onSubmitReply}>
-              <Input
-                variant="outline"
-                onChange={e => setRepComment(e.target.value)}
-              />
-              <Button mt={2} mr={2} onClick={handleShowReply}>
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                mt={2}
-                bgColor={bgColor}
-                disabled={!Boolean(repComment)}
-              >
-                Save
-              </Button>
-            </form>
-          </Box>
-        )}
-        <Flex>
-          {!showReply && (
-            <Button bgColor={bgColor} mr={2} onClick={handleShowReply}>
-              Reply
-            </Button>
-          )}
-          {session && customUser.permissions[0] === ADMIN ? (
-            <>
-              <Button
-                bgColor={bgColorReverse}
-                mr={2}
-                onClick={() => setEditMode(true)}
-              >
-                Edit
-              </Button>
-              <Button bgColor={'#f33f3f'} onClick={onOpen}>
-                Delete
-              </Button>
-              <ModalDeleteComment
-                onClose={onClose}
-                isOpen={isOpen}
-                title="Xoá bình luận"
-                body="Bạn muốn xoá bình luận này?"
-                post_id={post_id}
-                comment_id={id}
-                setDetail={setDetail}
-              />
-            </>
-          ) : undefined}
-        </Flex>
-      </Box>
+      ) : (
+        <Box my={4}>
+          <Input variant="unstyled" value={comment} readOnly fontSize={20} />
+        </Box>
+      )}
       {hasChildren ? (
         <List spacing={3} ml={10}>
           {reply.map(item => (
