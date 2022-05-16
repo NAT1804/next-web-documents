@@ -24,6 +24,7 @@ import {
   SpaceProps,
   Tag,
   Text,
+  Tooltip,
   useColorModeValue,
   useDisclosure,
   Wrap,
@@ -80,17 +81,24 @@ interface IPostCommentProps {
 export const PostComment: React.FC<IPostCommentProps> = props => {
   const router = useRouter();
   return (
-    <HStack
-      marginTop="2"
-      spacing="2"
-      display="flex"
-      alignItems="center"
-      cursor={'pointer'}
-      onClick={() => router.push(`/posts/${props.id}#respond`)}
+    <Tooltip
+      hasArrow
+      label="Comment"
+      bg={useColorModeValue('primaryGreen', 'primaryOrange')}
+      color={useColorModeValue('white', 'black')}
     >
-      <ChatIcon />
-      <Text>{props.quantity}</Text>
-    </HStack>
+      <HStack
+        marginTop="2"
+        spacing="2"
+        display="flex"
+        alignItems="center"
+        cursor={'pointer'}
+        onClick={() => router.push(`/posts/${props.id}#respond`)}
+      >
+        <ChatIcon />
+        <Text>{props.quantity}</Text>
+      </HStack>
+    </Tooltip>
   );
 };
 
@@ -135,27 +143,34 @@ export const PostHeart = props => {
   };
 
   return (
-    <HStack
-      marginTop="2"
-      spacing="2"
-      display="flex"
-      alignItems="center"
-      cursor={'pointer'}
-      onClick={handleLikePost}
+    <Tooltip
+      hasArrow
+      label="Like post"
+      bg={useColorModeValue('primaryGreen', 'primaryOrange')}
+      color={useColorModeValue('white', 'black')}
     >
-      {iconLike === 'Like' ? (
-        <AiFillHeart size={18} color="red" />
-      ) : (
-        <AiOutlineHeart size={18} />
-      )}
-      <Text>{likeCount}</Text>
-      <ModalLoginRequest
-        onClose={onClose}
-        isOpen={isOpen}
-        title="Yêu cầu đăng nhập"
-        body="Bạn cần đăng nhập để có thể thả tim bài viết này!"
-      />
-    </HStack>
+      <HStack
+        marginTop="2"
+        spacing="2"
+        display="flex"
+        alignItems="center"
+        cursor={'pointer'}
+        onClick={handleLikePost}
+      >
+        {iconLike === 'Like' ? (
+          <AiFillHeart size={18} color="red" />
+        ) : (
+          <AiOutlineHeart size={18} />
+        )}
+        <Text>{likeCount}</Text>
+        <ModalLoginRequest
+          onClose={onClose}
+          isOpen={isOpen}
+          title="Yêu cầu đăng nhập"
+          body="Bạn cần đăng nhập để có thể thả tim bài viết này!"
+        />
+      </HStack>
+    </Tooltip>
   );
 };
 
@@ -313,52 +328,124 @@ export const PostReport = props => {
   const [reportCount, setReportCount] = useState(props.reports.length);
 
   return (
-    <HStack
-      marginTop="2"
-      spacing="2"
-      display="flex"
-      alignItems="center"
-      cursor={'pointer'}
+    <Tooltip
+      hasArrow
+      label="Report post"
+      bg={useColorModeValue('primaryGreen', 'primaryOrange')}
+      color={useColorModeValue('white', 'black')}
     >
-      {iconReport === MESSAGE_SUCCESS ? (
-        <MdReport size={18} color="red" onClick={onOpen} />
-      ) : (
-        <MdReportGmailerrorred size={18} onClick={onOpen} />
-      )}
+      <HStack
+        marginTop="2"
+        spacing="2"
+        display="flex"
+        alignItems="center"
+        cursor={'pointer'}
+      >
+        {iconReport === MESSAGE_SUCCESS ? (
+          <MdReport size={18} color="red" onClick={onOpen} />
+        ) : (
+          <MdReportGmailerrorred size={18} onClick={onOpen} />
+        )}
 
-      <Text>{reportCount}</Text>
-      {session ? (
-        <ModalReport
-          onClose={onClose}
-          isOpen={isOpen}
-          id={`${props.id}`}
-          title="Báo cáo bài viết"
-          setIconReport={setIconReport}
-          setReportCount={setReportCount}
-        />
-      ) : (
-        <ModalLoginRequest
-          onClose={onClose}
-          isOpen={isOpen}
-          title="Yêu cầu đăng nhập"
-          body="Bạn cần đăng nhập để có thể báo cáo bài viết này!"
-        />
-      )}
-    </HStack>
+        <Text>{reportCount}</Text>
+        {session ? (
+          <ModalReport
+            onClose={onClose}
+            isOpen={isOpen}
+            id={`${props.id}`}
+            title="Báo cáo bài viết"
+            setIconReport={setIconReport}
+            setReportCount={setReportCount}
+          />
+        ) : (
+          <ModalLoginRequest
+            onClose={onClose}
+            isOpen={isOpen}
+            title="Yêu cầu đăng nhập"
+            body="Bạn cần đăng nhập để có thể báo cáo bài viết này!"
+          />
+        )}
+      </HStack>
+    </Tooltip>
   );
 };
 
-export const PostDelete = () => {
+export const ModalDeletePost = ({ onClose, isOpen, title, body, post_id }) => {
+  const notify = useCallback((type, message) => {
+    ToastMessage({ type, message });
+  }, []);
+  const router = useRouter();
+
+  const handleDeletePost = async e => {
+    e.preventDefault();
+    const response = await api.delete(`api/posts/${post_id}`);
+
+    if (response.data) {
+      notify('success', 'Xoá bài viết thành công');
+      onClose();
+      router.push('/');
+      window.location.reload();
+    } else {
+      notify('error', 'Xoá bài viết thất bại');
+    }
+  };
+
   return (
-    <HStack
-      marginTop="2"
-      spacing="2"
-      display="flex"
-      alignItems="center"
-      cursor={'pointer'}
+    <Modal
+      isCentered
+      onClose={onClose}
+      isOpen={isOpen}
+      motionPreset="slideInBottom"
     >
-      <AiFillCloseCircle color="red" fontSize={20} />
-    </HStack>
+      <ModalOverlay
+        bg="blackAlpha.300"
+        backdropFilter="blur(10px) hue-rotate(90deg)"
+      />
+      <ModalContent>
+        <ModalHeader>{title}</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Text>{body}</Text>
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={onClose}>
+            Close
+          </Button>
+          <Button onClick={handleDeletePost} variant="ghost">
+            Delete
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
+
+export const PostDelete = ({ id }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return (
+    <Tooltip
+      hasArrow
+      label="Delete post"
+      bg={useColorModeValue('primaryGreen', 'primaryOrange')}
+      color={useColorModeValue('white', 'black')}
+    >
+      <HStack
+        marginTop="2"
+        spacing="2"
+        display="flex"
+        alignItems="center"
+        cursor={'pointer'}
+      >
+        <AiFillCloseCircle color="red" fontSize={20} onClick={onOpen} />
+        <ModalDeletePost
+          onClose={onClose}
+          isOpen={isOpen}
+          title="Xoá bài viêt"
+          body="Bạn muốn xoá bài viết này?"
+          post_id={id}
+        />
+      </HStack>
+    </Tooltip>
   );
 };
 
@@ -379,7 +466,7 @@ export const PostInteractive = props => {
       <PostReport id={props.id} reports={props.reports} />
       &nbsp;&nbsp;
       {session && customUser.permissions[0] === ADMIN ? (
-        <PostDelete />
+        <PostDelete id={props.id} />
       ) : undefined}
     </Flex>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, GridItem, Heading, Spinner } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Heading, Spinner, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
 import {
@@ -44,25 +44,29 @@ const PostDetailPageByType = () => {
   return (
     <>
       <BreadcrumbElement breadcrumb={breadcrumb} />
-      <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+      <Grid templateColumns="repeat(3, 1fr)" gap={10}>
         <GridItem colSpan={{ base: 3, md: 2 }}>
-          <PostContainer>
-            <Section delay={0.1}>
-              <Heading as="h2" fontSize={'30'}>
-                {slug}
-              </Heading>
-            </Section>
-            {posts.data.map((post, i) => (
-              <Section key={i} delay={(i + 1) * 0.1 + 0.1} x={(i + 1) * -100}>
-                <PostItem post={post} />
+          {posts.data.length ? (
+            <PostContainer>
+              <Section delay={0.1}>
+                <Heading as="h2" fontSize={'30'}>
+                  {slug}
+                </Heading>
               </Section>
-            ))}
-            <Pagination
-              links={posts.links}
-              meta={posts.meta}
-              setPage={setPage}
-            />
-          </PostContainer>
+              {posts.data.map((post, i) => (
+                <Section key={i} delay={(i + 1) * 0.1 + 0.1} x={(i + 1) * -100}>
+                  <PostItem post={post} />
+                </Section>
+              ))}
+              <Pagination
+                links={posts.links}
+                meta={posts.meta}
+                setPage={setPage}
+              />
+            </PostContainer>
+          ) : (
+            <Text>Không có tài liệu nào!</Text>
+          )}
         </GridItem>
         <GridItem
           display={'block'}

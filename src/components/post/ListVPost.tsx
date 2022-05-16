@@ -7,7 +7,14 @@ import { usePosts } from 'hooks';
 
 const ListVPost = () => {
   const { posts, isLoading, isError } = usePosts(1);
-  const bgColor = useColorModeValue('primaryGreen', 'primaryOrange');
+
+  const reverseArr = input => {
+    let ret = new Array();
+    for (let i = input.length - 1; i >= 0; --i) {
+      ret.push(input[i]);
+    }
+    return ret;
+  };
 
   if (isLoading)
     return (
@@ -28,10 +35,10 @@ const ListVPost = () => {
     <>
       <Section delay={0.1}>
         <Heading as="h1" fontSize={'30'}>
-          Tài liệu mới nhất
+          Tài liệu liên quan
         </Heading>
       </Section>
-      {posts.data.reverse().map((vpost, i) => (
+      {reverseArr(posts.data).map((vpost, i) => (
         <Section key={i} delay={0.2} x={(i + 1) * 100}>
           <VPostItem post={vpost} />
         </Section>

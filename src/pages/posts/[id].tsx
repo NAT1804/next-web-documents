@@ -1,52 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Grid, GridItem, Heading, Spinner } from '@chakra-ui/react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Grid, GridItem, Spinner } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
 
 import { PostDetail, BreadcrumbElement } from '../../components';
 import ListVPost from 'components/post/ListVPost';
-import { usePostById } from 'hooks';
 import { IBreadcrumb } from 'types';
 import api from 'api';
 
 const PostDetailPage = () => {
   const param = useRouter();
   const { id } = param.query;
-  const breadcrumb: IBreadcrumb[] = [];
+  const breadcrumb: IBreadcrumb[] = useMemo(() => [], []);
 
-  // const { post, isLoading, isError } = usePostById(id);
   const [detail, setDetail] = useState(null);
   const [isLoading, setLoading] = useState(false);
-  const [isError, setError] = useState(null);
+  const [isError, setError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const response = await api.get(`api/posts/${id}`);
+      if (id) {
+        const response = await api.get(`api/posts/${id}`);
 
-      if (response.data) {
-        setLoading(false);
-        setDetail(response.data);
-        // breadcrumb.push({
-        //   name: 'Home',
-        //   href: `/`
-        // });
-        // breadcrumb.push({
-        //   name: response.data.post_type_id,
-        //   href: `/posts/type/${response.data.type_slug}`
-        // });
-        // breadcrumb.push({
-        //   name: response.data.title
-        // });
-      } else {
-        setError('Has error');
-        console.log('Has error');
+        if (response.data) {
+          breadcrumb.push({
+            name: 'Home',
+            href: `/`
+          });
+          breadcrumb.push({
+            name: response.data.data.post_type_id,
+            href: `/posts/type/${response.data.data.type_slug}`
+          });
+          breadcrumb.push({
+            name: response.data.data.title
+          });
+          setDetail(response.data);
+          setLoading(false);
+        } else {
+          setError(true);
+        }
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, breadcrumb]);
 
-  // if (isError) return <div>Failed to load</div>;
   if (isLoading)
     return (
       <>
@@ -54,21 +51,8 @@ const PostDetailPage = () => {
       </>
     );
 
+  if (isError) return <div>Failed to load</div>;
   if (!detail) return <p>No data</p>;
-
-  // if (!isError && !isLoading) {
-  //   breadcrumb.push({
-  //     name: 'Home',
-  //     href: `/`
-  //   });
-  //   breadcrumb.push({
-  //     name: post.data.post_type_id,
-  //     href: `/posts/type/${post.data.type_slug}`
-  //   });
-  //   breadcrumb.push({
-  //     name: post.data.title
-  //   });
-  // }
 
   return (
     <>

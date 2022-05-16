@@ -17,9 +17,6 @@ export const PostType = props => {
 
 const PostDetail = ({ detail, setDetail }) => {
   const { data } = detail;
-  const [comments, setComments] = useState(data.comment);
-
-  // console.log('comments', comments);
 
   return (
     <Box w="100%">
@@ -39,12 +36,7 @@ const PostDetail = ({ detail, setDetail }) => {
         ? data.files.map((file, i) => <PreviewPdf key={i} file={file.link} />)
         : undefined}
       <Box mt={4} dangerouslySetInnerHTML={{ __html: data.content }}></Box>
-      <Respond
-        id={data.id}
-        comments={comments}
-        setComments={setComments}
-        setDetail={setDetail}
-      />
+      <Respond id={data.id} comments={data.comment} setDetail={setDetail} />
     </Box>
   );
 };
