@@ -25,7 +25,7 @@ import {
 import React, { useState } from 'react';
 import { FaLock } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
-import { getCsrfToken, signIn } from 'next-auth/react';
+import { getCsrfToken, signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 
@@ -38,6 +38,7 @@ const LoginPage = ({ csrfToken }) => {
   const [error, setError] = useState(null);
   const router = useRouter();
   const { callbackUrl } = router.query;
+  const { data: session } = useSession();
 
   const {
     handleSubmit,
@@ -57,6 +58,10 @@ const LoginPage = ({ csrfToken }) => {
     }
     if (res.url) router.push(res.url);
   };
+
+  if (session) {
+    router.push('/');
+  }
 
   return (
     <Flex flexDir={'column'} justify="center" align="center" my={'2'}>

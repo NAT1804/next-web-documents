@@ -55,12 +55,15 @@ const Header = props => {
               <ToggleButton />
               {session ? (
                 <>
-                  <Text
-                    display={{ base: 'none', sm: 'block' }}
-                    alignSelf="center"
-                  >
-                    {session?.user?.name}
-                  </Text>
+                  <NextLink href={'/user'} passHref>
+                    <Text
+                      display={{ base: 'none', sm: 'block' }}
+                      alignSelf="center"
+                      cursor={'pointer'}
+                    >
+                      {session?.user?.name}
+                    </Text>
+                  </NextLink>
                   <Button
                     as={'a'}
                     fontSize={'sm'}

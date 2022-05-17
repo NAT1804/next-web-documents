@@ -461,15 +461,10 @@ export const PostInteractive = props => {
       <Box flexBasis={{ base: '100%', md: 'auto' }} mr={4}>
         {props.children}
       </Box>
-      {/* &nbsp;&nbsp; */}
       <PostDate date={props.date} />
-      {/* &nbsp;&nbsp; */}
       <PostComment id={props.id} quantity={props.quantity} />
-      {/* &nbsp;&nbsp; */}
       <PostHeart id={props.id} likes={props.likes} />
-      {/* &nbsp;&nbsp; */}
       <PostReport id={props.id} reports={props.reports} />
-      {/* &nbsp;&nbsp; */}
       {session && customUser.permissions[0] === ADMIN ? (
         <PostDelete id={props.id} />
       ) : undefined}
