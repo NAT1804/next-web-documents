@@ -12,6 +12,8 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
+  Grid,
+  GridItem,
   Input,
   InputGroup,
   InputLeftElement,
@@ -23,10 +25,11 @@ import {
 import api from 'api';
 import { ToastMessage } from 'components';
 import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaLock } from 'react-icons/fa';
+
+import { VPostItem, Section } from '../../components';
 
 const CFaLock = chakra(FaLock);
 
@@ -36,8 +39,34 @@ const UserPage = () => {
   const color = useColorModeValue('white', 'black');
   const [showChangePassword, setShowChangePassword] = useState(false);
 
-  const [showPassword, setShowPassword] = useState(false);
-  const handleShowPassword = () => setShowPassword(prevState => !prevState);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showNewPasswordConfirmation, setShowNewPasswordConfirmation] =
+    useState(false);
+
+  const [listPostLike, setListPostLike] = useState([]);
+  const [listPostReport, setListPostReport] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await api.get('/api/users/profile/likes');
+      const resp = await api.get('/api/users/profile/reports');
+
+      if (response.data) {
+        console.log('test', response.data);
+        setListPostLike(response.data.data);
+      } else {
+      }
+
+      if (resp.data) {
+        console.log('test', resp.data);
+        setListPostReport(resp.data.data);
+      } else {
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const {
     handleSubmit,
@@ -96,6 +125,17 @@ const UserPage = () => {
 
   return (
     <>
+      <Grid templateColumns="repeat(3, 1fr)" gap={10}>
+        <GridItem colSpan={{ base: 3, md: 2 }}></GridItem>
+        <GridItem
+          display={'block'}
+          colSpan={{ base: 3, md: 1 }}
+          position="sticky"
+          top={180}
+        >
+          {/* <ListVPost /> */}
+        </GridItem>
+      </Grid>
       <Center>
         <Button onClick={() => setShowChangePassword(prev => !prev)}>
           Đổi mật khẩu
@@ -133,7 +173,7 @@ const UserPage = () => {
                         <CFaLock color={bgColor} />
                       </InputLeftElement>
                       <Input
-                        type={showPassword ? 'text' : 'password'}
+                        type={showOldPassword ? 'text' : 'password'}
                         placeholder="Old password"
                         {...register('old_password', {
                           required: 'This is required',
@@ -149,8 +189,10 @@ const UserPage = () => {
                         })}
                       />
                       <InputRightElement>
-                        <Button onClick={handleShowPassword}>
-                          {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                        <Button
+                          onClick={() => setShowOldPassword(prev => !prev)}
+                        >
+                          {showOldPassword ? <ViewOffIcon /> : <ViewIcon />}
                         </Button>
                       </InputRightElement>
                     </InputGroup>
@@ -164,7 +206,7 @@ const UserPage = () => {
                         <CFaLock color={bgColor} />
                       </InputLeftElement>
                       <Input
-                        type={showPassword ? 'text' : 'password'}
+                        type={showNewPassword ? 'text' : 'password'}
                         placeholder="New password"
                         {...register('new_password', {
                           required: 'This is required',
@@ -181,8 +223,10 @@ const UserPage = () => {
                         })}
                       />
                       <InputRightElement>
-                        <Button onClick={handleShowPassword}>
-                          {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                        <Button
+                          onClick={() => setShowNewPassword(prev => !prev)}
+                        >
+                          {showNewPassword ? <ViewOffIcon /> : <ViewIcon />}
                         </Button>
                       </InputRightElement>
                     </InputGroup>
@@ -196,7 +240,7 @@ const UserPage = () => {
                         <CFaLock color={bgColor} />
                       </InputLeftElement>
                       <Input
-                        type={showPassword ? 'text' : 'password'}
+                        type={showNewPasswordConfirmation ? 'text' : 'password'}
                         placeholder="Confirm new password"
                         {...register('confirm_new_password', {
                           required: 'This is required',
@@ -216,8 +260,16 @@ const UserPage = () => {
                         })}
                       />
                       <InputRightElement>
-                        <Button onClick={handleShowPassword}>
-                          {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                        <Button
+                          onClick={() =>
+                            setShowNewPasswordConfirmation(prev => !prev)
+                          }
+                        >
+                          {showNewPasswordConfirmation ? (
+                            <ViewOffIcon />
+                          ) : (
+                            <ViewIcon />
+                          )}
                         </Button>
                       </InputRightElement>
                     </InputGroup>
@@ -243,6 +295,16 @@ const UserPage = () => {
           </Flex>
         </>
       ) : undefined}
+      {/* {listPostLike.map((post, i) => (
+        <Section key={i} delay={0.2} x={(i + 1) * 100}>
+          <VPostItem post={post} />
+        </Section>
+      ))}
+      {listPostReport.map((post, i) => (
+        <Section key={i} delay={0.2} x={(i + 1) * 100}>
+          <VPostItem post={post} />
+        </Section>
+      ))} */}
     </>
   );
 };
