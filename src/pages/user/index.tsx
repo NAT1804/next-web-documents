@@ -88,10 +88,29 @@ const TablePost = ({ title, posts, type }) => {
                   <Td>{post.id}</Td>
                   {type === 'like' ? (
                     <NextLink href={`/posts/${post.id}`} passHref>
-                      <Td cursor={'pointer'}>{post.title}</Td>
+                      <Td
+                        cursor={'pointer'}
+                        style={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          maxWidth: '50ch',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {post.title}
+                      </Td>
                     </NextLink>
                   ) : (
-                    <Td>{post.description}</Td>
+                    <Td
+                      style={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        maxWidth: '50ch',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {post.description}
+                    </Td>
                   )}
                   {type === 'report' ? (
                     <Td>{new Date(post.updated_at).toDateString()}</Td>

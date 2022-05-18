@@ -262,15 +262,17 @@ const CommentComponent = ({
                 Reply
               </Button>
             )}
+            {session && customUser.id === user_id ? (
+              <Button
+                bgColor={bgColorReverse}
+                mr={2}
+                onClick={() => setEditMode(true)}
+              >
+                Edit
+              </Button>
+            ) : undefined}
             {session && customUser.permissions[0] === ADMIN ? (
               <>
-                <Button
-                  bgColor={bgColorReverse}
-                  mr={2}
-                  onClick={() => setEditMode(true)}
-                >
-                  Edit
-                </Button>
                 <Button bgColor={'#f33f3f'} onClick={onOpen}>
                   Delete
                 </Button>

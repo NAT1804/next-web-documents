@@ -56,15 +56,12 @@ const Header = props => {
               {session ? (
                 <>
                   <NextLink href={'/user'} passHref>
-                    <Text
-                      display={{ base: 'none', sm: 'block' }}
-                      alignSelf="center"
-                      cursor={'pointer'}
-                    >
+                    <Text alignSelf="center" cursor={'pointer'}>
                       {session?.user?.name}
                     </Text>
                   </NextLink>
                   <Button
+                    display={{ base: 'none', sm: 'flex' }}
                     as={'a'}
                     fontSize={'sm'}
                     fontWeight={400}
