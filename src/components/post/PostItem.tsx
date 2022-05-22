@@ -48,7 +48,7 @@ interface IPostTags {
 
 const PostTags: React.FC<IPostTags> = props => {
   return (
-    <HStack spacing="1" marginTop={props.marginTop}>
+    <HStack spacing="1" marginTop={props.marginTop} pb={3}>
       {props.tags.map(tag => {
         return (
           <Tag p={2} size={'md'} variant="solid" colorScheme="red" key={tag}>
@@ -465,16 +465,17 @@ export const PostInteractive = props => {
       <PostComment id={props.id} quantity={props.quantity} />
       <PostHeart id={props.id} likes={props.likes} />
       <PostReport id={props.id} reports={props.reports} />
-      {session && customUser.permissions[0] === ADMIN ? (
+      {/* {session && customUser.permissions[0] === ADMIN ? (
         <PostDelete id={props.id} />
-      ) : undefined}
+      ) : undefined} */}
     </Flex>
   );
 };
 
 export const VPostItem = ({ post }) => {
+  const bgColorReverse = useColorModeValue('primaryOrange', 'primaryGreen');
   return (
-    <Box w="100%" my={'4'}>
+    <Box w="100%" my={'4'} borderBottom={'1px solid #ccc'}>
       <Flex
         flexDir={'row'}
         justify={'center'}
@@ -486,6 +487,7 @@ export const VPostItem = ({ post }) => {
           <NextLink href={`/posts/${post.id}`} passHref>
             <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
               <Image
+                alignSelf={'flex-end'}
                 transform="scale(1.0)"
                 src="/logo-tailieu-vnu.png"
                 alt="logo"
@@ -493,7 +495,7 @@ export const VPostItem = ({ post }) => {
                 width="100%"
                 transition="0.3s ease-in-out"
                 _hover={{
-                  transform: 'scale(1.05)'
+                  transform: 'scale(1.1)'
                 }}
               />
             </Link>
@@ -501,8 +503,7 @@ export const VPostItem = ({ post }) => {
         </Box>
         <Heading
           flex={1}
-          fontSize="xl"
-          marginTop="2"
+          fontSize="lg"
           style={{
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -513,7 +514,10 @@ export const VPostItem = ({ post }) => {
           }}
         >
           <NextLink href={`/posts/${post.id}`} passHref>
-            <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
+            <Link
+              textDecoration="none"
+              _hover={{ textDecoration: 'none', color: bgColorReverse }}
+            >
               {post.title}
             </Link>
           </NextLink>
@@ -531,6 +535,8 @@ export const VPostItem = ({ post }) => {
 };
 
 export const PostItem = ({ post }) => {
+  const bgColorReverse = useColorModeValue('primaryOrange', 'primaryGreen');
+
   return (
     <>
       <Box
@@ -539,6 +545,8 @@ export const PostItem = ({ post }) => {
         flexDirection={{ base: 'column', sm: 'row' }}
         justifyContent="space-between"
         marginBottom={4}
+        paddingBottom={4}
+        borderBottom={'1px solid #cccccc'}
       >
         <Box
           display="flex"
@@ -568,7 +576,7 @@ export const PostItem = ({ post }) => {
                   objectFit="contain"
                   transition="0.3s ease-in-out"
                   _hover={{
-                    transform: 'scale(1.05)'
+                    transform: 'scale(1.1)'
                   }}
                 />
               </Link>
@@ -576,7 +584,7 @@ export const PostItem = ({ post }) => {
           </Box>
 
           <Box
-            width={{ base: '100%' }}
+            width={{ base: '90%' }}
             height={{ base: '100%' }}
             position="absolute"
           >
@@ -598,9 +606,23 @@ export const PostItem = ({ post }) => {
           justifyContent="center"
           marginTop={{ base: '3', sm: '0' }}
         >
-          <Heading fontSize={'2xl'} marginTop="1">
+          <Heading
+            fontSize={'2xl'}
+            marginTop="1"
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              lineClamp: 3,
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical'
+            }}
+          >
             <NextLink href={`/posts/${post.id}`} passHref>
-              <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
+              <Link
+                textDecoration="none"
+                _hover={{ textDecoration: 'none', color: bgColorReverse }}
+              >
                 {post.title}
               </Link>
             </NextLink>

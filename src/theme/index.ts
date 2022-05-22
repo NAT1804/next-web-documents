@@ -4,7 +4,8 @@ import { mode } from '@chakra-ui/theme-tools';
 const styles = {
   golbal: props => ({
     body: {
-      bg: mode('#f0e7db', '#202023')(props)
+      bg: mode('#F7F7F7', '#202023')(props)
+      // bg: mode('#f0e7db', '#202023')(props)
     }
   })
 };

@@ -71,7 +71,7 @@ const Header = props => {
                       signOut({ callbackUrl: `${window.location.href}` });
                     }}
                   >
-                    Log out
+                    Đăng xuất
                   </Button>
                 </>
               ) : (
@@ -88,7 +88,7 @@ const Header = props => {
                         signIn();
                       }}
                     >
-                      Sign In
+                      Đăng nhập
                     </Button>
                   </NextLink>
                   <NextLink href="/register" passHref>
@@ -102,7 +102,7 @@ const Header = props => {
                         bg: 'cyan.300'
                       }}
                     >
-                      Sign Up
+                      Đăng ký
                     </Button>
                   </NextLink>
                 </>

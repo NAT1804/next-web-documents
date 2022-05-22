@@ -39,8 +39,7 @@ import Moment from 'react-moment';
 import { ModalLoginRequest } from 'components/post/PostItem';
 import api from 'api';
 import ToastMessage from 'components/toast/Toast';
-import { MdCheckCircle } from 'react-icons/md';
-import { usePostById, useUserById } from 'hooks';
+import { useUserById } from 'hooks';
 import { ADMIN, CustomUser } from 'types';
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
 
@@ -64,9 +63,20 @@ const CommentComponent = ({
   const [repComment, setRepComment] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [editMode, setEditMode] = useState(false);
-  const [commentValue, setCommentValue] = useState(comment);
-
   const customUser = session?.user as CustomUser;
+  const [commentValue, setCommentValue] = useState<string>(() => {
+    if (session) {
+      if (customUser.id === user_id) {
+        return comment;
+      } else {
+        return '';
+      }
+    } else {
+      return '';
+    }
+  });
+
+  console.log('cmt', comment);
 
   const notify = useCallback((type, message) => {
     ToastMessage({ type, message });
@@ -146,13 +156,18 @@ const CommentComponent = ({
         setIconLike(response.data.message);
         if (response.data.message === 'Like') {
           setlikeCount(prev => prev + 1);
-          notify('success', 'Like comment successfully!');
+          notify('success', 'Thích bình luận thành công!');
         } else {
-          setlikeCount(prev => prev - 1);
-          notify('success', 'Unlike comment successfully!');
+          setlikeCount(prev => {
+            if (prev <= 0) return 0;
+            else {
+              return prev - 1;
+            }
+          });
+          notify('success', 'Bỏ thích bình luận thành công!');
         }
       } else {
-        notify('error', 'Like comment failed!');
+        notify('error', 'Có lỗi xảy ra!');
       }
     } else {
       onOpen();
@@ -161,139 +176,158 @@ const CommentComponent = ({
 
   return (
     <ListItem key={id}>
-      <Flex align="center" justify="space-between">
-        <Flex align="center">
-          <Avatar
-            name={user?.data?.name}
-            color={color}
-            bgColor={bgColor}
-            size={'sm'}
-            src="https://bit.ly/broken-link"
-            mr={2}
-          />
-          <Box fontWeight={'semibold'}>{user?.data?.name}</Box>
-        </Flex>
-        <Moment fromNow>{created_at}</Moment>
-      </Flex>
-      {session ? (
-        <Box ml={15} my={2}>
-          <Box my={2} fontSize={18}>
-            {editMode ? (
-              <>
-                <form onSubmit={onSubmitEditComment}>
+      <Flex align="flex-start" justify="flex-start">
+        <Avatar
+          name={user?.data?.name}
+          color={color}
+          bgColor={bgColor}
+          size={'md'}
+          src="https://bit.ly/broken-link"
+          mr={2}
+        />
+        <Box>
+          <Flex align="center">
+            <Box fontWeight={'semibold'} mr={3}>
+              {user?.data?.name}
+            </Box>
+            <Moment fromNow>{created_at}</Moment>
+          </Flex>
+          {session ? (
+            <Box my={2}>
+              <Box my={2} fontSize={14}>
+                {editMode ? (
+                  <>
+                    <form onSubmit={onSubmitEditComment}>
+                      <Input
+                        variant="outline"
+                        value={commentValue}
+                        onChange={e => setCommentValue(e.target.value)}
+                        fontSize={18}
+                      />
+                      <Button mt={2} mr={2} onClick={() => setEditMode(false)}>
+                        Huỷ
+                      </Button>
+                      <Button
+                        type="submit"
+                        mt={2}
+                        bgColor={bgColor}
+                        disabled={!Boolean(commentValue)}
+                      >
+                        Lưu
+                      </Button>
+                    </form>
+                  </>
+                ) : (
                   <Input
-                    variant="outline"
-                    value={commentValue}
-                    onChange={e => setCommentValue(e.target.value)}
-                    fontSize={20}
+                    variant="unstyled"
+                    value={comment}
+                    readOnly
+                    fontSize={18}
                   />
-                  <Button mt={2} mr={2} onClick={() => setEditMode(false)}>
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    mt={2}
-                    bgColor={bgColor}
-                    disabled={!Boolean(commentValue)}
+                )}
+              </Box>
+              {showReply && (
+                <Box my={2} fontSize={18}>
+                  <form onSubmit={onSubmitReply}>
+                    <Input
+                      variant="outline"
+                      fontSize={18}
+                      onChange={e => setRepComment(e.target.value)}
+                    />
+                    <Button mt={2} mr={2} onClick={handleShowReply}>
+                      Huỷ
+                    </Button>
+                    <Button
+                      type="submit"
+                      mt={2}
+                      bgColor={bgColor}
+                      disabled={!Boolean(repComment)}
+                    >
+                      Lưu
+                    </Button>
+                  </form>
+                </Box>
+              )}
+              <Flex alignItems={'center'}>
+                <Tooltip
+                  hasArrow
+                  label="Like post"
+                  // bg={useColorModeValue('primaryGreen', 'primaryOrange')}
+                  // color={useColorModeValue('white', 'black')}
+                >
+                  <HStack
+                    marginRight="4"
+                    spacing="1"
+                    display="flex"
+                    alignItems="center"
+                    cursor={'pointer'}
+                    onClick={handleLikeComment}
                   >
-                    Save
+                    {iconLike === 'Like' ? (
+                      <AiFillLike fontSize={20} color={bgColor} />
+                    ) : (
+                      <AiOutlineLike fontSize={20} />
+                    )}
+                    <Text fontSize={20}>{likeCount}</Text>
+                  </HStack>
+                </Tooltip>
+                {/* <Button mr={2}>
+              <AiOutlineLike fontSize={30} />
+            </Button> */}
+                {!showReply && (
+                  <Button
+                    variant={'ghost'}
+                    // bgColor={bgColor}
+                    mr={2}
+                    onClick={handleShowReply}
+                  >
+                    Reply
                   </Button>
-                </form>
-              </>
-            ) : (
+                )}
+                {session && customUser.id === user_id ? (
+                  <Button
+                    variant={'ghost'}
+                    // bgColor={bgColorReverse}
+                    mr={2}
+                    onClick={() => setEditMode(true)}
+                  >
+                    Edit
+                  </Button>
+                ) : undefined}
+                {session && customUser.permissions[0] === ADMIN ? (
+                  <>
+                    <Button
+                      variant={'ghost'}
+                      // bgColor={'#f33f3f'}
+                      onClick={onOpen}
+                    >
+                      Delete
+                    </Button>
+                    <ModalDeleteComment
+                      onClose={onClose}
+                      isOpen={isOpen}
+                      title="Xoá bình luận"
+                      body="Bạn muốn xoá bình luận này?"
+                      post_id={post_id}
+                      comment_id={id}
+                      setDetail={setDetail}
+                    />
+                  </>
+                ) : undefined}
+              </Flex>
+            </Box>
+          ) : (
+            <Box my={2}>
               <Input
                 variant="unstyled"
                 value={comment}
                 readOnly
-                fontSize={20}
+                fontSize={18}
               />
-            )}
-          </Box>
-          {showReply && (
-            <Box my={2} fontSize={18}>
-              <form onSubmit={onSubmitReply}>
-                <Input
-                  variant="outline"
-                  fontSize={20}
-                  onChange={e => setRepComment(e.target.value)}
-                />
-                <Button mt={2} mr={2} onClick={handleShowReply}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  mt={2}
-                  bgColor={bgColor}
-                  disabled={!Boolean(repComment)}
-                >
-                  Save
-                </Button>
-              </form>
             </Box>
           )}
-          <Flex alignItems={'center'}>
-            <Tooltip
-              hasArrow
-              label="Like post"
-              // bg={useColorModeValue('primaryGreen', 'primaryOrange')}
-              // color={useColorModeValue('white', 'black')}
-            >
-              <HStack
-                marginRight="4"
-                spacing="1"
-                display="flex"
-                alignItems="center"
-                cursor={'pointer'}
-                onClick={handleLikeComment}
-              >
-                {iconLike === 'Like' ? (
-                  <AiFillLike fontSize={30} color="blue" />
-                ) : (
-                  <AiOutlineLike fontSize={30} />
-                )}
-                <Text fontSize={20}>{likeCount}</Text>
-              </HStack>
-            </Tooltip>
-            {/* <Button mr={2}>
-              <AiOutlineLike fontSize={30} />
-            </Button> */}
-            {!showReply && (
-              <Button bgColor={bgColor} mr={2} onClick={handleShowReply}>
-                Reply
-              </Button>
-            )}
-            {session && customUser.id === user_id ? (
-              <Button
-                bgColor={bgColorReverse}
-                mr={2}
-                onClick={() => setEditMode(true)}
-              >
-                Edit
-              </Button>
-            ) : undefined}
-            {session && customUser.permissions[0] === ADMIN ? (
-              <>
-                <Button bgColor={'#f33f3f'} onClick={onOpen}>
-                  Delete
-                </Button>
-                <ModalDeleteComment
-                  onClose={onClose}
-                  isOpen={isOpen}
-                  title="Xoá bình luận"
-                  body="Bạn muốn xoá bình luận này?"
-                  post_id={post_id}
-                  comment_id={id}
-                  setDetail={setDetail}
-                />
-              </>
-            ) : undefined}
-          </Flex>
         </Box>
-      ) : (
-        <Box my={4}>
-          <Input variant="unstyled" value={comment} readOnly fontSize={20} />
-        </Box>
-      )}
+      </Flex>
       {hasChildren ? (
         <List spacing={3} ml={10}>
           {reply.map(item => (
@@ -381,6 +415,7 @@ const Respond = ({ id, comments, setDetail }) => {
     formState: { errors, isSubmitting },
     reset
   } = useForm();
+  const [showButtonPostComment, setShowButtonPostComment] = useState(false);
 
   const notify = useCallback((type, message) => {
     ToastMessage({ type, message });
@@ -412,82 +447,83 @@ const Respond = ({ id, comments, setDetail }) => {
 
   return (
     <>
-      <Grid
-        id="respond"
-        templateColumns={'repeat(5, 1fr)'}
-        gap={6}
-        py={5}
-        my={5}
-      >
-        <GridItem m="0 auto" display={{ base: 'none', md: 'flex' }}>
+      <Text size="30" my={5}>
+        {comments.length} COMMENTS
+      </Text>
+      <form id="respond" onSubmit={handleSubmit(onSubmit)}>
+        <HStack spacing={4} my={5}>
           {session ? (
             <Avatar
               name={session.user.name}
               color={colorAvatar}
               bgColor={bgColorAvatar}
-              size={'lg'}
+              size={'md'}
               src="https://bit.ly/broken-link"
             />
           ) : (
             <Avatar bgColor={bgColorAvatar} />
           )}
-        </GridItem>
-        <GridItem colSpan={{ base: 5, md: 4 }}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Stack spacing={4} p="1rem" boxShadow="md">
-              <FormControl isInvalid={errors.description}>
-                <Textarea
-                  placeholder="Để lại bình luận cho bài viết này"
-                  {...register('description', {
-                    required: 'Bạn cần thêm bình luận!'
-                  })}
-                />
-                <FormErrorMessage>
-                  {errors.description && errors.description.message}
-                </FormErrorMessage>
-              </FormControl>
-              {session ? (
-                <Button
-                  type="submit"
-                  width={{ base: 'full', md: '50%', lg: '30%' }}
-                  alignSelf={'flex-end'}
-                  borderRadius="0"
-                  variant={'solid'}
-                  color={colorAvatar}
-                  bgColor={bgColorAvatar}
-                  isLoading={isSubmitting}
-                >
-                  Send
-                </Button>
-              ) : (
-                <Button
-                  width={{ base: 'full', md: '50%', lg: '30%' }}
-                  alignSelf={'flex-end'}
-                  borderRadius="0"
-                  variant={'solid'}
-                  color={colorAvatar}
-                  bgColor={bgColorAvatar}
-                  isLoading={isSubmitting}
-                  onClick={onOpen}
-                >
-                  Send
-                </Button>
-              )}
-              <ModalLoginRequest
-                onClose={onClose}
-                isOpen={isOpen}
-                title="Yêu cầu đăng nhập"
-                body={'Bạn cần đăng nhập để thực hiện bình luận'}
-              />
-              ;
-            </Stack>
-          </form>
-        </GridItem>
-      </Grid>
+          <FormControl isInvalid={errors.description}>
+            <Input
+              variant={'flushed'}
+              placeholder="Để lại bình luận cho bài viết này..."
+              onClick={() => {
+                if (session) {
+                  setShowButtonPostComment(true);
+                } else {
+                  onOpen();
+                }
+              }}
+              {...register('description', {
+                required: 'Bạn cần thêm bình luận!'
+              })}
+            />
+            <FormErrorMessage>
+              {errors.description && errors.description.message}
+            </FormErrorMessage>
+          </FormControl>
+        </HStack>
+        {showButtonPostComment ? (
+          <Flex justify={'flex-end'} align={'center'} my={4}>
+            <Button
+              width={{ base: 'full', md: '50%', lg: '30%' }}
+              alignSelf={'flex-end'}
+              borderRadius="0"
+              variant={'solid'}
+              color={colorAvatar}
+              bgColor={bgColorAvatar}
+              onClick={() => {
+                setShowButtonPostComment(false);
+                reset();
+              }}
+              mr={2}
+            >
+              Huỷ
+            </Button>
+            {session ? (
+              <Button
+                type="submit"
+                width={{ base: 'full', md: '50%', lg: '30%' }}
+                alignSelf={'flex-end'}
+                borderRadius="0"
+                variant={'solid'}
+                color={colorAvatar}
+                bgColor={bgColorAvatar}
+                isLoading={isSubmitting}
+              >
+                Gửi
+              </Button>
+            ) : undefined}
+          </Flex>
+        ) : undefined}
+      </form>
+      <ModalLoginRequest
+        onClose={onClose}
+        isOpen={isOpen}
+        title="Yêu cầu đăng nhập"
+        body={'Bạn cần đăng nhập để thực hiện bình luận'}
+      />
 
-      <Text size="30" borderBottom={'solid 1px black'}>
-        {comments.length} COMMENTS
-      </Text>
       <List spacing={3} mt={3}>
         {reverseArr(comments).map((item, index) => (
           <CommentComponent key={index} {...item} setDetail={setDetail} />

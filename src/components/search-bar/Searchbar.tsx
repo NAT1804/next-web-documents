@@ -34,8 +34,9 @@ const Searchbar = () => {
               <FaSearch />
             </InputLeftElement>
             <Input
+              variant={'filled'}
               type={'text'}
-              placeholder="Search"
+              placeholder="Tìm kiếm"
               size={'md'}
               value={searchKey}
               onChange={handleInputChange}

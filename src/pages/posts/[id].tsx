@@ -57,7 +57,7 @@ const PostDetailPage = () => {
   return (
     <>
       <BreadcrumbElement breadcrumb={breadcrumb} />
-      <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+      <Grid templateColumns="repeat(3, 1fr)" gap={10}>
         <GridItem colSpan={{ base: 3, md: 2 }}>
           <PostDetail detail={detail} setDetail={setDetail} />
         </GridItem>
