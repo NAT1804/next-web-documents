@@ -109,7 +109,6 @@ const TablePost = ({ title, posts, type, setFunc }) => {
           <TableCaption placement="top">{title}</TableCaption>
           <Thead>
             <Tr>
-              <Th>POST ID</Th>
               <Th>
                 {type === 'like' || type === 'created'
                   ? 'Tiêu đề'
@@ -124,7 +123,6 @@ const TablePost = ({ title, posts, type, setFunc }) => {
             posts.map((post, i) => (
               <Tbody key={i}>
                 <Tr>
-                  <Td>{post.id}</Td>
                   {type === 'like' || type === 'created' ? (
                     <NextLink href={`/posts/${post.id}`} passHref>
                       <Td
@@ -484,36 +482,36 @@ const UserPage = () => {
   const [listPostReport, setListPostReport] = useState([]);
   const [listPostCreated, setListPostCreated] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await api.get('/api/users/profile/likes');
-      const resp = await api.get('/api/users/profile/reports');
-      // const respo = await api.get(`/api/posts?user_id=${customUser.id}`);
-      const respo = await api.get(`/api/users/profile/posts`);
+  // useEffect(() => {
+  // const fetchData = async () => {
+  //   const response = await api.get('/api/users/profile/likes');
+  //   const resp = await api.get('/api/users/profile/reports');
+  //   const respo = await api.get(`/api/users/profile/posts`);
 
-      if (response.data) {
-        setListPostLike(response.data.data);
-      }
+  //   if (response.data) {
+  //     setListPostLike(response.data.data);
+  //   }
 
-      if (resp.data) {
-        setListPostReport(resp.data.data);
-      }
+  //   if (resp.data) {
+  //     setListPostReport(resp.data.data);
+  //   }
 
-      if (respo.data) {
-        setListPostCreated(respo.data.data);
-      }
-    };
+  //   if (respo.data) {
+  //     setListPostCreated(respo.data.data);
+  //   }
+  // };
+  // fetchData();
 
-    if (session) {
-      fetchData();
-    }
+  //   if (session) {
+  //     fetchData();
+  //   }
 
-    return () => {
-      setListPostLike([]);
-      setListPostReport([]);
-      setListPostCreated([]);
-    };
-  }, [session]);
+  //   return () => {
+  //     setListPostLike([]);
+  //     setListPostReport([]);
+  //     setListPostCreated([]);
+  //   };
+  // }, [session]);
 
   const {
     handleSubmit,
@@ -548,7 +546,7 @@ const UserPage = () => {
     }
   };
 
-  const handleSwitch = type => {
+  const handleSwitch = async type => {
     setShowChangePassword(false);
     setShowPostDocument(false);
     setShowListPostLike(false);
@@ -559,11 +557,23 @@ const UserPage = () => {
         break;
       case 'T':
         setShowPostDocument(true);
+        const respo = await api.get(`/api/users/profile/posts`);
+        if (respo.data) {
+          setListPostCreated(respo.data.data);
+        }
         break;
       case 'L':
+        const response = await api.get('/api/users/profile/likes');
+        if (response.data) {
+          setListPostLike(response.data.data);
+        }
         setShowListPostLike(true);
         break;
       case 'R':
+        const resp = await api.get('/api/users/profile/reports');
+        if (resp.data) {
+          setListPostReport(resp.data.data);
+        }
         setShowListPostReport(true);
         break;
       default:
