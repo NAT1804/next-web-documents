@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { useInView } from 'react-intersection-observer';
 import { useAnimation, motion } from 'framer-motion';
+import NextLink from 'next/link';
 
 import Logo from '../logo/Logo';
 
@@ -79,7 +80,9 @@ const Footer = () => {
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader>THÔNG TIN</ListHeader>
-            <Link href={'#'}>Giới thiệu</Link>
+            <NextLink href={'/gioi-thieu'} passHref>
+              <Link>Giới thiệu</Link>
+            </NextLink>
             <Link>Điều khoản sử dụng</Link>
             <Link>Chính sách bảo mật</Link>
             <Link href={'#'}>Hòm thư góp ý</Link>

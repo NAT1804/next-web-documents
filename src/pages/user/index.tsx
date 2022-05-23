@@ -43,6 +43,7 @@ import {
   Tfoot,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useColorModeValue,
   useDisclosure
@@ -61,10 +62,12 @@ import { useForm, UseFormRegisterReturn } from 'react-hook-form';
 import { FaLock } from 'react-icons/fa';
 import NextLink from 'next/link';
 import { AiFillCheckCircle, AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
-import { MdDescription, MdTitle } from 'react-icons/md';
+import { GiCancel } from 'react-icons/gi';
+import { MdDescription, MdTitle, MdOutlinePending } from 'react-icons/md';
 import { FiFile, FiType } from 'react-icons/fi';
 import { Editor } from '@tinymce/tinymce-react';
 import { usePostType } from 'hooks';
+import { CustomUser } from 'types';
 
 const CFaLock = chakra(FaLock);
 
@@ -98,62 +101,81 @@ const TablePost = ({ title, posts, type }) => {
           <Thead>
             <Tr>
               <Th>POST ID</Th>
-              <Th>{type === 'like' ? 'Tiêu đề' : 'Mô tả báo cáo'}</Th>
+              <Th>
+                {type === 'like' || type === 'created'
+                  ? 'Tiêu đề'
+                  : 'Mô tả báo cáo'}
+              </Th>
               {type === 'report' ? <Th>Ngày báo cáo</Th> : undefined}
-              <Th>Action</Th>
+              {type === 'created' ? <Th>Ngày tạo</Th> : undefined}
+              {type === 'created' ? <Th>Trạng thái</Th> : <Th>Action</Th>}
             </Tr>
           </Thead>
           {posts.map((post, i) => (
-            <>
-              <Tbody>
-                <Tr>
-                  <Td>{post.id}</Td>
-                  {type === 'like' ? (
-                    <NextLink href={`/posts/${post.id}`} passHref>
-                      <Td
-                        cursor={'pointer'}
-                        style={{
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          maxWidth: '50ch',
-                          whiteSpace: 'nowrap'
-                        }}
-                      >
-                        {post.title}
-                      </Td>
-                    </NextLink>
-                  ) : (
+            <Tbody key={i}>
+              <Tr>
+                <Td>{post.id}</Td>
+                {type === 'like' || type === 'created' ? (
+                  <NextLink href={`/posts/${post.id}`} passHref>
                     <Td
+                      cursor={'pointer'}
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         maxWidth: '50ch',
                         whiteSpace: 'nowrap'
                       }}
+                      _hover={{
+                        color: '#cccccc'
+                      }}
                     >
-                      {post.description}
+                      {post.title}
                     </Td>
-                  )}
-                  {type === 'report' ? (
-                    <Td>{new Date(post.updated_at).toDateString()}</Td>
-                  ) : undefined}
-                  <Td isNumeric>
-                    <Flex justify={'center'} align="center">
-                      {type === 'like' ? (
-                        <AiFillHeart
-                          size={18}
-                          color="red"
-                          cursor={'pointer'}
-                          onClick={() => handleLikePost(post.id)}
-                        />
-                      ) : (
-                        <AiFillCheckCircle />
-                      )}
-                    </Flex>
+                  </NextLink>
+                ) : (
+                  <Td
+                    style={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      maxWidth: '50ch',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    {post.description}
                   </Td>
-                </Tr>
-              </Tbody>
-            </>
+                )}
+                {type === 'report' ? (
+                  <Td>{new Date(post.updated_at).toDateString()}</Td>
+                ) : undefined}
+                {type === 'created' ? (
+                  <Td>{new Date(post.created_at).toDateString()}</Td>
+                ) : undefined}
+                <Td isNumeric>
+                  <Flex justify={'center'} align="center">
+                    {type === 'like' ? (
+                      <AiFillHeart
+                        size={18}
+                        color="red"
+                        cursor={'pointer'}
+                        onClick={() => handleLikePost(post.id)}
+                      />
+                    ) : undefined}
+                    {type === 'report' ? (
+                      <AiFillCheckCircle cursor={'pointer'} />
+                    ) : undefined}
+                    {type === 'created' ? (
+                      post.status === 0 ? (
+                        <GiCancel color="red" fontSize={24} />
+                      ) : post.status === 1 ? (
+                        <AiFillCheckCircle color="lightgreen" fontSize={24} />
+                      ) : (
+                        <MdOutlinePending color="yellow" fontSize={24} />
+                      )
+                    ) : undefined}
+                  </Flex>
+                </Td>
+              </Tr>
+            </Tbody>
           ))}
         </Table>
       </TableContainer>
@@ -174,12 +196,7 @@ const FileUpload = (props: FileUploadProps) => {
   const { ref, ...rest } = register as {
     ref: (instance: HTMLInputElement | null) => void;
   };
-  // const [uploadFile, setUploadFile] = useState();
   const handleClick = () => inputRef.current?.click();
-
-  // const handleChangeFile = e => {
-  //   console.log(e.target.files);
-  // };
 
   return (
     <>
@@ -193,7 +210,6 @@ const FileUpload = (props: FileUploadProps) => {
           ref(e);
           inputRef.current = e;
         }}
-        // onChange={e => handleChangeFile(e)}
       />
       <Button
         position={'absolute'}
@@ -202,6 +218,10 @@ const FileUpload = (props: FileUploadProps) => {
         onClick={handleClick}
         leftIcon={<Icon as={FiFile} />}
         zIndex={10}
+        backgroundColor={useColorModeValue('primaryGreen', 'primaryOrange')}
+        _hover={{
+          backgroundColor: useColorModeValue('primaryOrange', 'primaryGreen')
+        }}
       >
         Upload
       </Button>
@@ -209,16 +229,12 @@ const FileUpload = (props: FileUploadProps) => {
   );
 };
 
-// type FormValues = {
-//   file_: FileList;
-// };
-
 type PostType = {
   id: number;
   name: string;
 };
 
-export const ModalPostDocument = ({ onClose, isOpen }) => {
+export const ModalPostDocument = ({ onClose, isOpen, setListPostCreated }) => {
   const editorRef = useRef(null);
   const {
     handleSubmit,
@@ -244,20 +260,25 @@ export const ModalPostDocument = ({ onClose, isOpen }) => {
     return temp;
   }, [] as PostType[]);
 
+  const [uploadFile, setUploadFile] = useState([]);
+  const [errorUploadFile, setErrorUploadFile] = useState('');
+  const handleChangeFile = e => {
+    if (validateFiles(e.target.files)) {
+      setUploadFile(Array.from(e.target.files));
+    }
+  };
   const validateFiles = (value: FileList) => {
     for (const file of Array.from(value)) {
       const fsMb = file.size / (1024 * 1024);
       const MAX_FILE_SIZE = 50;
       if (fsMb > MAX_FILE_SIZE) {
-        return 'Max file size 50mb';
+        console.log('Touch here');
+        setErrorUploadFile(`Max file size ${MAX_FILE_SIZE}MB`);
+        return false;
       }
     }
+    setErrorUploadFile('');
     return true;
-  };
-
-  const [uploadFile, setUploadFile] = useState([]);
-  const handleChangeFile = e => {
-    setUploadFile(Array.from(e.target.files));
   };
 
   const onSubmit = async (values: any) => {
@@ -266,16 +287,23 @@ export const ModalPostDocument = ({ onClose, isOpen }) => {
       formData.append('title', values.title);
       formData.append('description', values.description);
       formData.append('post_type_id', values.type);
-      formData.append('content', editorRef.current.getContent());
-      formData.append('file', uploadFile[0]);
+      if (editorRef.current) {
+        formData.append('content', editorRef.current.getContent());
+      }
+      if (uploadFile.length) {
+        formData.append('file', uploadFile[0]);
+      }
       const response = await api.post('/api/posts', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-      console.log(response.data);
+      if (response.data) {
+        onClose();
+        notify('success', 'Thêm tài liệu thành công!');
+      }
     } catch (error) {
-      console.error(error);
+      notify('error', 'Thêm tài liệu thất bại!');
     }
   };
 
@@ -306,11 +334,11 @@ export const ModalPostDocument = ({ onClose, isOpen }) => {
                     required: 'This is required',
                     minLength: {
                       value: 3,
-                      message: 'Title must have at least 3 characters'
+                      message: 'Tiêu đề phải có ít nhất 3 ký tự'
                     },
                     maxLength: {
-                      value: 100,
-                      message: 'Title must not be greater than 1000 characters'
+                      value: 1000,
+                      message: 'Tiêu đề không được có nhiều hơn 1000 ký tự'
                     }
                   })}
                 />
@@ -330,7 +358,7 @@ export const ModalPostDocument = ({ onClose, isOpen }) => {
                 <FormLabel>Thể loại</FormLabel>
                 <Select
                   {...register('type', {
-                    required: 'This is required'
+                    required: 'Đây là trường bắt buộc'
                   })}
                 >
                   {isLoading && (
@@ -376,12 +404,11 @@ export const ModalPostDocument = ({ onClose, isOpen }) => {
                       'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                   }}
                 />
-                <FormControl mt={3} isInvalid={errors.file_}>
+                <FormControl mt={3} isInvalid={Boolean(errorUploadFile)}>
                   <FormLabel>File đính kèm</FormLabel>
                   <Input
                     type="file"
                     multiple={false}
-                    // hidden
                     accept={'application/pdf'}
                     onChange={e => handleChangeFile(e)}
                   />
@@ -392,9 +419,7 @@ export const ModalPostDocument = ({ onClose, isOpen }) => {
                       validate: validateFiles
                     })}
                   /> */}
-                  <FormErrorMessage>
-                    {errors.file_ && errors.file_.message}
-                  </FormErrorMessage>
+                  <FormErrorMessage>{errorUploadFile}</FormErrorMessage>
                 </FormControl>
               </FormControl>
             </Stack>
@@ -403,7 +428,12 @@ export const ModalPostDocument = ({ onClose, isOpen }) => {
             <Button variant="ghost" mr={3} onClick={onClose}>
               Đóng
             </Button>
-            <Button type="submit" colorScheme="blue" isLoading={isSubmitting}>
+            <Button
+              type="submit"
+              colorScheme="blue"
+              isLoading={isSubmitting}
+              disabled={Boolean(errorUploadFile)}
+            >
               Thêm
             </Button>
           </ModalFooter>
@@ -416,6 +446,7 @@ export const ModalPostDocument = ({ onClose, isOpen }) => {
 const UserPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: session } = useSession();
+  // const customUser = session?.user as CustomUser;
   const bgColor = useColorModeValue('primaryGreen', 'primaryOrange');
   const bgColorHover = useColorModeValue('#0ac19f', '#f7a55c');
   const color = useColorModeValue('white', 'black');
@@ -431,26 +462,37 @@ const UserPage = () => {
 
   const [listPostLike, setListPostLike] = useState([]);
   const [listPostReport, setListPostReport] = useState([]);
+  const [listPostCreated, setListPostCreated] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await api.get('/api/users/profile/likes');
       const resp = await api.get('/api/users/profile/reports');
+      // const respo = await api.get(`/api/posts?user_id=${customUser.id}`);
+      const respo = await api.get(`/api/users/profile/posts`);
 
       if (response.data) {
         setListPostLike(response.data.data);
-      } else {
       }
 
       if (resp.data) {
         setListPostReport(resp.data.data);
-      } else {
+      }
+
+      if (respo.data) {
+        setListPostCreated(respo.data.data);
       }
     };
 
     if (session) {
       fetchData();
     }
+
+    return () => {
+      setListPostLike([]);
+      setListPostReport([]);
+      setListPostCreated([]);
+    };
   }, [session]);
 
   const {
@@ -752,9 +794,22 @@ const UserPage = () => {
           ) : undefined}
           {showPostDocument ? (
             <>
-              <Button onClick={onOpen}>Thêm tài liệu</Button>
-              <ModalPostDocument onClose={onClose} isOpen={isOpen} />
+              <Flex justify={'flex-end'}>
+                <Button onClick={onOpen}>Thêm tài liệu</Button>
+              </Flex>
+              <ModalPostDocument
+                onClose={onClose}
+                isOpen={isOpen}
+                setListPostCreated={setListPostCreated}
+              />
             </>
+          ) : undefined}
+          {showPostDocument ? (
+            <TablePost
+              title="Danh sách tài liệu bạn tải lên"
+              posts={listPostCreated}
+              type="created"
+            />
           ) : undefined}
           {showListPostLike ? (
             <TablePost

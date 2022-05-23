@@ -35,7 +35,7 @@ const PostDetail = ({ detail, setDetail }) => {
       {/* {data.files.length
         ? data.files.map((file, i) => <PreviewPdf key={i} file={file.link} />)
         : undefined} */}
-      <PreviewPdf file={data.link_pdf} />
+      {data.link_pdf && <PreviewPdf file={data.link_pdf} />}
       <Box mt={4} dangerouslySetInnerHTML={{ __html: data.content }}></Box>
       <Respond id={data.id} comments={data.comment} setDetail={setDetail} />
     </Box>
