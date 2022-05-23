@@ -61,7 +61,12 @@ import React, {
 import { useForm, UseFormRegisterReturn } from 'react-hook-form';
 import { FaLock } from 'react-icons/fa';
 import NextLink from 'next/link';
-import { AiFillCheckCircle, AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import {
+  AiFillCheckCircle,
+  AiFillHeart,
+  AiOutlineCheckCircle,
+  AiOutlineHeart
+} from 'react-icons/ai';
 import { GiCancel } from 'react-icons/gi';
 import { MdDescription, MdTitle, MdOutlinePending } from 'react-icons/md';
 import { FiFile, FiType } from 'react-icons/fi';
@@ -71,7 +76,7 @@ import { CustomUser } from 'types';
 
 const CFaLock = chakra(FaLock);
 
-const TablePost = ({ title, posts, type }) => {
+const TablePost = ({ title, posts, type, setFunc }) => {
   // const [iconLike, setIconLike] = useState<string>('Like');
 
   const notify = useCallback((type, message) => {
@@ -87,6 +92,10 @@ const TablePost = ({ title, posts, type }) => {
         notify('success', 'Like post successfully!');
       } else {
         notify('success', 'Unlike post successfully!');
+        const resp = await api.get('/api/users/profile/likes');
+        if (resp.data) {
+          setFunc(resp.data.data);
+        }
       }
     } else {
       notify('error', 'Like post failed!');
@@ -111,72 +120,80 @@ const TablePost = ({ title, posts, type }) => {
               {type === 'created' ? <Th>Trạng thái</Th> : <Th>Action</Th>}
             </Tr>
           </Thead>
-          {posts.map((post, i) => (
-            <Tbody key={i}>
-              <Tr>
-                <Td>{post.id}</Td>
-                {type === 'like' || type === 'created' ? (
-                  <NextLink href={`/posts/${post.id}`} passHref>
+          {posts.length ? (
+            posts.map((post, i) => (
+              <Tbody key={i}>
+                <Tr>
+                  <Td>{post.id}</Td>
+                  {type === 'like' || type === 'created' ? (
+                    <NextLink href={`/posts/${post.id}`} passHref>
+                      <Td
+                        cursor={'pointer'}
+                        style={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          maxWidth: '50ch',
+                          whiteSpace: 'nowrap'
+                        }}
+                        _hover={{
+                          color: '#cccccc'
+                        }}
+                      >
+                        {post.title}
+                      </Td>
+                    </NextLink>
+                  ) : (
                     <Td
-                      cursor={'pointer'}
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         maxWidth: '50ch',
                         whiteSpace: 'nowrap'
                       }}
-                      _hover={{
-                        color: '#cccccc'
-                      }}
                     >
-                      {post.title}
+                      {post.description}
                     </Td>
-                  </NextLink>
-                ) : (
-                  <Td
-                    style={{
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      maxWidth: '50ch',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    {post.description}
+                  )}
+                  {type === 'report' ? (
+                    <Td>{new Date(post.updated_at).toDateString()}</Td>
+                  ) : undefined}
+                  {type === 'created' ? (
+                    <Td>{new Date(post.created_at).toDateString()}</Td>
+                  ) : undefined}
+                  <Td isNumeric>
+                    <Flex justify={'center'} align="center">
+                      {type === 'like' ? (
+                        <AiFillHeart
+                          size={18}
+                          color="red"
+                          cursor={'pointer'}
+                          onClick={() => handleLikePost(post.id)}
+                        />
+                      ) : undefined}
+                      {type === 'report' ? (
+                        post.resolve === 1 ? (
+                          <AiFillCheckCircle color="green" />
+                        ) : (
+                          <AiOutlineCheckCircle color="yellow" />
+                        )
+                      ) : undefined}
+                      {type === 'created' ? (
+                        post.status === 0 ? (
+                          <GiCancel color="red" fontSize={24} />
+                        ) : post.status === 1 ? (
+                          <AiFillCheckCircle color="green" fontSize={24} />
+                        ) : (
+                          <MdOutlinePending color="yellow" fontSize={24} />
+                        )
+                      ) : undefined}
+                    </Flex>
                   </Td>
-                )}
-                {type === 'report' ? (
-                  <Td>{new Date(post.updated_at).toDateString()}</Td>
-                ) : undefined}
-                {type === 'created' ? (
-                  <Td>{new Date(post.created_at).toDateString()}</Td>
-                ) : undefined}
-                <Td isNumeric>
-                  <Flex justify={'center'} align="center">
-                    {type === 'like' ? (
-                      <AiFillHeart
-                        size={18}
-                        color="red"
-                        cursor={'pointer'}
-                        onClick={() => handleLikePost(post.id)}
-                      />
-                    ) : undefined}
-                    {type === 'report' ? (
-                      <AiFillCheckCircle cursor={'pointer'} />
-                    ) : undefined}
-                    {type === 'created' ? (
-                      post.status === 0 ? (
-                        <GiCancel color="red" fontSize={24} />
-                      ) : post.status === 1 ? (
-                        <AiFillCheckCircle color="lightgreen" fontSize={24} />
-                      ) : (
-                        <MdOutlinePending color="yellow" fontSize={24} />
-                      )
-                    ) : undefined}
-                  </Flex>
-                </Td>
-              </Tr>
-            </Tbody>
-          ))}
+                </Tr>
+              </Tbody>
+            ))
+          ) : (
+            <Text>Không có tài liệu nào!</Text>
+          )}
         </Table>
       </TableContainer>
     </Box>
@@ -301,6 +318,10 @@ export const ModalPostDocument = ({ onClose, isOpen, setListPostCreated }) => {
       if (response.data) {
         onClose();
         notify('success', 'Thêm tài liệu thành công!');
+        const resp = await api.get(`/api/users/profile/posts`);
+        if (resp.data) {
+          setListPostCreated(resp.data.data);
+        }
       }
     } catch (error) {
       notify('error', 'Thêm tài liệu thất bại!');
@@ -446,7 +467,6 @@ export const ModalPostDocument = ({ onClose, isOpen, setListPostCreated }) => {
 const UserPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: session } = useSession();
-  // const customUser = session?.user as CustomUser;
   const bgColor = useColorModeValue('primaryGreen', 'primaryOrange');
   const bgColorHover = useColorModeValue('#0ac19f', '#f7a55c');
   const color = useColorModeValue('white', 'black');
@@ -578,7 +598,12 @@ const UserPage = () => {
     <>
       <Container maxW={'lg'}></Container>
       <Grid templateColumns="repeat(5, 1fr)" gap={{ base: 0, md: 10 }}>
-        <GridItem colSpan={{ base: 5, md: 1 }} alignSelf="center">
+        <GridItem
+          colSpan={{ base: 5, md: 1 }}
+          alignSelf="center"
+          whiteSpace={{ base: 'nowrap', md: 'break-spaces' }}
+          overflowX={{ base: 'scroll', md: 'visible' }}
+        >
           <Button
             m={2}
             onClick={e => {
@@ -809,6 +834,7 @@ const UserPage = () => {
               title="Danh sách tài liệu bạn tải lên"
               posts={listPostCreated}
               type="created"
+              setFunc={setListPostCreated}
             />
           ) : undefined}
           {showListPostLike ? (
@@ -816,6 +842,7 @@ const UserPage = () => {
               title="Danh sách tài liệu yêu thích"
               posts={listPostLike}
               type="like"
+              setFunc={setListPostLike}
             />
           ) : undefined}
           {showListPostReport ? (
@@ -823,6 +850,7 @@ const UserPage = () => {
               title="Danh sách tài liệu đã báo cáo"
               posts={listPostReport}
               type="report"
+              setFunc={setListPostReport}
             />
           ) : undefined}
         </GridItem>
