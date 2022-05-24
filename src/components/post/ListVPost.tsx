@@ -4,6 +4,7 @@ import React from 'react';
 import Section from 'components/section/Section';
 import { VPostItem } from './PostItem';
 import { usePosts } from 'hooks';
+import Loading from 'components/loading/Loading';
 
 const ListVPost = () => {
   const { posts, isLoading, isError } = usePosts(1);
@@ -19,7 +20,7 @@ const ListVPost = () => {
   if (isLoading)
     return (
       <>
-        <Spinner size="xl" />
+        <Loading />
       </>
     );
 

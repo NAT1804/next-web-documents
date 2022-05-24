@@ -68,7 +68,14 @@ export const PostDate: React.FC<IPostDateProps> = props => {
   return (
     <HStack marginTop="2" mr={4} spacing="1" display="flex" alignItems="center">
       <CalendarIcon />
-      <Text>{props.date.toDateString()}</Text>
+      <Text>
+        {props.date.toLocaleDateString('vi-VN', {
+          weekday: 'short',
+          year: 'numeric',
+          month: '2-digit',
+          day: 'numeric'
+        })}
+      </Text>
     </HStack>
   );
 };
@@ -83,7 +90,7 @@ export const PostComment: React.FC<IPostCommentProps> = props => {
   return (
     <Tooltip
       hasArrow
-      label="Comment"
+      label="Bình luận"
       bg={useColorModeValue('primaryGreen', 'primaryOrange')}
       color={useColorModeValue('white', 'black')}
     >
@@ -130,13 +137,13 @@ export const PostHeart = props => {
         setIconLike(response.data.message);
         if (response.data.message === 'Like') {
           setlikeCount(prev => prev + 1);
-          notify('success', 'Like post successfully!');
+          notify('success', 'Thích tài liệu thành công!');
         } else {
           setlikeCount(prev => prev - 1);
-          notify('success', 'Unlike post successfully!');
+          notify('success', 'Bỏ thích tài liệu thành công!');
         }
       } else {
-        notify('error', 'Like post failed!');
+        notify('error', 'Thích tài liệu thất bại!');
       }
     } else {
       onOpen();
@@ -146,7 +153,7 @@ export const PostHeart = props => {
   return (
     <Tooltip
       hasArrow
-      label="Like post"
+      label="Thích"
       bg={useColorModeValue('primaryGreen', 'primaryOrange')}
       color={useColorModeValue('white', 'black')}
     >
@@ -332,7 +339,7 @@ export const PostReport = props => {
   return (
     <Tooltip
       hasArrow
-      label="Report post"
+      label="Báo cáo"
       bg={useColorModeValue('primaryGreen', 'primaryOrange')}
       color={useColorModeValue('white', 'black')}
     >

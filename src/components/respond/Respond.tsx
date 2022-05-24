@@ -448,7 +448,7 @@ const Respond = ({ id, comments, setDetail }) => {
   return (
     <>
       <Text size="30" my={5}>
-        {comments.length} COMMENTS
+        {comments.length} Bình luận
       </Text>
       <form id="respond" onSubmit={handleSubmit(onSubmit)}>
         <HStack spacing={4} my={5}>

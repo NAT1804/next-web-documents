@@ -30,9 +30,9 @@ const Searchbar = () => {
       >
         <form onSubmit={handleSearchPost}>
           <InputGroup>
-            <InputLeftElement pointerEvents={'none'}>
+            {/* <InputLeftElement pointerEvents={'none'}>
               <FaSearch />
-            </InputLeftElement>
+            </InputLeftElement> */}
             <Input
               variant={'filled'}
               type={'text'}

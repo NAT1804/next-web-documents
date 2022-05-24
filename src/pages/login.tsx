@@ -101,10 +101,10 @@ const LoginPage = ({ csrfToken }) => {
                   type={'email'}
                   placeholder="Email"
                   {...register('email', {
-                    required: 'This is required',
+                    required: 'Đây là trường bắt buộc',
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Invalid email address'
+                      message: 'Địa chỉ email không hợp lệ'
                     }
                   })}
                 />
@@ -122,9 +122,9 @@ const LoginPage = ({ csrfToken }) => {
                 </InputLeftElement>
                 <Input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Password"
+                  placeholder="Mật khẩu"
                   {...register('password', {
-                    required: 'This is required'
+                    required: 'Đây là trường bắt buộc'
                   })}
                 />
                 <InputRightElement>
@@ -136,11 +136,11 @@ const LoginPage = ({ csrfToken }) => {
               <FormErrorMessage>
                 {errors.password && errors.password.message}
               </FormErrorMessage>
-              <FormHelperText textAlign={'right'}>
+              {/* <FormHelperText textAlign={'right'}>
                 <NextLink href={'/forgot-password'} passHref>
                   <Link>Forgot Password?</Link>
                 </NextLink>
-              </FormHelperText>
+              </FormHelperText> */}
             </FormControl>
             <Button
               type="submit"
@@ -151,15 +151,15 @@ const LoginPage = ({ csrfToken }) => {
               bgColor={useColorModeValue('primaryGreen', 'primaryOrange')}
               isLoading={isSubmitting}
             >
-              Login
+              Đăng nhập
             </Button>
           </Stack>
         </form>
       </Stack>
       <Box>
-        New to us?{'  '}
+        Chưa có tài khoản?{'  '}
         <NextLink href={'/register'} passHref>
-          <Link> Sign Up</Link>
+          <Link>Đăng ký</Link>
         </NextLink>
       </Box>
     </Flex>

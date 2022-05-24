@@ -2,12 +2,25 @@ import NextLink from 'next/link';
 import {
   Box,
   Button,
+  Collapse,
   Container,
   Flex,
   Heading,
+  Icon,
+  IconButton,
+  Link,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Stack,
   Text,
-  useColorModeValue
+  useColorModeValue,
+  useDisclosure,
+  VStack
 } from '@chakra-ui/react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 
@@ -15,11 +28,17 @@ import Logo from '../logo/Logo';
 import Navbar from '../navbar/Navbar';
 import ToggleButton from '../toggle-button/ToggleButton';
 import { useRouter } from 'next/router';
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  HamburgerIcon
+} from '@chakra-ui/icons';
 
 const Header = props => {
   const { path } = props;
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { isOpen, onToggle } = useDisclosure();
 
   const bgColorButton = useColorModeValue('primaryGreen', 'primaryOrange');
   return (
@@ -55,24 +74,59 @@ const Header = props => {
               <ToggleButton />
               {session ? (
                 <>
-                  <NextLink href={'/user'} passHref>
-                    <Text alignSelf="center" cursor={'pointer'}>
-                      {session?.user?.name}
-                    </Text>
-                  </NextLink>
-                  <Button
-                    display={{ base: 'none', sm: 'flex' }}
-                    as={'a'}
-                    fontSize={'sm'}
-                    fontWeight={400}
-                    variant={'link'}
-                    onClick={e => {
-                      e.preventDefault();
-                      signOut({ callbackUrl: `${window.location.href}` });
-                    }}
-                  >
-                    Đăng xuất
-                  </Button>
+                  {/* <Popover trigger="click" placement={'bottom'}> */}
+                  <Menu>
+                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                      <Text
+                        alignSelf="center"
+                        cursor={'pointer'}
+                        _hover={{
+                          opacity: 0.75
+                        }}
+                        onClick={onToggle}
+                      >
+                        {session?.user?.name}
+                      </Text>
+                    </MenuButton>
+                    <MenuList zIndex={10}>
+                      <MenuItem
+                        onClick={e => {
+                          e.preventDefault();
+                          signOut({
+                            callbackUrl: `${window.location.href}`
+                          });
+                        }}
+                      >
+                        {/* <Button
+                          display={{ base: 'none', sm: 'flex' }}
+                          as={'a'}
+                          fontSize={'sm'}
+                          fontWeight={400}
+                          variant={'link'}
+                          onClick={e => {
+                            e.preventDefault();
+                            signOut({
+                              callbackUrl: `${window.location.href}`
+                            });
+                          }}
+                        > */}
+                        Đăng xuất
+                        {/* </Button> */}
+                      </MenuItem>
+                      <NextLink href={'/change-password'} passHref>
+                        <MenuItem>Đổi mật khẩu</MenuItem>
+                      </NextLink>
+                      <NextLink href={'/my-document'} passHref>
+                        <MenuItem>Tài liệu của tôi</MenuItem>
+                      </NextLink>
+                      <NextLink href={'/like-document'} passHref>
+                        <MenuItem>Tài liệu yêu thích</MenuItem>
+                      </NextLink>
+                      <NextLink href={'/report-document'} passHref>
+                        <MenuItem>Tài liệu đã báo cáo</MenuItem>
+                      </NextLink>
+                    </MenuList>
+                  </Menu>
                 </>
               ) : (
                 <>

@@ -24,6 +24,7 @@ import {
 
 import Section from 'components/section/Section';
 import { usePostType } from '../../hooks';
+import Loading from 'components/loading/Loading';
 
 interface NavItem {
   id?: number;
@@ -133,7 +134,7 @@ const Navbar = ({ path }) => {
   if (isLoading) {
     return (
       <>
-        <Spinner size={'xl'} />
+        <Loading />
       </>
     );
   }

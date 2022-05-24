@@ -6,7 +6,8 @@ import {
   Pagination,
   PostContainer,
   Section,
-  ListVPost
+  ListVPost,
+  Loading
 } from '../components';
 import { usePosts } from '../hooks';
 
@@ -17,7 +18,7 @@ export default function HomePage() {
   if (isLoading)
     return (
       <>
-        <Spinner size="xl" />
+        <Loading />
       </>
     );
 

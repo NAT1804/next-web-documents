@@ -48,17 +48,17 @@ const Pagination = ({ links, meta, setPage }) => {
       </Flex>
       <Flex alignItems="center">
         <Text flexShrink="0" mr={8}>
-          Page{' '}
+          Trang{' '}
           <Text fontWeight="bold" as="span">
             {meta.current_page}
           </Text>{' '}
-          of{' '}
+          /{' '}
           <Text fontWeight="bold" as="span">
             {meta.last_page}
           </Text>
         </Text>
         <Box display={{ base: 'none', md: 'flex' }} alignItems="center">
-          <Text flexShrink="0">Go to page:</Text>{' '}
+          <Text flexShrink="0">Đi tới trang:</Text>{' '}
           <NumberInput
             ml={2}
             mr={8}

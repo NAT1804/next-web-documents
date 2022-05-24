@@ -105,17 +105,16 @@ const RegisterPage = () => {
                 </InputLeftElement>
                 <Input
                   type={'text'}
-                  placeholder="Username"
+                  placeholder="Tên tài khoản"
                   {...register('name', {
-                    required: 'This is required',
+                    required: 'Đây là trường bắt buộc',
                     minLength: {
                       value: 3,
-                      message: 'Username must have at least 3 characters'
+                      message: 'Tên đăng nhập phải có ít nhất 3 ký tự'
                     },
                     maxLength: {
                       value: 100,
-                      message:
-                        'Username must not be greater than 100 characters'
+                      message: 'Tên đăng nhập phải ít hơn 100 ký tự'
                     }
                   })}
                 />
@@ -133,17 +132,16 @@ const RegisterPage = () => {
                 </InputLeftElement>
                 <Input
                   type={'email'}
-                  placeholder="Email address"
+                  placeholder="Email"
                   {...register('email', {
-                    required: 'This is required',
+                    required: 'Đây là trường bắt buộc',
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Invalid email address'
+                      message: 'Địa chỉ email không hợp lệ'
                     },
                     maxLength: {
                       value: 255,
-                      message:
-                        'Username must not be greater than 255 characters'
+                      message: 'Địa chỉ email phải có ít hơn 255 ký tự'
                     }
                   })}
                 />
@@ -162,17 +160,16 @@ const RegisterPage = () => {
                 <Input
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Password"
+                  placeholder="Mật khẩu"
                   {...register('password', {
-                    required: 'This is required',
+                    required: 'Đây là trường bắt buộc',
                     minLength: {
                       value: 6,
-                      message: 'Password must have at least 6 characters'
+                      message: 'Mật khẩu phải có ít nhất 6 ký tự'
                     },
                     maxLength: {
                       value: 255,
-                      message:
-                        'Username must not be greater than 255 characters'
+                      message: 'Mật khẩu phải có ít hơn 255 ký tự'
                     }
                   })}
                 />
@@ -195,12 +192,11 @@ const RegisterPage = () => {
                 </InputLeftElement>
                 <Input
                   type={showConfirmPassword ? 'text' : 'password'}
-                  placeholder="Confirm password"
+                  placeholder="Xác nhận mật khẩu"
                   {...register('password_confirmation', {
-                    required: 'This is required',
+                    required: 'Đây là trường bắt buộc',
                     validate: value =>
-                      value === password.current ||
-                      'The confirm password not match'
+                      value === password.current || 'Mật khẩu không trùng khớp'
                   })}
                 />
                 <InputRightElement>
@@ -223,15 +219,15 @@ const RegisterPage = () => {
               color={useColorModeValue('white', 'black')}
               isLoading={isSubmitting}
             >
-              Sign up
+              Đăng ký
             </Button>
           </Stack>
         </form>
       </Stack>
       <Box>
-        Have already account?{'  '}
+        Đã có tài khoản?{'  '}
         <NextLink href={'/login'} passHref>
-          <Link> Sign In</Link>
+          <Link>Đăng nhập</Link>
         </NextLink>
       </Box>
     </Flex>
