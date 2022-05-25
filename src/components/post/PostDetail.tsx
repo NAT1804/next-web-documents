@@ -32,9 +32,6 @@ const PostDetail = ({ detail, setDetail }) => {
       >
         <PostType type={data.post_type_id} />
       </PostInteractive>
-      {/* {data.files.length
-        ? data.files.map((file, i) => <PreviewPdf key={i} file={file.link} />)
-        : undefined} */}
       {data.link_pdf && <PreviewPdf file={data.link_pdf} />}
       <Box mt={4} dangerouslySetInnerHTML={{ __html: data.content }}></Box>
       <Respond id={data.id} comments={data.comment} setDetail={setDetail} />

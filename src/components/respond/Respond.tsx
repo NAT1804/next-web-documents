@@ -42,6 +42,7 @@ import ToastMessage from 'components/toast/Toast';
 import { useUserById } from 'hooks';
 import { ADMIN, CustomUser } from 'types';
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
+import { reverseArr } from 'helper';
 
 const CommentComponent = ({
   id,
@@ -435,14 +436,6 @@ const Respond = ({ id, comments, setDetail }) => {
     } else {
       notify('error', 'Thêm bình luận thất bại!');
     }
-  };
-
-  const reverseArr = input => {
-    let ret = new Array();
-    for (let i = input.length - 1; i >= 0; --i) {
-      ret.push(input[i]);
-    }
-    return ret;
   };
 
   return (

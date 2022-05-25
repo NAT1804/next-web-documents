@@ -3,19 +3,13 @@ import React from 'react';
 
 import Section from 'components/section/Section';
 import { VPostItem } from './PostItem';
-import { usePosts } from 'hooks';
+import { usePosts, usePostsByType } from 'hooks';
 import Loading from 'components/loading/Loading';
+import { reverseArr } from 'helper';
 
-const ListVPost = () => {
-  const { posts, isLoading, isError } = usePosts(1);
-
-  const reverseArr = input => {
-    let ret = new Array();
-    for (let i = input.length - 1; i >= 0; --i) {
-      ret.push(input[i]);
-    }
-    return ret;
-  };
+const ListVPost = ({ title, slug }) => {
+  // const { posts, isLoading, isError } = usePosts(1);
+  const { posts, isLoading, isError } = usePostsByType(slug, 1);
 
   if (isLoading)
     return (
@@ -36,7 +30,7 @@ const ListVPost = () => {
     <>
       <Section delay={0.1}>
         <Heading as="h1" fontSize={'30'}>
-          Tài liệu liên quan
+          {title}
         </Heading>
       </Section>
       {reverseArr(posts.data).map((vpost, i) => (

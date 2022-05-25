@@ -53,7 +53,7 @@ export default function HomePage() {
           position="sticky"
           top={180}
         >
-          <ListVPost />
+          <ListVPost title={'Tài liệu mới nhất'} slug="" />
         </GridItem>
       </Grid>
     </>

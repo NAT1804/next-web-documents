@@ -508,27 +508,29 @@ export const VPostItem = ({ post }) => {
             </Link>
           </NextLink>
         </Box>
-        <Heading
-          flex={1}
-          fontSize="lg"
-          style={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            display: '-webkit-box',
-            lineClamp: 2,
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical'
-          }}
-        >
-          <NextLink href={`/posts/${post.id}`} passHref>
-            <Link
-              textDecoration="none"
-              _hover={{ textDecoration: 'none', color: bgColorReverse }}
-            >
-              {post.title}
-            </Link>
-          </NextLink>
-        </Heading>
+        <Tooltip label={post.title}>
+          <Heading
+            flex={1}
+            fontSize="lg"
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              lineClamp: 2,
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical'
+            }}
+          >
+            <NextLink href={`/posts/${post.id}`} passHref>
+              <Link
+                textDecoration="none"
+                _hover={{ textDecoration: 'none', color: bgColorReverse }}
+              >
+                {post.title}
+              </Link>
+            </NextLink>
+          </Heading>
+        </Tooltip>
       </Flex>
       <PostInteractive
         date={new Date(post.created_at)}
@@ -613,27 +615,29 @@ export const PostItem = ({ post }) => {
           justifyContent="center"
           marginTop={{ base: '3', sm: '0' }}
         >
-          <Heading
-            fontSize={'2xl'}
-            marginTop="1"
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              lineClamp: 3,
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical'
-            }}
-          >
-            <NextLink href={`/posts/${post.id}`} passHref>
-              <Link
-                textDecoration="none"
-                _hover={{ textDecoration: 'none', color: bgColorReverse }}
-              >
-                {post.title}
-              </Link>
-            </NextLink>
-          </Heading>
+          <Tooltip label={post.title}>
+            <Heading
+              fontSize={'2xl'}
+              marginTop="1"
+              style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                lineClamp: 3,
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical'
+              }}
+            >
+              <NextLink href={`/posts/${post.id}`} passHref>
+                <Link
+                  textDecoration="none"
+                  _hover={{ textDecoration: 'none', color: bgColorReverse }}
+                >
+                  {post.title}
+                </Link>
+              </NextLink>
+            </Heading>
+          </Tooltip>
           <PostInteractive
             date={new Date(post.created_at)}
             quantity={post.comment.length}

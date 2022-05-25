@@ -28,12 +28,12 @@ const CFaLock = chakra(FaLock);
 
 const ChangePasswordPage = () => {
   const bgColor = useColorModeValue('primaryGreen', 'primaryOrange');
-  const bgColorHover = useColorModeValue('#0ac19f', '#f7a55c');
+  // const bgColorHover = useColorModeValue('#0ac19f', '#f7a55c');
   const color = useColorModeValue('white', 'black');
-  const [showChangePassword, setShowChangePassword] = useState(true);
-  const [showPostDocument, setShowPostDocument] = useState(false);
-  const [showListPostLike, setShowListPostLike] = useState(false);
-  const [showListPostReport, setShowListPostReport] = useState(false);
+  // const [showChangePassword, setShowChangePassword] = useState(true);
+  // const [showPostDocument, setShowPostDocument] = useState(false);
+  // const [showListPostLike, setShowListPostLike] = useState(false);
+  // const [showListPostReport, setShowListPostReport] = useState(false);
 
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -63,12 +63,12 @@ const ChangePasswordPage = () => {
         new_password_confirmation: values.confirm_new_password
       });
       if (response.data) {
-        notify('success', 'Change password successfully!!');
+        notify('success', 'Thay đổi mật khẩu thành công !!');
         reset();
       }
     } catch (error) {
       setError('Has error!!');
-      notify('error', 'Change password failed!!');
+      notify('error', 'Thay đổi mật khẩu thất bại !!');
     }
   };
 

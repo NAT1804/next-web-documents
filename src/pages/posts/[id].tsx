@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Grid, GridItem, Spinner } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
-import { PostDetail, BreadcrumbElement } from '../../components';
+import { PostDetail, BreadcrumbElement, Loading } from '../../components';
 import ListVPost from 'components/post/ListVPost';
 import { IBreadcrumb } from 'types';
 import api from 'api';
@@ -47,7 +47,7 @@ const PostDetailPage = () => {
   if (isLoading)
     return (
       <>
-        <Spinner size={'xl'} />
+        <Loading />
       </>
     );
 
@@ -62,7 +62,10 @@ const PostDetailPage = () => {
           <PostDetail detail={detail} setDetail={setDetail} />
         </GridItem>
         <GridItem colSpan={{ base: 3, md: 1 }}>
-          <ListVPost />
+          <ListVPost
+            title={'Tài liệu liên quan'}
+            slug={detail.data.type_slug}
+          />
         </GridItem>
       </Grid>
     </>

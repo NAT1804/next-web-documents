@@ -9,7 +9,8 @@ import {
   PostContainer,
   Section,
   Pagination,
-  PostItem
+  PostItem,
+  Loading
 } from '../../../components';
 import { usePostsByType } from 'hooks';
 import { IBreadcrumb } from 'types';
@@ -26,17 +27,17 @@ const PostDetailPageByType = () => {
   if (isLoading)
     return (
       <>
-        <Spinner size={'xl'} />
+        <Loading />
       </>
     );
 
   if (!isError && !isLoading) {
     breadcrumb.push({
-      name: 'Home',
+      name: 'Trang chủ',
       href: `/`
     });
     breadcrumb.push({
-      name: `${slug}`,
+      name: posts.data.length ? posts.data[0].post_type_id : `${slug}`,
       href: `/posts/type/${slug}`
     });
   }
@@ -49,8 +50,8 @@ const PostDetailPageByType = () => {
           {posts.data.length ? (
             <PostContainer>
               <Section delay={0.1}>
-                <Heading as="h2" fontSize={'30'}>
-                  {slug}
+                <Heading as="h2" fontSize={'30'} my={3}>
+                  Tài liệu của mục {posts.data[0].post_type_id}
                 </Heading>
               </Section>
               {posts.data.map((post, i) => (
@@ -74,7 +75,7 @@ const PostDetailPageByType = () => {
           position="sticky"
           top={180}
         >
-          <ListVPost />
+          <ListVPost title="Tài liệu liên quan" slug={slug} />
         </GridItem>
       </Grid>
     </>
