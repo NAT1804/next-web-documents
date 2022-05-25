@@ -37,11 +37,11 @@ const SearchPage = () => {
 
   if (!isError && !isLoading) {
     breadcrumb.push({
-      name: 'Home',
+      name: 'Trang chủ',
       href: '/'
     });
     breadcrumb.push({
-      name: 'Search'
+      name: 'Tìm kiếm'
     });
     breadcrumb.push({
       name: key as string
@@ -54,7 +54,7 @@ const SearchPage = () => {
       <Grid templateColumns="repeat(3, 1fr)" gap={10}>
         <GridItem colSpan={{ base: 3, md: 2 }}>
           <PostContainer>
-            <Heading my={2}>Search Results for &quot;{key}&quot;</Heading>
+            <Heading my={2}>Kết quả tìm kiếm cho &quot;{key}&quot;</Heading>
             {posts.data.map((post, i) => (
               <Section key={i} delay={(i + 1) * 0.1 + 0.1} x={(i + 1) * -100}>
                 <PostItem post={post} />
