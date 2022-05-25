@@ -395,10 +395,10 @@ export const ModalDeleteComment = ({
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
+            Đóng
           </Button>
           <Button onClick={handleDeleteComment} variant="ghost">
-            Delete
+            Xoá
           </Button>
         </ModalFooter>
       </ModalContent>

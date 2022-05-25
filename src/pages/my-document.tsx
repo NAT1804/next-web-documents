@@ -165,18 +165,20 @@ export const ModalPostDocument = ({ onClose, isOpen, setListPostCreated }) => {
 
   const { postType, isLoading, isError } = usePostType();
 
-  const listTypePost = postType.data.reduce((prev: any[], curr: any) => {
-    prev = [...prev, { id: curr.id, name: curr.name } as PostType];
-    let temp = [...prev];
-    if (curr.children.length) {
-      temp = [
-        ...prev.concat(
-          curr.children.map(e => ({ id: e.id, name: e.name } as PostType))
-        )
-      ];
-    }
-    return temp;
-  }, [] as PostType[]);
+  const listTypePost = postType
+    ? postType.data.reduce((prev: any[], curr: any) => {
+        prev = [...prev, { id: curr.id, name: curr.name } as PostType];
+        let temp = [...prev];
+        if (curr.children.length) {
+          temp = [
+            ...prev.concat(
+              curr.children.map(e => ({ id: e.id, name: e.name } as PostType))
+            )
+          ];
+        }
+        return temp;
+      }, [] as PostType[])
+    : [];
 
   const [uploadFile, setUploadFile] = useState([]);
   const [errorUploadFile, setErrorUploadFile] = useState('');

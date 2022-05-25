@@ -5,7 +5,9 @@ const Donate = () => {
   return (
     <>
       <Flex align={'center'} justifyContent="center" flexDir={'column'}>
-        <Heading fontWeight={'bold'}>DONATE QUỸ QUA MOMO</Heading>
+        <Heading fontWeight={'bold'} mb={2}>
+          DONATE QUỸ QUA MOMO
+        </Heading>
         <Image src="/qr-momo.jpg" alt="QR Donate" />
         <Text my={5}>Dùng MoMo scan mã QR trên để chuyển tiền miễn phí!</Text>
       </Flex>

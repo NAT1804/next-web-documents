@@ -85,16 +85,22 @@ const Footer = () => {
             </NextLink>
             <Link>Điều khoản sử dụng</Link>
             <Link>Chính sách bảo mật</Link>
-            <Link href={'#'}>Hòm thư góp ý</Link>
             <NextLink href={'/donate'} passHref>
-              <Link href={'#'}>Donate</Link>
+              <Link>Donate</Link>
             </NextLink>
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader>GIÚP ĐỠ</ListHeader>
-            <Link href={'#'}>Hướng dẫn tìm kiếm tài liệu</Link>
-            <Link href={'#'}>Hướng dẫn xem trước tài liệu</Link>
-            <Link href={'#'}>Hướng dẫn gửi tài liệu</Link>
+            <NextLink href={'/search-document'} passHref>
+              <Link>Hướng dẫn tìm kiếm tài liệu</Link>
+            </NextLink>
+
+            <NextLink href={'/send-document'} passHref>
+              <Link>Hướng dẫn gửi tài liệu</Link>
+            </NextLink>
+            <NextLink href={'/download-document'} passHref>
+              <Link>Hướng dẫn tải tài liệu</Link>
+            </NextLink>
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader>FANPAGE</ListHeader>

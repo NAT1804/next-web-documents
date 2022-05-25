@@ -650,6 +650,14 @@ export const PostItem = ({ post }) => {
             marginTop="2"
             color={useColorModeValue('gray.700', 'gray.200')}
             fontSize="lg"
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              lineClamp: 2,
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical'
+            }}
           >
             {post.description}
           </Text>
