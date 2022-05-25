@@ -43,6 +43,7 @@ import { useUserById } from 'hooks';
 import { ADMIN, CustomUser } from 'types';
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
 import { reverseArr } from 'helper';
+import 'moment/locale/vi';
 
 const CommentComponent = ({
   id,
@@ -282,7 +283,7 @@ const CommentComponent = ({
                     mr={2}
                     onClick={handleShowReply}
                   >
-                    Reply
+                    Trả lời
                   </Button>
                 )}
                 {session && customUser.id === user_id ? (
@@ -292,7 +293,7 @@ const CommentComponent = ({
                     mr={2}
                     onClick={() => setEditMode(true)}
                   >
-                    Edit
+                    Chỉnh sửa
                   </Button>
                 ) : undefined}
                 {session && customUser.permissions[0] === ADMIN ? (
@@ -302,7 +303,7 @@ const CommentComponent = ({
                       // bgColor={'#f33f3f'}
                       onClick={onOpen}
                     >
-                      Delete
+                      Xoá
                     </Button>
                     <ModalDeleteComment
                       onClose={onClose}

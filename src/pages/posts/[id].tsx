@@ -24,7 +24,7 @@ const PostDetailPage = () => {
 
         if (response.data) {
           breadcrumb.push({
-            name: 'Home',
+            name: 'Trang chủ',
             href: `/`
           });
           breadcrumb.push({
@@ -42,6 +42,13 @@ const PostDetailPage = () => {
       }
     };
     fetchData();
+
+    return () => {
+      setLoading(false);
+      setError(false);
+      setDetail(null);
+      breadcrumb.length = 0;
+    };
   }, [id, breadcrumb]);
 
   if (isLoading)

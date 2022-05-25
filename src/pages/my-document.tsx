@@ -27,7 +27,8 @@ import {
   Select,
   FormErrorMessage,
   ModalFooter,
-  useDisclosure
+  useDisclosure,
+  Tooltip
 } from '@chakra-ui/react';
 import api from 'api';
 import { Loading, ToastMessage } from 'components';
@@ -81,35 +82,58 @@ const TablePost = ({ title, posts, setFunc }) => {
             reverseArr(posts).map((post, i) => (
               <Tbody key={i}>
                 <Tr>
-                  <NextLink href={`/posts/${post.id}`} passHref>
+                  {post.status === 1 ? (
+                    <NextLink href={`/posts/${post.id}`} passHref>
+                      <Td
+                        cursor={'pointer'}
+                        style={{
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          maxWidth: '50ch',
+                          whiteSpace: 'nowrap'
+                        }}
+                        _hover={{
+                          opacity: 0.75
+                        }}
+                      >
+                        {post.title}
+                      </Td>
+                    </NextLink>
+                  ) : (
                     <Td
-                      cursor={'pointer'}
                       style={{
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         maxWidth: '50ch',
                         whiteSpace: 'nowrap'
                       }}
-                      _hover={{
-                        opacity: 0.75
-                      }}
                     >
                       {post.title}
                     </Td>
-                  </NextLink>
+                  )}
                   <Td>
                     {new Date(post.created_at).toLocaleDateString('vi-VN')}
                   </Td>
                   <Td isNumeric>
-                    <Flex justify={'center'} align="center">
-                      {post.status === 0 ? (
-                        <GiCancel color="red" fontSize={24} />
-                      ) : post.status === 1 ? (
-                        <AiFillCheckCircle color="green" fontSize={24} />
-                      ) : (
-                        <MdOutlinePending color="yellow" fontSize={24} />
-                      )}
-                    </Flex>
+                    <Tooltip
+                      label={
+                        post.status === 0
+                          ? 'Bị huỷ'
+                          : post.status === 1
+                          ? 'Đã duyệt'
+                          : 'Đang chờ duyệt'
+                      }
+                    >
+                      <Flex justify={'flex-start'} align="center">
+                        {post.status === 0 ? (
+                          <GiCancel color="red" fontSize={24} />
+                        ) : post.status === 1 ? (
+                          <AiFillCheckCircle color="green" fontSize={24} />
+                        ) : (
+                          <MdOutlinePending color="yellow" fontSize={24} />
+                        )}
+                      </Flex>
+                    </Tooltip>
                   </Td>
                 </Tr>
               </Tbody>

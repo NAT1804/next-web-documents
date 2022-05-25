@@ -86,7 +86,9 @@ const Footer = () => {
             <Link>Điều khoản sử dụng</Link>
             <Link>Chính sách bảo mật</Link>
             <Link href={'#'}>Hòm thư góp ý</Link>
-            <Link href={'#'}>Donate</Link>
+            <NextLink href={'/donate'} passHref>
+              <Link href={'#'}>Donate</Link>
+            </NextLink>
           </Stack>
           <Stack align={'flex-start'}>
             <ListHeader>GIÚP ĐỠ</ListHeader>

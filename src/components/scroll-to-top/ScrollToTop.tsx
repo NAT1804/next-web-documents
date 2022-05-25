@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, useColorModeValue } from '@chakra-ui/react';
-// import NextLink from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { FaArrowUp } from 'react-icons/fa';

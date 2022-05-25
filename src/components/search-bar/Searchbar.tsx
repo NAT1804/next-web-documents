@@ -30,15 +30,15 @@ const Searchbar = () => {
       >
         <form onSubmit={handleSearchPost}>
           <InputGroup>
-            {/* <InputLeftElement pointerEvents={'none'}>
-              <FaSearch />
-            </InputLeftElement> */}
             <Input
-              variant={'filled'}
+              variant={'outline'}
               type={'text'}
               placeholder="Tìm kiếm"
               size={'md'}
               value={searchKey}
+              // bg={useColorModeValue('#ccc', '#fefefe')}
+              // color={useColorModeValue('white', 'black')}
+              borderColor={useColorModeValue('#ccc', 'whiteAlpha.700')}
               onChange={handleInputChange}
             />
           </InputGroup>

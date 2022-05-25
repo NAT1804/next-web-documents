@@ -203,7 +203,7 @@ export const ModalLoginRequest = ({ onClose, isOpen, title, body }) => {
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
+            Đóng
           </Button>
           <NextLink href="/login" passHref>
             <Button
@@ -213,7 +213,7 @@ export const ModalLoginRequest = ({ onClose, isOpen, title, body }) => {
               }}
               variant="ghost"
             >
-              Sign In
+              Đăng nhập
             </Button>
           </NextLink>
         </ModalFooter>
@@ -283,7 +283,7 @@ export const ModalReport = ({
                 </InputLeftElement>
                 <Input
                   type={'text'}
-                  placeholder="Description"
+                  placeholder="Mô tả"
                   {...register('description', {
                     required: 'This is required',
                     maxLength: {
@@ -301,7 +301,7 @@ export const ModalReport = ({
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
+              Đóng
             </Button>
             <Button
               type="submit"
@@ -310,7 +310,7 @@ export const ModalReport = ({
               color={useColorModeValue('white', 'black')}
               bgColor={useColorModeValue('primaryGreen', 'primaryOrange')}
             >
-              Send
+              Gửi
             </Button>
           </ModalFooter>
         </ModalContent>
