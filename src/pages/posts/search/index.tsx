@@ -2,6 +2,7 @@ import { Grid, GridItem, Heading, Spinner, Text } from '@chakra-ui/react';
 import {
   BreadcrumbElement,
   ListVPost,
+  Loading,
   Pagination,
   PostContainer,
   PostItem,
@@ -22,7 +23,7 @@ const SearchPage = () => {
   if (isLoading)
     return (
       <>
-        <Spinner size="xl" />
+        <Loading />
       </>
     );
 
@@ -78,7 +79,7 @@ const SearchPage = () => {
           position="sticky"
           top={180}
         >
-          <ListVPost />
+          <ListVPost title="Tài liệu mới nhất" slug="" />
         </GridItem>
       </Grid>
     </>
