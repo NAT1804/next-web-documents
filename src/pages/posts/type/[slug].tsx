@@ -14,6 +14,7 @@ import {
 } from '../../../components';
 import { usePostsByType } from 'hooks';
 import { IBreadcrumb } from 'types';
+import { slugToName } from 'helper';
 
 const PostDetailPageByType = () => {
   const param = useRouter();
@@ -32,14 +33,20 @@ const PostDetailPageByType = () => {
     );
 
   if (!isError && !isLoading) {
+    console.log('Slug 1', slug);
+
     breadcrumb.push({
       name: 'Trang chủ',
       href: `/`
     });
     breadcrumb.push({
-      name: posts.data.length ? posts.data[0].post_type_id : `${slug}`,
+      name: slugToName(slug),
       href: `/posts/type/${slug}`
     });
+    // breadcrumb.push({
+    //   name: posts.data.length ? posts.data[0].post_type_id : slugToName(slug),
+    //   href: `/posts/type/${slug}`
+    // });
   }
 
   return (
@@ -51,7 +58,8 @@ const PostDetailPageByType = () => {
             <PostContainer>
               <Section delay={0.1}>
                 <Heading as="h2" fontSize={'30'} my={3}>
-                  Tài liệu của mục {posts.data[0].post_type_id}
+                  {/* Tài liệu của mục {posts.data[0].post_type_id} */}
+                  Tài liệu của mục {slugToName(slug)}
                 </Heading>
               </Section>
               {posts.data.map((post, i) => (

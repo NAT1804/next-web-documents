@@ -9,6 +9,7 @@ import { reverseArr } from 'helper';
 
 const ListVPost = ({ title, slug }) => {
   // const { posts, isLoading, isError } = usePosts(1);
+  console.log('Slug 2', slug);
   const { posts, isLoading, isError } = usePostsByType(slug, 1);
 
   if (isLoading)
