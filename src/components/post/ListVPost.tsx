@@ -30,7 +30,7 @@ const ListVPost = ({ title, slug }) => {
   return (
     <>
       <Section delay={0.1}>
-        <Heading as="h1" fontSize={'30'}>
+        <Heading as="h1" fontSize={'30'} my={3}>
           {title}
         </Heading>
       </Section>

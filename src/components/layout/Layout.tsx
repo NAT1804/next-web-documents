@@ -22,7 +22,7 @@ const Layout = ({ children, router }) => {
     <Box as="main" pb={8}>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Web Document</title>
+        <title>TAILIEU VNU</title>
       </Head>
       <Header path={router.asPath} />
       <Container maxW="container.xl" pt={{ base: 160, md: 190 }}>

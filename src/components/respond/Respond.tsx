@@ -189,9 +189,21 @@ const CommentComponent = ({
         />
         <Box>
           <Flex align="center">
-            <Box fontWeight={'semibold'} mr={3}>
-              {user?.data?.name}
-            </Box>
+            {session && session.user.name === user?.data?.name ? (
+              <Box
+                fontWeight={'semibold'}
+                mr={3}
+                borderRadius={10}
+                px={2}
+                backgroundColor={'#ccc'}
+              >
+                {user?.data?.name}
+              </Box>
+            ) : (
+              <Box fontWeight={'semibold'} mr={3}>
+                {user?.data?.name}
+              </Box>
+            )}
             <Moment fromNow>{created_at}</Moment>
           </Flex>
           {session ? (

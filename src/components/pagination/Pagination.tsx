@@ -7,7 +7,6 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Select,
   Text,
   Tooltip
 } from '@chakra-ui/react';

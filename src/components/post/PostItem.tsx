@@ -21,6 +21,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Skeleton,
   SpaceProps,
   Tag,
   Text,
@@ -46,9 +47,14 @@ interface IPostTags {
   marginTop?: SpaceProps['marginTop'];
 }
 
-const PostTags: React.FC<IPostTags> = props => {
+export const PostTags: React.FC<IPostTags> = props => {
   return (
-    <HStack spacing="1" marginTop={props.marginTop} pb={3}>
+    <HStack
+      alignSelf={'flex-start'}
+      spacing="1"
+      marginTop={props.marginTop}
+      pb={3}
+    >
       {props.tags.map(tag => {
         return (
           <Tag p={2} size={'md'} variant="solid" colorScheme="red" key={tag}>
@@ -490,13 +496,14 @@ export const VPostItem = ({ post }) => {
         borderRadius="lg"
         overflow="hidden"
       >
-        <Box display={{ base: 'none', sm: 'flex' }} w={{ base: '40%' }}>
+        <Box display={{ base: 'none', sm: 'flex' }} w={{ base: '40%' }} mr={5}>
           <NextLink href={`/posts/${post.id}`} passHref>
             <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
               <Image
                 alignSelf={'flex-end'}
                 transform="scale(1.0)"
-                src="/logo-tailieu-vnu.png"
+                // src="/logo-tailieu-vnu.png"
+                src="/logo-3.png"
                 alt="logo"
                 objectFit="contain"
                 width="100%"
@@ -580,10 +587,12 @@ export const PostItem = ({ post }) => {
                 <Image
                   borderRadius="lg"
                   transform="scale(1.0)"
-                  src="/logo-tailieu-vnu.png"
+                  // src="/logo-tailieu-vnu.png"
+                  src="/logo-3.png"
                   alt="logo tailieu vnu"
                   objectFit="contain"
                   transition="0.3s ease-in-out"
+                  m={'auto'}
                   _hover={{
                     transform: 'scale(1.1)'
                   }}
@@ -593,7 +602,7 @@ export const PostItem = ({ post }) => {
           </Box>
 
           <Box
-            width={{ base: '90%' }}
+            width={{ base: '100%' }}
             height={{ base: '100%' }}
             position="absolute"
           >

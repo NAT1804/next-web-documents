@@ -4,7 +4,8 @@ import NextLink from 'next/link';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-const srcLogo = '/logo-tailieu-vnu.png';
+// const srcLogo = '/logo-tailieu-vnu.png';
+const srcLogo = '/logo-3.png';
 
 const logoVariants = {
   hidden: {
