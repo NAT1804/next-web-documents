@@ -26,6 +26,7 @@ export default function HomePage() {
             <Skeleton height={100} mb={2} />
             <Skeleton height={100} mb={2} />
             <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
           </GridItem>
           <GridItem
             display={'block'}
@@ -33,7 +34,13 @@ export default function HomePage() {
             position="sticky"
             top={180}
           >
-            <Loading />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
           </GridItem>
         </Grid>
       </>

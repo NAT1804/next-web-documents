@@ -78,8 +78,6 @@ const CommentComponent = ({
     }
   });
 
-  console.log('cmt', comment);
-
   const notify = useCallback((type, message) => {
     ToastMessage({ type, message });
   }, []);

@@ -13,7 +13,8 @@ import {
   PopoverContent,
   useColorModeValue,
   useDisclosure,
-  Spinner
+  Spinner,
+  Skeleton
 } from '@chakra-ui/react';
 import {
   HamburgerIcon,
@@ -33,97 +34,6 @@ interface NavItem {
   children?: Array<NavItem>;
   href?: string;
 }
-
-// const navItems: Array<NavItem> = [
-//   {
-//     label: 'Tài liệu chung',
-//     children: [
-//       {
-//         label: 'Giáo trình chung',
-//         subLabel: 'Tổng hợp giáo trình của VNU',
-//         href: '#'
-//       },
-//       {
-//         label: 'Tiếng Anh VSTEP',
-//         subLabel: 'Tổng hợp đề thi VSTEP',
-//         href: '#'
-//       },
-//       {
-//         label: 'Đề cương chung',
-//         subLabel: 'Tổng hợp đề cương chung VNU',
-//         href: '#'
-//       }
-//     ]
-//   },
-//   {
-//     label: 'Các trường',
-//     children: [
-//       {
-//         label: 'Đại Học KHTN',
-//         subLabel: 'Tổng hợp đề thi, giáo trình KHTN',
-//         href: '#'
-//       },
-//       {
-//         label: 'Đại học KHXHNV',
-//         subLabel: 'Tổng hợp đề thi, giáo trình KHXHNV',
-//         href: '#'
-//       },
-//       {
-//         label: 'Đại học Ngoại Ngữ',
-//         subLabel: 'Tổng hợp đề thi, giáo trình NN',
-//         href: '#'
-//       },
-//       {
-//         label: 'Đại học Kinh Tế',
-//         subLabel: 'Tổng hợp đề thi, giáo trình KT',
-//         href: '#'
-//       },
-//       {
-//         label: 'Đại học Công Nghệ',
-//         subLabel: 'Tổng hợp đề thi, giáo trình CN',
-//         href: '#'
-//       },
-//       {
-//         label: 'Đại học Giáo dục',
-//         subLabel: 'Tổng hợp đề thi, giáo trình GD',
-//         href: '#'
-//       },
-//       {
-//         label: 'Đại học Y dược',
-//         subLabel: 'Tổng hợp đề thi, giáo trình YD',
-//         href: '#'
-//       },
-//       {
-//         label: 'Khoa Luật',
-//         subLabel: 'Tổng hợp đề thi, giáo trình KL',
-//         href: '#'
-//       },
-//       {
-//         label: 'Khoa Quốc tế',
-//         subLabel: 'Tổng hợp đề thi, giáo trình KQT',
-//         href: '#'
-//       },
-//       {
-//         label: 'Khoa QTKD',
-//         subLabel: 'Tổng hợp đề thi, giáo trình QTGD',
-//         href: '#'
-//       }
-//     ]
-//   },
-//   {
-//     label: 'Đề thi đại học',
-//     children: [
-//       {
-//         label: 'Đề thi đánh giá năng lực',
-//         href: '#'
-//       }
-//     ]
-//   },
-//   {
-//     label: 'Đề thi chuyên THPT',
-//     href: '#'
-//   }
-// ];
 
 const Navbar = ({ path }) => {
   const { isOpen, onToggle } = useDisclosure();

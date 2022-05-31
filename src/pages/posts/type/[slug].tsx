@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Grid, GridItem, Heading, Spinner, Text } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Grid, GridItem, Heading, Skeleton, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
 import {
-  PostDetail,
   BreadcrumbElement,
   ListVPost,
   PostContainer,
@@ -28,13 +27,38 @@ const PostDetailPageByType = () => {
   if (isLoading)
     return (
       <>
-        <Loading />
+        {/* <Loading /> */}
+        <Grid templateColumns="repeat(3, 1fr)" gap={10}>
+          <GridItem colSpan={{ base: 3, md: 2 }}>
+            <Skeleton height={50} mb={2} />
+            <Skeleton height={50} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+          </GridItem>
+          <GridItem
+            display={'block'}
+            colSpan={{ base: 3, md: 1 }}
+            position="sticky"
+            top={180}
+          >
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+          </GridItem>
+        </Grid>
       </>
     );
 
   if (!isError && !isLoading) {
-    console.log('Slug 1', slug);
-
     breadcrumb.push({
       name: 'Trang chủ',
       href: `/`

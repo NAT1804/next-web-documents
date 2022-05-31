@@ -13,7 +13,8 @@ import {
   Center,
   Button,
   useColorModeValue,
-  Spinner
+  Spinner,
+  Skeleton
 } from '@chakra-ui/react';
 import api from 'api';
 import { Loading, ToastMessage } from 'components';
@@ -120,7 +121,9 @@ const LikeDocumentPage = () => {
   if (isLoading) {
     return (
       <>
-        <Loading />
+        {/* <Loading /> */}
+        <Skeleton height={50} mb={2} />
+        <Skeleton height={400} mb={2} />
       </>
     );
   }

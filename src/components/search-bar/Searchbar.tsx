@@ -1,15 +1,6 @@
-import {
-  Box,
-  Grid,
-  GridItem,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  useColorModeValue
-} from '@chakra-ui/react';
+import { Input, InputGroup, useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
 
 const Searchbar = () => {
   const router = useRouter();
@@ -23,28 +14,21 @@ const Searchbar = () => {
   };
 
   return (
-    <Grid templateColumns={'repeat(3, 1fr)'} gap={10} mt={5} mb={2}>
-      <GridItem
-        colSpan={{ base: 3, md: 1 }}
-        gridColumnStart={{ base: 1, sm: 2, md: 3 }}
-      >
-        <form onSubmit={handleSearchPost}>
-          <InputGroup>
-            <Input
-              variant={'outline'}
-              type={'text'}
-              placeholder="Tìm kiếm"
-              size={'md'}
-              value={searchKey}
-              // bg={useColorModeValue('#ccc', '#fefefe')}
-              // color={useColorModeValue('white', 'black')}
-              borderColor={useColorModeValue('#ccc', 'whiteAlpha.700')}
-              onChange={handleInputChange}
-            />
-          </InputGroup>
-        </form>
-      </GridItem>
-    </Grid>
+    <form onSubmit={handleSearchPost}>
+      <InputGroup>
+        <Input
+          variant={'outline'}
+          type={'text'}
+          placeholder="Tìm kiếm"
+          size={'md'}
+          value={searchKey}
+          // bg={useColorModeValue('#ccc', '#fefefe')}
+          // color={useColorModeValue('white', 'black')}
+          borderColor={useColorModeValue('#ccc', 'whiteAlpha.700')}
+          onChange={handleInputChange}
+        />
+      </InputGroup>
+    </form>
   );
 };
 

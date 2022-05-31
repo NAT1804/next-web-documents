@@ -28,7 +28,8 @@ import {
   FormErrorMessage,
   ModalFooter,
   useDisclosure,
-  Tooltip
+  Tooltip,
+  Skeleton
 } from '@chakra-ui/react';
 import api from 'api';
 import { Loading, ToastMessage } from 'components';
@@ -44,28 +45,6 @@ import { Editor } from '@tinymce/tinymce-react';
 import { reverseArr } from 'helper';
 
 const TablePost = ({ title, posts, setFunc }) => {
-  // const notify = useCallback((type, message) => {
-  //   ToastMessage({ type, message });
-  // }, []);
-
-  // const handleLikePost = async id => {
-  //   const response = await api.post(`api/posts/${id}/like`);
-
-  //   if (response.data) {
-  //     if (response.data.message === 'Like') {
-  //       notify('success', 'Like post successfully!');
-  //     } else {
-  //       notify('success', 'Unlike post successfully!');
-  //       const resp = await api.get('/api/users/profile/likes');
-  //       if (resp.data) {
-  //         setFunc(resp.data.data);
-  //       }
-  //     }
-  //   } else {
-  //     notify('error', 'Like post failed!');
-  //   }
-  // };
-
   return (
     <Box w="100%" my={'4'}>
       <TableContainer>
@@ -380,7 +359,13 @@ const MyDocumentPage = () => {
   if (isLoading) {
     return (
       <>
-        <Loading />
+        <Flex justify={'flex-end'}>
+          <Skeleton mb={2}>
+            <Button>Thêm tài liệu</Button>
+          </Skeleton>
+        </Flex>
+        <Skeleton height={50} mb={2} />
+        <Skeleton height={400} mb={2} />
       </>
     );
   }

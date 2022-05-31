@@ -12,7 +12,8 @@ import {
   Flex,
   Center,
   Button,
-  useColorModeValue
+  useColorModeValue,
+  Skeleton
 } from '@chakra-ui/react';
 import api from 'api';
 import { Loading, ToastMessage } from 'components';
@@ -122,7 +123,9 @@ const ReportDocumentPage = () => {
   if (isLoading) {
     return (
       <>
-        <Loading />
+        {/* <Loading /> */}
+        <Skeleton height={50} mb={2} />
+        <Skeleton height={400} mb={2} />
       </>
     );
   }

@@ -1,4 +1,11 @@
-import { Grid, GridItem, Heading, Spinner, Text } from '@chakra-ui/react';
+import {
+  Grid,
+  GridItem,
+  Heading,
+  Skeleton,
+  Spinner,
+  Text
+} from '@chakra-ui/react';
 import {
   BreadcrumbElement,
   ListVPost,
@@ -23,7 +30,42 @@ const SearchPage = () => {
   if (isLoading)
     return (
       <>
-        <Loading />
+        <Grid templateColumns="repeat(3, 1fr)" gap={10}>
+          <GridItem colSpan={{ base: 3, md: 2 }}>
+            <PostContainer>
+              <Skeleton mb={2}>
+                <Heading my={2}>Kết quả tìm kiếm cho &quot;{key}&quot;</Heading>
+              </Skeleton>
+              <Skeleton height={100} mb={2} />
+              <Skeleton height={100} mb={2} />
+              <Skeleton height={100} mb={2} />
+              <Skeleton height={100} mb={2} />
+              <Skeleton height={100} mb={2} />
+              <Skeleton height={100} mb={2} />
+              <Skeleton height={100} mb={2} />
+              <Skeleton height={100} mb={2} />
+            </PostContainer>
+          </GridItem>
+          <GridItem
+            display={'block'}
+            colSpan={{ base: 3, md: 1 }}
+            position="sticky"
+            top={180}
+          >
+            <Skeleton mb={2}>
+              <Heading as="h1" fontSize={'30'} my={3}>
+                Skeleton Text
+              </Heading>
+            </Skeleton>
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+          </GridItem>
+        </Grid>
       </>
     );
 

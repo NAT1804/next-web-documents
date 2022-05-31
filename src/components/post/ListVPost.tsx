@@ -1,4 +1,10 @@
-import { Heading, Spinner, Text, useColorModeValue } from '@chakra-ui/react';
+import {
+  Heading,
+  Skeleton,
+  Spinner,
+  Text,
+  useColorModeValue
+} from '@chakra-ui/react';
 import React from 'react';
 
 import Section from 'components/section/Section';
@@ -9,13 +15,23 @@ import { reverseArr } from 'helper';
 
 const ListVPost = ({ title, slug }) => {
   // const { posts, isLoading, isError } = usePosts(1);
-  console.log('Slug 2', slug);
   const { posts, isLoading, isError } = usePostsByType(slug, 1);
 
   if (isLoading)
     return (
       <>
-        <Loading />
+        <Skeleton>
+          <Heading as="h1" fontSize={'30'} my={3}>
+            Skeleton Text
+          </Heading>
+        </Skeleton>
+        <Skeleton height={100} mb={2} />
+        <Skeleton height={100} mb={2} />
+        <Skeleton height={100} mb={2} />
+        <Skeleton height={100} mb={2} />
+        <Skeleton height={100} mb={2} />
+        <Skeleton height={100} mb={2} />
+        <Skeleton height={100} mb={2} />
       </>
     );
 

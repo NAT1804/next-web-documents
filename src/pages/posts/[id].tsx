@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Grid, GridItem, Spinner } from '@chakra-ui/react';
+import { Grid, GridItem, Skeleton, Spinner } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
 import { PostDetail, BreadcrumbElement, Loading } from '../../components';
@@ -54,7 +54,26 @@ const PostDetailPage = () => {
   if (isLoading)
     return (
       <>
-        <Loading />
+        <Grid templateColumns="repeat(3, 1fr)" gap={10}>
+          <GridItem colSpan={{ base: 3, md: 2 }}>
+            <Skeleton height={50} mb={2} />
+            <Skeleton height={50} mb={2} />
+            <Skeleton height={50} mb={2} />
+            <Skeleton height={600} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+          </GridItem>
+          <GridItem colSpan={{ base: 3, md: 1 }}>
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+            <Skeleton height={100} mb={2} />
+          </GridItem>
+        </Grid>
       </>
     );
 
