@@ -169,7 +169,7 @@ export const ModalPostDocument = ({ onClose, isOpen, setListPostCreated }) => {
   const validateFiles = (value: FileList) => {
     for (const file of Array.from(value)) {
       const fsMb = file.size / (1024 * 1024);
-      const MAX_FILE_SIZE = 50;
+      const MAX_FILE_SIZE = 1;
       if (fsMb > MAX_FILE_SIZE) {
         console.log('Touch here');
         setErrorUploadFile(`Max file size ${MAX_FILE_SIZE}MB`);
